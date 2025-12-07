@@ -1,6 +1,7 @@
 import json
 import hashlib
 import re
+import time
 import pandas as pd
 from pathlib import Path
 from typing import List
@@ -15,6 +16,10 @@ try:
     HAS_VECTOR_DB = True
 except ImportError:
     HAS_VECTOR_DB = False
+
+
+class RateLimitError(Exception):
+    pass
 
 
 class Pipeline:
@@ -47,6 +52,41 @@ class Pipeline:
             return "\n\n".join(contexts)
         except Exception:
             return ""
+
+    def _call_llm_with_fallback(self, messages, preferred_model: str) -> tuple:
+        models_to_try = [preferred_model]
+        if preferred_model == "small":
+            models_to_try.append("large")
+        elif preferred_model == "large":
+            models_to_try.append("small")
+        
+        for model in models_to_try:
+            try:
+                response = self.client.chat_text(
+                    messages, 
+                    model=model, 
+                    temperature=0.2,
+                    max_tokens=2000,
+                    seed=42
+                )
+                return response, model
+            except Exception as e:
+                error_str = str(e).lower()
+                if "rate" in error_str or "limit" in error_str or "401" in error_str or "429" in error_str:
+                    print(f"Model {model} rate limited, trying next...")
+                    continue
+                raise
+        
+        raise RateLimitError("Both models rate limited")
+
+    def _wait_until_next_hour(self):
+        now = datetime.now()
+        next_hour = now.replace(minute=0, second=0, microsecond=0)
+        if now.minute > 0 or now.second > 0:
+            next_hour = next_hour.replace(hour=now.hour + 1)
+        wait_seconds = (next_hour - now).total_seconds() + 10
+        print(f"\nBoth models rate limited. Waiting until {next_hour.strftime('%H:%M')} ({wait_seconds:.0f}s)...")
+        time.sleep(wait_seconds)
 
     def answer(self, question: str, choices: List[str], qid: str = "") -> str:
         qtype, model_choice, meta = self.router.classify(question, choices)
@@ -81,28 +121,33 @@ class Pipeline:
             self.logs.append(log_entry)
             return "A"
         
-        model = model_choice.value
-        self.stats["by_model"][model] += 1
+        preferred_model = model_choice.value
         
-        try:
-            import time
-            answer_text = self.client.chat_text(
-                messages, 
-                model=model, 
-                temperature=0.2,
-                max_tokens=2000,
-                seed=42
-            )
-            time.sleep(1)
-            
-            log_entry["model_response"] = answer_text
-            answer = self._extract_answer(answer_text, len(choices))
-            log_entry["extracted_answer"] = answer
-            
-        except Exception as e:
-            log_entry["error"] = str(e)
-            answer = "A"
-            log_entry["extracted_answer"] = answer
+        max_attempts = 3
+        for attempt in range(max_attempts):
+            try:
+                answer_text, used_model = self._call_llm_with_fallback(messages, preferred_model)
+                self.stats["by_model"][used_model] += 1
+                log_entry["model"] = used_model
+                log_entry["model_response"] = answer_text
+                answer = self._extract_answer(answer_text, len(choices))
+                log_entry["extracted_answer"] = answer
+                time.sleep(1)
+                break
+                
+            except RateLimitError:
+                if attempt < max_attempts - 1:
+                    self._wait_until_next_hour()
+                else:
+                    log_entry["error"] = "Rate limit exceeded after all attempts"
+                    answer = "A"
+                    log_entry["extracted_answer"] = answer
+                    
+            except Exception as e:
+                log_entry["error"] = str(e)
+                answer = "A"
+                log_entry["extracted_answer"] = answer
+                break
         
         self.logs.append(log_entry)
         return answer
@@ -111,38 +156,33 @@ class Pipeline:
         valid = [chr(65 + i) for i in range(num_choices)]
         
         patterns = [
-            r'[Đđ]áp\s*[aá]n[:\s]+([A-Za-z])\b',
-            r'[Đđ]áp\s*[aá]n\s+đúng[:\s]+([A-Za-z])\b',
-            r'[Đđ]áp\s*[aá]n\s+là[:\s]+([A-Za-z])\b',
-            r'[Cc]họn[:\s]+([A-Za-z])\b',
-            r'[Kk]ết\s*luận[:\s]+([A-Za-z])\b',
+            r'[Dd]ap\s*[Aa]n[:\s]+([A-Za-z])\b',
+            r'[Dd]ap\s*[Aa]n\s+dung[:\s]+([A-Za-z])\b',
+            r'[Dd]ap\s*[Aa]n\s+la[:\s]+([A-Za-z])\b',
+            r'[Cc]hon[:\s]+([A-Za-z])\b',
+            r'[Kk]et\s*luan[:\s]+([A-Za-z])\b',
             r'\*\*([A-Za-z])\*\*',
-            r'là\s+([A-Za-z])[.\s\)]',
+            r'la\s+([A-Za-z])[.\s\)]',
         ]
         
         for pattern in patterns:
-            matches = list(re.finditer(pattern, text))
+            matches = re.findall(pattern, text, re.IGNORECASE)
             if matches:
-                last_match = matches[-1].group(1).upper()
-                if last_match in valid:
-                    return last_match
-        
-        last_lines = text.strip().split('\n')[-10:]
-        for line in reversed(last_lines):
-            line_clean = line.strip()
-            for ans in valid:
-                if f"Đáp án: {ans}" in line_clean or f"Đáp án {ans}" in line_clean:
-                    return ans
-                if f"đáp án: {ans}" in line_clean.lower() or f"đáp án {ans}" in line_clean.lower():
-                    return ans
-                if line_clean.upper() == ans or line_clean.upper().startswith(ans + '.'):
+                ans = matches[-1].upper()
+                if ans in valid:
                     return ans
         
-        for ans in reversed(valid):
-            if f" {ans}." in text or f" {ans})" in text or f"**{ans}**" in text:
-                return ans
+        lines = text.strip().split('\n')
+        for line in reversed(lines[-10:]):
+            for v in valid:
+                if re.search(rf'\b{v}\b', line):
+                    return v
         
-        return valid[0]
+        for v in valid:
+            if v in text.upper():
+                return v
+        
+        return "A"
 
     def save_logs(self):
         with open(self.log_file, 'w', encoding='utf-8') as f:

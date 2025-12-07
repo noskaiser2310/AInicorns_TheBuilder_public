@@ -125,21 +125,15 @@ class VNPTAPIClient:
 
         self._check_rate_limit(model)
 
-        max_retries = 3
+        max_retries = 5
         for attempt in range(max_retries):
             try:
                 headers = self._headers(model)
                 resp = requests.post(url, headers=headers, json=payload, timeout=120)
                 
-                if resp.status_code == 429:
-                    wait_time = 60
-                    print(f"Rate limit 429, waiting {wait_time}s...")
-                    time.sleep(wait_time)
-                    continue
-                
-                if resp.status_code == 401 and "rate" in resp.text.lower():
-                    wait_time = 30 * (attempt + 1)
-                    print(f"Rate limit 401, waiting {wait_time}s...")
+                if resp.status_code in [429, 401] and ("rate" in resp.text.lower() or "limit" in resp.text.lower()):
+                    wait_time = self._wait_until_next_hour()
+                    print(f"Rate limit hit, waiting {wait_time:.0f}s until next hour...")
                     time.sleep(wait_time)
                     continue
                     
@@ -149,13 +143,21 @@ class VNPTAPIClient:
                 
             except requests.exceptions.HTTPError as e:
                 if attempt < max_retries - 1:
-                    wait_time = 10 * (attempt + 1)
-                    print(f"HTTP error, retrying in {wait_time}s...")
+                    wait_time = self._wait_until_next_hour()
+                    print(f"HTTP error {resp.status_code}, waiting {wait_time:.0f}s until next hour...")
                     time.sleep(wait_time)
                     continue
                 raise
         
         raise Exception(f"Max retries exceeded for {model}")
+
+    def _wait_until_next_hour(self) -> float:
+        now = datetime.now()
+        next_hour = now.replace(minute=0, second=0, microsecond=0)
+        if now.minute > 0 or now.second > 0:
+            next_hour = next_hour.replace(hour=now.hour + 1)
+        wait_seconds = (next_hour - now).total_seconds() + 5
+        return max(wait_seconds, 30)
 
     def chat_text(self, messages: List[Dict], model: str = "small", **kwargs) -> str:
         result = self.chat(messages, model, **kwargs)
