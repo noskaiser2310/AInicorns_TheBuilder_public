@@ -179,5 +179,12 @@ class Pipeline:
 
 
 if __name__ == "__main__":
-    pipeline = Pipeline()
-    pipeline.run()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", default="/code/private_test.json", help="Input JSON file")
+    parser.add_argument("--output", default="submission.csv", help="Output CSV file")
+    parser.add_argument("--log", default="inference_log.json", help="Log file")
+    args = parser.parse_args()
+    
+    pipeline = Pipeline(log_file=args.log)
+    pipeline.run(input_file=args.input, output_file=args.output)

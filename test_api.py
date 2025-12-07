@@ -27,7 +27,7 @@ def main():
         log.append("\n" + "=" * 60)
         log.append("ALL TESTS PASSED")
         log.append("=" * 60)
-        log.append(f"\nQuota used: {client.quota}")
+        log.append(f"\nQuota status: {client.get_quota_status()}")
         
         with open("test_log.txt", "w", encoding="utf-8") as f:
             f.write("\n".join(log))
