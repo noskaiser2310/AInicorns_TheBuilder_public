@@ -1,0 +1,38 @@
+# .dockerignore
+# Không copy những file này vào Docker image
+
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Data (vector DB sẽ được build trong image)
+# data/wikipedia/
+# data/culturax/
+
+# Cache
+cache/
+*.cache
+
+# Development
+.git/
+.gitignore
+.vscode/
+.idea/
+*.ipynb
+.DS_Store
+
+# Large files
+*.gz
+*.bz2
+*.zip
+*.tar
+
+# Logs
+*.log
+logs/
