@@ -10,8 +10,8 @@ from datetime import datetime
 class VNPTAPIClient:
     BASE_URL = "https://api.idg.vnpt.vn"
     
-    QUOTA_DAILY = {"small": 1000, "large": 500, "embedding": 500}
-    QUOTA_HOURLY = {"small": 60, "large": 40, "embedding": 40}
+    QUOTA_DAILY = {"small": 1000, "large": 500, "embedding": 500000}
+    QUOTA_HOURLY = {"small": 60, "large": 40, "embedding": 5000}
 
     def __init__(self, api_keys_file: str = "api-keys.json", cache_dir: str = "./cache"):
         self._keys = {}
@@ -72,13 +72,7 @@ class VNPTAPIClient:
         
         hourly_limit = self.QUOTA_HOURLY.get(model, 60)
         if len(history) >= hourly_limit:
-            oldest = history[0]
-            wait_time = oldest + 3600 - now + 1
-            if wait_time > 0:
-                print(f"Rate limit reached for {model}. Waiting {wait_time:.0f}s...")
-                time.sleep(wait_time)
-                while history and history[0] < time.time() - 3600:
-                    history.popleft()
+            raise Exception(f"Rate limit reached for {model} ({len(history)}/{hourly_limit}/h)")
 
     def _record_call(self, model: str):
         self.call_history[model].append(time.time())
@@ -101,8 +95,9 @@ class VNPTAPIClient:
         return status
 
     def chat(self, messages: List[Dict], model: str = "small", 
-             temperature: float = 0.7, max_tokens: int = 512, 
-             top_p: float = 0.95, top_k: int = 20, seed: int = None) -> Dict:
+             temperature: float = 0, max_tokens: int = 8192, 
+             top_p: float = 0.9, top_k: int = 10, seed: int = 42,
+             n: int = 1, presence_penalty: float = 0, frequency_penalty: float = 0) -> Dict:
         
         if model == "small":
             url = f"{self.BASE_URL}/data-service/v1/chat/completions/vnptai-hackathon-small"
@@ -118,24 +113,22 @@ class VNPTAPIClient:
             "max_completion_tokens": max_tokens,
             "top_p": top_p,
             "top_k": top_k,
-            "n": 1
+            "n": n,
+            "seed": seed,
+            "presence_penalty": presence_penalty,
+            "frequency_penalty": frequency_penalty
         }
-        if seed:
-            payload["seed"] = seed
 
         self._check_rate_limit(model)
 
-        max_retries = 5
+        max_retries = 2
         for attempt in range(max_retries):
             try:
                 headers = self._headers(model)
                 resp = requests.post(url, headers=headers, json=payload, timeout=120)
                 
-                if resp.status_code in [429, 401] and ("rate" in resp.text.lower() or "limit" in resp.text.lower()):
-                    wait_time = self._wait_until_next_hour()
-                    print(f"Rate limit hit, waiting {wait_time:.0f}s until next hour...")
-                    time.sleep(wait_time)
-                    continue
+                if resp.status_code in [429, 401]:
+                    raise Exception(f"Rate limit {resp.status_code} for {model}")
                     
                 resp.raise_for_status()
                 self._record_call(model)
@@ -143,9 +136,7 @@ class VNPTAPIClient:
                 
             except requests.exceptions.HTTPError as e:
                 if attempt < max_retries - 1:
-                    wait_time = self._wait_until_next_hour()
-                    print(f"HTTP error {resp.status_code}, waiting {wait_time:.0f}s until next hour...")
-                    time.sleep(wait_time)
+                    time.sleep(2)
                     continue
                 raise
         
@@ -159,10 +150,13 @@ class VNPTAPIClient:
         wait_seconds = (next_hour - now).total_seconds() + 5
         return max(wait_seconds, 30)
 
-    def chat_text(self, messages: List[Dict], model: str = "small", **kwargs) -> str:
+    def chat_text(self, messages: List[Dict], model: str = "small", **kwargs) -> Union[str, List[str]]:
         result = self.chat(messages, model, **kwargs)
         if result.get("choices"):
-            return result["choices"][0]["message"]["content"]
+            if len(result["choices"]) == 1:
+                return result["choices"][0]["message"]["content"]
+            else:
+                return [c["message"]["content"] for c in result["choices"]]
         raise ValueError(f"Invalid response: {result}")
 
     def embed(self, text: Union[str, List[str]]) -> List[float]:

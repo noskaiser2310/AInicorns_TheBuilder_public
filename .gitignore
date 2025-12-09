@@ -18,3 +18,8 @@
 /test_log.txt
 /vietnamese_wiki.jsonl
 /__pycache__
+/sub
+/eval
+/enhanced_embedding.py
+/gemini_test.py
+/experiment

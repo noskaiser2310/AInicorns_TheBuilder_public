@@ -1,5 +1,7 @@
 import json
 import argparse
+import os
+from datetime import datetime
 from collections import defaultdict
 from tqdm import tqdm
 
@@ -7,7 +9,8 @@ from predict import Pipeline
 from question_router import QuestionRouter
 
 
-def evaluate(val_path: str = "data/val.json", max_questions: int = None, output_file: str = None):
+def evaluate(val_path: str = "data/val.json", max_questions: int = None, 
+             start: int = None, end: int = None, output_file: str = None):
     print("=" * 60)
     print("EVALUATION WITH LOGGING")
     print("=" * 60)
@@ -15,12 +18,33 @@ def evaluate(val_path: str = "data/val.json", max_questions: int = None, output_
     with open(val_path, 'r', encoding='utf-8') as f:
         data = json.load(f)
     
-    if max_questions:
+    total_questions = len(data)
+    
+    if start is not None and end is not None:
+        data = data[start:end+1]
+        print(f"Selected questions {start} to {end} (total: {len(data)})")
+    elif start is not None:
+        data = data[start:]
+        print(f"Selected questions from {start} onwards (total: {len(data)})")
+    elif max_questions:
         data = data[:max_questions]
+        print(f"Selected first {max_questions} questions")
     
-    print(f"Loaded {len(data)} questions")
+    print(f"Loaded {len(data)} questions from {total_questions} total")
     
-    log_file = output_file.replace('.json', '_logs.json') if output_file else "eval_logs.json"
+    os.makedirs("eval", exist_ok=True)
+    
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    range_str = f"_{start}-{end}" if start is not None else (f"_first{max_questions}" if max_questions else "_all")
+    
+    if output_file:
+        base_name = os.path.splitext(os.path.basename(output_file))[0]
+        result_file = f"eval/{base_name}{range_str}_{timestamp}.json"
+        log_file = f"eval/{base_name}{range_str}_{timestamp}_logs.json"
+    else:
+        result_file = f"eval/eval{range_str}_{timestamp}.json"
+        log_file = f"eval/eval{range_str}_{timestamp}_logs.json"
+    
     pipeline = Pipeline(log_file=log_file)
     router = QuestionRouter()
     
@@ -73,28 +97,36 @@ def evaluate(val_path: str = "data/val.json", max_questions: int = None, output_
     
     errors = [r for r in results if not r["correct"]]
     if errors:
-        print("\nSample errors:")
-        for err in errors[:5]:
+        print(f"\nErrors ({len(errors)} total):")
+        for err in errors[:10]:
             print(f"  {err['qid']}: predicted={err['predicted']}, expected={err['expected']} ({err['type']})")
+        if len(errors) > 10:
+            print(f"  ... and {len(errors) - 10} more errors")
     
-    if output_file:
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump({
-                "accuracy": accuracy,
-                "by_type": {k: {"correct": correct_by_type[k], "total": total_by_type[k]} for k in total_by_type},
-                "results": results
-            }, f, ensure_ascii=False, indent=2)
-        print(f"\nResults saved to {output_file}")
-        print(f"Logs saved to {log_file}")
+    with open(result_file, 'w', encoding='utf-8') as f:
+        json.dump({
+            "accuracy": accuracy,
+            "total_correct": total_correct,
+            "total": total,
+            "range": {"start": start, "end": end, "max": max_questions},
+            "by_type": {k: {"correct": correct_by_type[k], "total": total_by_type[k]} for k in total_by_type},
+            "results": results
+        }, f, ensure_ascii=False, indent=2)
+    
+    print(f"\nResults saved to {result_file}")
+    print(f"Logs saved to {log_file}")
     
     return accuracy
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--val-path", default="data/val.json")
-    parser.add_argument("--max", type=int, default=None)
-    parser.add_argument("--output", default="evaluation_results.json")
+    parser = argparse.ArgumentParser(description="Evaluate model on validation set")
+    parser.add_argument("--val-path", default="data/val.json", help="Path to validation JSON")
+    parser.add_argument("--max", type=int, default=None, help="Max number of questions (from start)")
+    parser.add_argument("--start", type=int, default=None, help="Start index (0-based)")
+    parser.add_argument("--end", type=int, default=None, help="End index (inclusive)")
+    parser.add_argument("--output", default=None, help="Output file base name")
     args = parser.parse_args()
     
-    evaluate(val_path=args.val_path, max_questions=args.max, output_file=args.output)
+    evaluate(val_path=args.val_path, max_questions=args.max, 
+             start=args.start, end=args.end, output_file=args.output)
