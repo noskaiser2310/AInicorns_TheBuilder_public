@@ -1,0 +1,37 @@
+# Exclude large data files
+*.jsonl
+vietnamese_wiki.jsonl
+
+# Exclude virtual environments
+.venv/
+.git/
+__pycache__/
+
+# Exclude cache and temp files
+cache/
+eval/
+experiment/
+sub/
+rec/
+# Exclude RAG data
+data/vector_db/
+data/wikipedia/
+data/culturax/
+data/datasets/
+data/crawl/
+
+# Exclude Legal RAG files
+legal_rag*.py
+
+# Exclude sensitive files
+api-keys.json
+env.template
+
+# Exclude docs
+*.md
+!README.md
+
+# Exclude test/debug files
+*_logs.json
+debug_*.py
+test_*.py

@@ -12,7 +12,6 @@
 /eval_15_new_logs.json
 /eval_30.json
 /eval_30_logs.json
-/inference.sh
 /QUICKSTART.md
 /requirements_inference.txt
 /test_log.txt
@@ -23,3 +22,7 @@
 /enhanced_embedding.py
 /gemini_test.py
 /experiment
+/data/crawl
+data/datasets/
+data
+rag

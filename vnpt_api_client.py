@@ -9,9 +9,6 @@ from datetime import datetime
 
 class VNPTAPIClient:
     BASE_URL = "https://api.idg.vnpt.vn"
-    
-    QUOTA_DAILY = {"small": 1000, "large": 500, "embedding": 500000}
-    QUOTA_HOURLY = {"small": 60, "large": 40, "embedding": 5000}
 
     def __init__(self, api_keys_file: str = "api-keys.json", cache_dir: str = "./cache"):
         self._keys = {}
@@ -23,8 +20,8 @@ class VNPTAPIClient:
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(exist_ok=True)
         
-        self.quota_daily = {"small": 0, "large": 0, "embedding": 0}
-        self.call_history = {"small": deque(), "large": deque(), "embedding": deque()}
+        # Track calls for debugging only (no self-imposed limits)
+        self.call_count = {"small": 0, "large": 0, "embedding": 0}
 
     def _load_keys(self, filepath: str):
         path = Path(filepath)
@@ -63,36 +60,12 @@ class VNPTAPIClient:
         }
 
     def _check_rate_limit(self, model: str):
-        now = time.time()
-        one_hour_ago = now - 3600
-        
-        history = self.call_history[model]
-        while history and history[0] < one_hour_ago:
-            history.popleft()
-        
-        hourly_limit = self.QUOTA_HOURLY.get(model, 60)
-        if len(history) >= hourly_limit:
-            raise Exception(f"Rate limit reached for {model} ({len(history)}/{hourly_limit}/h)")
+        # Removed local rate limit check - rely on actual API response for rate limiting
+        # The API will return 429 if rate limited, which is handled in chat()
+        pass
 
     def _record_call(self, model: str):
-        self.call_history[model].append(time.time())
-        self.quota_daily[model] += 1
-
-    def get_quota_status(self) -> Dict:
-        now = time.time()
-        one_hour_ago = now - 3600
-        
-        status = {}
-        for model in ["small", "large", "embedding"]:
-            history = self.call_history[model]
-            hourly_used = sum(1 for t in history if t > one_hour_ago)
-            status[model] = {
-                "daily_used": self.quota_daily[model],
-                "daily_limit": self.QUOTA_DAILY[model],
-                "hourly_used": hourly_used,
-                "hourly_limit": self.QUOTA_HOURLY[model]
-            }
-        return status
+        self.call_count[model] += 1
 
     def chat(self, messages: List[Dict], model: str = "small", 
              temperature: float = 0, max_tokens: int = 8192, 
@@ -152,12 +125,49 @@ class VNPTAPIClient:
 
     def chat_text(self, messages: List[Dict], model: str = "small", **kwargs) -> Union[str, List[str]]:
         result = self.chat(messages, model, **kwargs)
+        
+        # Normal response with choices
         if result.get("choices"):
             if len(result["choices"]) == 1:
                 return result["choices"][0]["message"]["content"]
             else:
                 return [c["message"]["content"] for c in result["choices"]]
-        raise ValueError(f"Invalid response: {result}")
+        
+        # Check for encoded response (VNPT format with dataBase64)
+        if result.get("dataBase64"):
+            import base64
+            try:
+                decoded = base64.b64decode(result["dataBase64"]).decode('utf-8')
+                import json
+                data = json.loads(decoded)
+                
+                # Check for error in decoded data
+                if data.get("error"):
+                    error_code = data["error"].get("code", 0)
+                    error_msg = data["error"].get("message", "Unknown error")
+                    
+                    # Content filter (400) - return a safe response indicator
+                    if error_code == 400:
+                        raise ValueError(f"Content filtered: {error_msg[:100]}")
+                    else:
+                        raise ValueError(f"API error {error_code}: {error_msg[:100]}")
+                
+                # Check for choices in decoded data
+                if data.get("choices"):
+                    if len(data["choices"]) == 1:
+                        return data["choices"][0]["message"]["content"]
+                    else:
+                        return [c["message"]["content"] for c in data["choices"]]
+                        
+            except Exception as e:
+                if "Content filtered" in str(e) or "API error" in str(e):
+                    raise
+                print(f"[DEBUG] Failed to decode dataBase64: {e}")
+        
+        # Fallback: unknown response format
+        print(f"[DEBUG] API response has no choices. Keys: {result.keys()}")
+        print(f"[DEBUG] Response preview: {str(result)[:300]}")
+        raise ValueError(f"Invalid response: {str(result)[:200]}")
 
     def embed(self, text: Union[str, List[str]]) -> List[float]:
         url = f"{self.BASE_URL}/data-service/vnptai-hackathon-embedding"
