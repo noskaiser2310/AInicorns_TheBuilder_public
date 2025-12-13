@@ -1,5 +1,5 @@
 # 🏆 VNPT AI Hackathon - Track 2: The Builder
-
+evaluate.py --start 0 --end 40   
 <div align="center">
 
 ![Team Just2Try](https://img.shields.io/badge/Team-Just2Try-blue?style=for-the-badge)

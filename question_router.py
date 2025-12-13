@@ -1,261 +1,237 @@
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from enum import Enum
 
 
 class QuestionType(Enum):
     READING = "reading"
-    FACTUAL = "factual"
     MATH = "math"
+    PHYSICS = "physics"
+    CHEMISTRY = "chemistry"
+    BIOLOGY = "biology"
+    SOCIAL_HUMANITIES = "social_humanities"
     SAFETY = "safety"
+    GENERAL = "general"
+    FACTUAL = "factual" # Kept for backward compatibility if needed
+
+
+class ModelChoice(Enum):
+    LARGE = "large"
+    SMALL = "small"
+    NONE = None
 
 
 class QuestionSubType(Enum):
-    # Reading sub-types
-    MAIN_IDEA = "main_idea"          # Ý chính
-    DETAIL = "detail"                 # Chi tiết
-    INFERENCE = "inference"           # Suy luận
-    VOCABULARY = "vocabulary"         # Từ vựng
+    # Reading
+    MAIN_IDEA = "main_idea"
+    DETAIL = "detail"
+    INFERENCE = "inference"
+    VOCABULARY = "vocabulary"
     
-    # Factual sub-types
-    HISTORY = "history"               # Lịch sử
-    GEOGRAPHY = "geography"           # Địa lý
-    LAW = "law"                       # Luật, pháp luật
-    SCIENCE = "science"               # Khoa học
-    CULTURE = "culture"               # Văn hóa, xã hội
-    ECONOMICS = "economics"           # Kinh tế
-    POLITICS = "politics"             # Chính trị
-    GENERAL = "general"               # Kiến thức chung
+    # STEM
+    CALCULUS = "calculus"
+    GEOMETRY = "geometry"
+    ALGEBRA = "algebra"
+    PROBABILITY = "probability"
+    MECHANICS = "mechanics"
+    ELECTROMAGNETISM = "electromagnetism"
+    ORGANIC_CHEM = "organic_chem"
+    GENETICS = "genetics"
     
-    # STEM sub-types
-    # Math
-    ALGEBRA = "algebra"               # Đại số
-    GEOMETRY = "geometry"             # Hình học
-    CALCULUS = "calculus"             # Giải tích
-    PROBABILITY = "probability"       # Xác suất, tổ hợp
-    ARITHMETIC = "arithmetic"         # Tính toán số học
-    
-    # Physics
-    PHYSICS = "physics"               # Vật lý
-    MECHANICS = "mechanics"           # Cơ học
-    ELECTROMAGNETISM = "electromagnetism"  # Điện từ
-    THERMODYNAMICS = "thermodynamics" # Nhiệt động lực học
-    OPTICS = "optics"                 # Quang học
-    
-    # Chemistry
-    CHEMISTRY = "chemistry"           # Hóa học
-    
-    # Biology
-    BIOLOGY = "biology"               # Sinh học
+    # Generic STEM
+    BIOLOGY = "biology"
+    PHYSICS = "physics"
+    CHEMISTRY = "chemistry"
+    MATH = "math"
+    SCIENCE = "science"
+    GENERAL = "general"
+
+    # Social
+    HISTORY = "history"
+    GEOGRAPHY = "geography"
+    LAW = "law"
+    POLITICS = "politics"
+    ECONOMICS = "economics"
+    CULTURE = "culture"
     
     # Safety
     REFUSAL = "refusal"
 
 
-class ModelChoice(Enum):
-    SMALL = "small"
-    LARGE = "large"
-    NONE = None
-
-
 class QuestionRouter:
-    # Reading patterns
+    """
+    Router nâng cao với cơ chế 'Context-Aware Priority'
+    Ưu tiên độ chính xác (Precision) lên hàng đầu.
+    """
+    
+    # 1. READING PATTERNS (High Priority)
     READING_PATTERNS = [
-        r"Đoạn thông tin:",
-        r"Văn bản:",
-        r"Bài viết:",
-        r"Đoạn văn sau:",
-        r"\[1\] Tiêu đề:",
-        r"Đọc đoạn văn",
-        r"Dựa vào đoạn văn",
+        r"Đoạn thông tin:", r"Văn bản:", r"Bài viết:", r"Đoạn văn sau:",
+        r"\[1\] Tiêu đề:", r"Đọc đoạn văn", r"Dựa vào đoạn văn",
+        r"Theo tác giả", r"Ý chính của đoạn", r"Thông tin nào sau đây không có",
     ]
     
-    # Math patterns
-    MATH_PATTERNS = [
-        r"\$",
-        r"(sin|cos|tan|cot|log|ln|frac|sqrt)",
-        r"phương trình",
-        r"tính toán",
-        r"giải bài toán",
-        r"đạo hàm",
-        r"tích phân",
-        r"xác suất",
-        r"tính giá trị",
-        r"biểu thức",
-    ]
-    
-    # Sub-type detection patterns
-    SUBTYPE_PATTERNS = {
-        # Factual sub-types
-        QuestionSubType.HISTORY: [
-            r"lịch sử", r"thời kỳ", r"triều đại", r"năm nào", r"thế kỷ",
-            r"chiến tranh", r"cách mạng", r"cuộc khởi nghĩa", r"vua", r"hoàng đế",
-            r"năm \d{3,4}", r"thời đại", r"trận đánh",
-        ],
-        QuestionSubType.GEOGRAPHY: [
-            r"địa lý", r"quốc gia", r"thành phố", r"thủ đô", r"châu lục",
-            r"sông", r"núi", r"biển", r"đại dương", r"diện tích", r"dân số",
-            r"biên giới", r"lãnh thổ", r"tỉnh", r"vùng",
-        ],
-        QuestionSubType.LAW: [
-            r"luật", r"pháp luật", r"nghị định", r"thông tư", r"điều \d+",
-            r"khoản", r"quy định", r"hình sự", r"dân sự", r"hành chính",
-            r"tố tụng", r"hiến pháp", r"bộ luật", r"xử phạt", r"vi phạm",
-            r"thẩm quyền", r"trách nhiệm", r"nghĩa vụ", r"quyền",
-            r"hợp đồng", r"thừa kế", r"sở hữu", r"tài sản", r"lao động",
-        ],
-        QuestionSubType.SCIENCE: [
-            r"khoa học", r"y học",
-        ],
-        # Physics patterns
-        QuestionSubType.PHYSICS: [
-            r"vật lý", r"cơ học", r"động lực học", r"tĩnh học",
-            r"điện trở", r"điện áp", r"dòng điện", r"từ trường", r"điện trường",
-            r"sóng", r"dao động", r"con lắc", r"lò xo", r"tần số", r"bước sóng",
-            r"quang học", r"khúc xạ", r"phản xạ", r"thấu kính", r"gương",
-            r"nhiệt độ", r"áp suất", r"thể tích", r"mol",
-            r"gia tốc", r"vận tốc", r"lực", r"khối lượng", r"năng lượng",
-            r"điện tích", r"tụ điện", r"cuộn cảm", r"mạch điện",
-            r"hạt nhân", r"phóng xạ", r"neutron", r"proton", r"electron",
-            r"quỹ đạo", r"hấp dẫn", r"vệ tinh", r"hành tinh",
-            r"\\Omega", r"\\mu", r"\\epsilon", r"\\lambda",
-        ],
-        # Chemistry patterns
-        QuestionSubType.CHEMISTRY: [
-            r"hóa học", r"phản ứng", r"chất", r"hợp chất", r"nguyên tố",
-            r"axit", r"bazơ", r"muối", r"oxi hóa", r"khử",
-            r"phân tử", r"nguyên tử", r"ion", r"liên kết",
-            r"mol", r"nồng độ", r"dung dịch", r"kết tủa",
-            r"chiral", r"đồng phân", r"xúc tác", r"aldehyt", r"cinnamic",
-        ],
-        # Biology patterns
-        QuestionSubType.BIOLOGY: [
-            r"sinh học", r"tế bào", r"gen", r"dna", r"rna",
-            r"quần thể", r"di truyền", r"đột biến", r"nhiễm sắc thể",
-            r"Hardy-Weinberg", r"alen", r"kiểu gen", r"kiểu hình",
-            r"enzyme", r"protein", r"axit amin", r"lipid",
-            r"trao đổi chất", r"hô hấp", r"quang hợp",
-        ],
-        QuestionSubType.CULTURE: [
-            r"văn hóa", r"phong tục", r"truyền thống", r"lễ hội", r"tín ngưỡng",
-            r"tôn giáo", r"nghệ thuật", r"âm nhạc", r"hội họa", r"văn học",
-            r"tác giả", r"tác phẩm", r"nhà văn", r"nhà thơ",
-        ],
-        QuestionSubType.ECONOMICS: [
-            r"kinh tế", r"tài chính", r"thương mại", r"gdp", r"lạm phát",
-            r"thị trường", r"cổ phiếu", r"ngân hàng", r"tiền tệ",
-        ],
-        QuestionSubType.POLITICS: [
-            r"chính trị", r"nhà nước", r"chính phủ", r"quốc hội", r"đảng",
-            r"bầu cử", r"lãnh đạo", r"tổng thống", r"thủ tướng",
-        ],
-        # Math sub-types
-        QuestionSubType.GEOMETRY: [
-            r"hình học", r"tam giác", r"hình tròn", r"hình vuông", r"góc",
-            r"cạnh", r"diện tích", r"chu vi", r"thể tích",
-        ],
-        QuestionSubType.CALCULUS: [
-            r"đạo hàm", r"tích phân", r"giới hạn", r"hàm số", r"cực trị",
-        ],
-        QuestionSubType.PROBABILITY: [
-            r"xác suất", r"tổ hợp", r"chỉnh hợp", r"hoán vị", r"biến cố",
-        ],
-        QuestionSubType.ALGEBRA: [
-            r"phương trình", r"bất phương trình", r"đa thức", r"căn", r"logarit",
-        ],
-    }
-    
+    # 2. SAFETY PATTERNS (Critical Priority)
     SAFETY_KEYWORDS = [
         # Evasion/Fraud
-        "tránh", "lách", "trốn", "vi phạm", "né", "gian lận",
-        "làm giả", "trái phép", "bất hợp pháp", "che giấu",
+        r"tránh thuế", r"lách luật", r"trốn thuế", r"vi phạm", r"gian lận",
+        r"làm giả", r"trái phép", r"bất hợp pháp", r"che giấu",
         # Sabotage/Destruction  
-        "phá hoại", "làm suy yếu", "gây thiệt hại", "phá vỡ",
-        "làm hỏng", "tấn công", "xâm phạm",
+        r"phá hoại", r"làm suy yếu", r"gây thiệt hại", r"phá vỡ",
+        r"tấn công mạng", r"xâm phạm", r"bom", r"thuốc nổ",
         # Corruption
-        "tham nhũng", "hối lộ", "tham ô", "lợi dụng chức vụ",
-        "lạm dụng quyền lực", "biển thủ",
+        r"tham nhũng", r"hối lộ", r"tham ô", r"lợi dụng chức vụ",
+        r"lạm dụng quyền lực", r"biển thủ", r"rửa tiền",
         # Incitement/Division
-        "kích động", "chia rẽ", "xuyên tạc", "gây mâu thuẫn",
-        "chống phá", "lật đổ",
-        # Continued illegal operation
-        "tiếp tục hoạt động.*đình chỉ", "vượt qua.*lệnh cấm",
+        r"kích động", r"chia rẽ", r"xuyên tạc", r"gây mâu thuẫn",
+        r"chống phá", r"lật đổ", r"phản động",
     ]
     
     SAFETY_ANSWER_PATTERNS = [
-        r"tôi không thể",
-        r"Tôi không thể",
-        r"không thể chia sẻ",
-        r"không thể cung cấp",
-        r"không thể trả lời",
-        r"không thể hỗ trợ",
-        r"từ chối",
+        r"tôi không thể", r"Tôi không thể", r"không thể chia sẻ",
+        r"không thể cung cấp", r"không thể trả lời", r"không thể hỗ trợ",
+        r"từ chối", r"vi phạm pháp luật", r"không hợp pháp",
     ]
 
+    # 3. DOMAIN PATTERNS (Context-Aware)
+    SUBTYPE_PATTERNS = {
+        QuestionSubType.SCIENCE: [
+            r"khoa học", r"tự nhiên", r"công nghệ", r"môi trường",
+            r"biến đổi khí hậu", r"năng lượng tái tạo", r"vũ trụ",
+        ],
+        QuestionSubType.POLITICS: [
+            r"Chủ Tịch Hồ Chí Minh", r"Hồ Chí Minh", r"Bác Hồ", r"Nguyễn Ái Quốc",
+            r"Chủ nghĩa Mác", r"Lênin", r"Tư tưởng Hồ Chí Minh",
+            r"Đảng Cộng sản", r"Nhà nước", r"Chính phủ", r"Quốc hội",
+            r"Mặt trận Tổ quốc", r"Hệ thống chính trị", r"Tổng Bí thư",
+            r"quyền lực chính trị", r"giai cấp", r"cách mạng",
+            r"đại đoàn kết", r"dân chủ", r"xã hội chủ nghĩa",
+            r"công chức", r"viên chức", r"bầu cử", r"hiến pháp",
+        ],
+        QuestionSubType.HISTORY: [
+            r"lịch sử", r"thời kỳ", r"triều đại", r"năm nào", r"thế kỷ",
+            r"chiến tranh", r"cách mạng", r"khởi nghĩa", r"vua", r"hoàng đế",
+            r"Trần Nhân Tông", r"nhà Trần", r"nhà Nguyễn", r"nhà Lê",
+            r"Đại Việt", r"Pháp thuộc", r"Mông Cổ", r"Điện Biên Phủ",
+        ],
+        QuestionSubType.LAW: [
+            r"luật", r"pháp luật", r"nghị định", r"thông tư", r"điều \d+", r"nghị quyết",
+            r"bộ luật", r"xử phạt", r"vi phạm", r"hành chính", r"hình sự",
+            r"tố tụng", r"hiến pháp", r"hợp đồng", r"lao động", r"sở hữu trí tuệ",
+            r"chế tài", r"quy định", r"lễ hội", r"xử lý kỷ luật", r"truy cứu",
+            r"trách nhiệm", r"pháp lý", r"cơ quan nhà nước",
+        ],
+        QuestionSubType.ECONOMICS: [
+            r"kinh tế", r"tài chính", r"thương mại", r"GDP", r"lạm phát",
+            r"thị trường", r"cổ phiếu", r"ngân hàng", r"tiền tệ",
+            r"cung cầu", r"lợi nhuận", r"doanh thu", r"chi phí cơ hội",
+        ],
+        
+        # --- STEM (Science) ---
+        QuestionSubType.BIOLOGY: [
+            r"sinh học", r"tế bào", r"gen\b", r"dna", r"rna",
+            r"quần thể", r"di truyền", r"đột biến", r"nhiễm sắc thể",
+            r"Hardy-Weinberg", r"alen", r"kiểu gen", r"kiểu hình",
+            r"enzyme", r"protein", r"axit amin", r"hô hấp tế bào", r"quang hợp",
+        ],
+        QuestionSubType.CHEMISTRY: [
+            # More specific patterns to avoid false positives
+            r"hóa học", r"phản ứng hóa học", r"chất hóa học", r"hợp chất", r"nguyên tố hóa học",
+            r"axit\b", r"bazơ", r"muối hóa học", r"oxi hóa", r"khử",
+            r"phân tử", r"nguyên tử", r"ion\b", r"liên kết hóa học",
+            r"mol\b", r"nồng độ mol", r"dung dịch", r"kết tủa", r"\bpH\b",
+            r"hữu cơ", r"đồng phân", r"hydrocacbon", r"phương trình hóa học",
+        ],
+        QuestionSubType.PHYSICS: [
+            r"vật lý", r"cơ học", r"động lực học", r"tĩnh học",
+            r"điện trở", r"điện áp", r"dòng điện", r"từ trường",
+            r"sóng", r"dao động", r"con lắc", r"lò xo", r"tần số",
+            r"quang học", r"khúc xạ", r"phản xạ", r"thấu kính",
+            r"nhiệt độ", r"áp suất", r"thể tích", r"khí lý tưởng",
+            r"gia tốc", r"vận tốc", r"lực", r"năng lượng",
+            r"hạt nhân", r"phóng xạ", r"proton", r"electron",
+        ],
+        QuestionSubType.MATH: [
+            r"\$.*\$", r"\\frac", r"\\sqrt", r"\\sum", r"\\int",
+            r"phương trình", r"hệ phương trình", r"bất phương trình",
+            r"đạo hàm", r"tích phân", r"xác suất", r"thống kê",
+            r"tính giá trị", r"biểu thức", r"hàm số", r"đồ thị",
+            r"vector", r"ma trận", r"định thức", r"logarit",
+        ],
+    }
+
     def __init__(self):
+        # Pre-compile regex for performance
         self.reading_re = re.compile("|".join(self.READING_PATTERNS), re.IGNORECASE)
-        self.math_re = re.compile("|".join(self.MATH_PATTERNS), re.IGNORECASE)
         self.safety_answer_re = re.compile("|".join(self.SAFETY_ANSWER_PATTERNS), re.IGNORECASE)
         self.safety_keywords_re = re.compile("|".join(self.SAFETY_KEYWORDS), re.IGNORECASE)
         
-        # Compile subtype patterns
         self.subtype_res = {}
         for subtype, patterns in self.SUBTYPE_PATTERNS.items():
             self.subtype_res[subtype] = re.compile("|".join(patterns), re.IGNORECASE)
 
     def classify(self, question: str, choices: List[str]) -> Tuple[QuestionType, ModelChoice, Dict]:
-        q_lower = question.lower()
-        num_choices = len(choices)
+        """
+        Phân loại câu hỏi với độ chính xác cao nhất (Precision-Focused).
+        """
         
-        safe_idx = self._find_safe_choice(choices)
-        has_safety_answer = safe_idx is not None
-        
-        has_latex = bool(re.search(r'\$.*\$|\\frac|\\sqrt|\\sum|\\int', question))
-        is_stem = has_latex and num_choices >= 8
-        
-        # MATH detection
-        if is_stem:
-            subtype = self._detect_math_subtype(question)
-            return QuestionType.MATH, ModelChoice.LARGE, {
-                "use_rag": False, "is_stem": True, "safe_idx": safe_idx,
-                "subtype": subtype.value if subtype else None
-            }
-        
-        # READING detection - Always use LARGE for maximum accuracy
-        if self.reading_re.search(question) or len(question) > 2000:
+        # 1. READING COMPREHENSION (Highest Priority)
+        # Nếu có dấu hiệu đọc hiểu hoặc câu hỏi quá dài -> READING
+        if self.reading_re.search(question) or len(question) > 1000:
             subtype = self._detect_reading_subtype(question)
             return QuestionType.READING, ModelChoice.LARGE, {
-                "use_rag": False, "safe_idx": safe_idx,
-                "subtype": subtype.value if subtype else None
+                "subtype": subtype.value
             }
         
-        # MATH detection (no LaTeX)
-        if self.math_re.search(question):
-            subtype = self._detect_math_subtype(question)
-            return QuestionType.MATH, ModelChoice.LARGE, {
-                "use_rag": False, "safe_idx": safe_idx,
-                "subtype": subtype.value if subtype else None
-            }
-        
-        # SAFETY detection - harmful questions with "cannot answer" option
-        # Detect questions about sabotage, corruption, illegal activities
-        if has_safety_answer and self.safety_keywords_re.search(question):
+        # 2. SAFETY CHECK (After Reading)
+        # Chỉ SAFETY nếu: có đáp án từ chối VÀ câu hỏi chứa từ khóa nguy hiểm
+        safe_idx = self._find_safe_choice(choices)
+        if safe_idx is not None and self.safety_keywords_re.search(question):
             return QuestionType.SAFETY, ModelChoice.SMALL, {
-                "use_rag": False, "safe_idx": safe_idx,
-                "subtype": QuestionSubType.REFUSAL.value
+                "subtype": QuestionSubType.REFUSAL.value,
+                "safe_idx": safe_idx
             }
+
+        # 3. SOCIAL & HUMANITIES CHECK (Priority over STEM to fix labels)
+        for subtype in [QuestionSubType.POLITICS, QuestionSubType.HISTORY, QuestionSubType.LAW, QuestionSubType.ECONOMICS]:
+            if self.subtype_res[subtype].search(question):
+                return QuestionType.SOCIAL_HUMANITIES, ModelChoice.SMALL, { 
+                    "subtype": subtype.value,
+                    "use_rag": False 
+                }
+
+        # 4. STEM CHECK (Science & Math)
+        # Check Biology & Chemistry trước
+        for subtype in [QuestionSubType.BIOLOGY, QuestionSubType.CHEMISTRY]:
+            if self.subtype_res[subtype].search(question):
+                return getattr(QuestionType, subtype.name), ModelChoice.SMALL, {
+                    "subtype": subtype.value,
+                    "is_stem": True
+                }
         
-        # FACTUAL - detect subtype
-        subtype = self._detect_factual_subtype(question)
-        use_rag = subtype in [QuestionSubType.LAW, QuestionSubType.HISTORY, 
-                              QuestionSubType.GEOGRAPHY, QuestionSubType.GENERAL]
+        # Check Physics & Math sau cùng
+        has_latex = bool(re.search(r'\$.*\$|\\frac|\\sqrt|\\sum|\\int', question))
         
-        return QuestionType.FACTUAL, ModelChoice.SMALL, {
-            "use_rag": use_rag, "safe_idx": safe_idx,
-            "subtype": subtype.value if subtype else "general"
+        if self.subtype_res[QuestionSubType.PHYSICS].search(question):
+            return QuestionType.PHYSICS, ModelChoice.LARGE, {
+                "subtype": QuestionSubType.PHYSICS.value,
+                "is_stem": True,
+                "has_latex": has_latex
+            }
+            
+        if self.subtype_res[QuestionSubType.MATH].search(question) or has_latex:
+             return QuestionType.MATH, ModelChoice.LARGE, {
+                "subtype": QuestionSubType.ALGEBRA.value, # Default math subtype
+                "is_stem": True,
+                "has_latex": has_latex
+            }
+
+        # 5. FALLBACK (General Knowledge)
+        return QuestionType.GENERAL, ModelChoice.SMALL, {
+            "subtype": "general_knowledge"
         }
 
-    def _find_safe_choice(self, choices: List[str]) -> int:
+    def _find_safe_choice(self, choices: List[str]) -> Optional[int]:
         for idx, choice in enumerate(choices):
             if self.safety_answer_re.search(choice):
                 return idx
@@ -263,15 +239,11 @@ class QuestionRouter:
 
     def _detect_reading_subtype(self, question: str) -> QuestionSubType:
         q_lower = question.lower()
-        if any(w in q_lower for w in ["ý chính", "chủ đề", "nội dung chính", "thông điệp"]):
-            return QuestionSubType.MAIN_IDEA
-        if any(w in q_lower for w in ["chi tiết", "theo đoạn văn", "dựa vào đoạn văn"]):
-            return QuestionSubType.DETAIL
-        if any(w in q_lower for w in ["suy luận", "có thể suy ra", "ngụ ý"]):
-            return QuestionSubType.INFERENCE
-        if any(w in q_lower for w in ["từ ", "nghĩa của từ", "đồng nghĩa", "trái nghĩa"]):
-            return QuestionSubType.VOCABULARY
-        return QuestionSubType.DETAIL  # Default
+        if any(w in q_lower for w in ["ý chính", "chủ đề", "nội dung chính"]): return QuestionSubType.MAIN_IDEA
+        if any(w in q_lower for w in ["chi tiết", "theo đoạn"]): return QuestionSubType.DETAIL
+        if any(w in q_lower for w in ["suy luận", "ngụ ý"]): return QuestionSubType.INFERENCE
+        if any(w in q_lower for w in ["nghĩa của từ", "thay thế"]): return QuestionSubType.VOCABULARY
+        return QuestionSubType.DETAIL
 
     def _detect_math_subtype(self, question: str) -> QuestionSubType:
         for subtype in [QuestionSubType.GEOMETRY, QuestionSubType.CALCULUS, 
@@ -297,7 +269,7 @@ class QuestionRouter:
         return QuestionSubType.GENERAL
 
     def build_prompt(self, qtype: QuestionType, question: str, 
-                     choices: List[str], context: str = None, prompt_idx: int = 0) -> List[Dict]:
+                     choices: List[str], context: str = None, prompt_idx: int = 0, subtype: str = None) -> List[Dict]:
         """Build single consolidated prompt (no voting)"""
         choices_str = "\n".join([f"{chr(65+i)}. {c}" for i, c in enumerate(choices)])
         
@@ -310,7 +282,23 @@ class QuestionRouter:
         if qtype == QuestionType.SAFETY:
             return self._build_safety_prompt(question, choices_str)
         
-        # FACTUAL
+        # STEM subjects - use provided subtype or default
+        if qtype == QuestionType.PHYSICS:
+            return self._build_factual_prompt(question, choices_str, context, subtype=subtype or "physics")
+        
+        if qtype == QuestionType.CHEMISTRY:
+            return self._build_factual_prompt(question, choices_str, context, subtype=subtype or "chemistry")
+        
+        if qtype == QuestionType.BIOLOGY:
+            return self._build_factual_prompt(question, choices_str, context, subtype=subtype or "biology")
+        
+        # SOCIAL_HUMANITIES - use provided subtype (law, history, politics, economics)
+        if qtype == QuestionType.SOCIAL_HUMANITIES:
+            return self._build_factual_prompt(question, choices_str, context, subtype=subtype or "general")
+        
+        # GENERAL and FACTUAL - use provided subtype or auto-detect
+        if subtype:
+            return self._build_factual_prompt(question, choices_str, context, subtype=subtype)
         return self._build_factual_prompt(question, choices_str, context)
 
     def _build_reading_prompt(self, question: str, choices_str: str) -> List[Dict]:
@@ -321,7 +309,7 @@ class QuestionRouter:
 === PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===
 
 BƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:
-- Đọc TOÀN BỘ văn bản ít nhất 2 lần
+- Đọc TOÀN BỘ văn bản 
 - Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?
 - Ghi nhận các từ khóa, cụm từ quan trọng
 
@@ -399,13 +387,7 @@ BƯỚC 3: Xử lý Logic (Dành cho câu hỏi khó/suy luận)
 
 BƯỚC 4: Kết luận
 - Chọn đáp án khớp với kết quả ở Bước 3.
-
-ĐỊNH DẠNG TRẢ LỜI:
-- Phân tích: ...
-- Trích dẫn 1: "..."
-- Trích dẫn 2 (nếu có): "..."
-- Xử lý logic (nếu cần): ...
-- ĐÁP ÁN CUỐI CÙNG: [X]"""},
+- ĐÁP ÁN CUỐI CÙNG: [X] """},
             {"role": "user", "content": f"""{question}
 
 Các lựa chọn:
@@ -417,21 +399,63 @@ Hãy thực hiện đúng quy trình 4 bước và chọn đáp án chính xác 
     def _build_math_prompt(self, question: str, choices_str: str) -> List[Dict]:
         """Consolidated Math prompt with verification"""
         return [
-            {"role": "system", "content": """Bạn là chuyên gia Toán học với khả năng tính toán chính xác.
+            {"role": "system", "content": """Bạn là một Giáo sư Toán học và Chuyên gia Tính toán Hình thức (Formal Computation). Nhiệm vụ của bạn là giải quyết các bài toán với độ chính xác tuyệt đối, không chấp nhận sai số.
 
-PHƯƠNG PHÁP GIẢI:
-1. ĐỌC ĐỀ: Liệt kê dữ kiện, yêu cầu
-2. XÁC ĐỊNH: Dạng bài toán (đại số, hình học, xác suất...)
-3. GIẢI CHI TIẾT: Từng bước, ghi rõ công thức và kết quả mỗi bước
-4. KIỂM TRA: Thay kết quả vào điều kiện ban đầu
-5. SO SÁNH với các đáp án
+TƯ DUY THUẬT TOÁN (ALGORITHMIC REASONING):
+Để giải quyết bài toán này, bạn BẮT BUỘC phải tuân thủ quy trình 5 bước sau đây như một chương trình máy tính:
 
-QUAN TRỌNG: 
-- Tính toán CẨN THẬN từng bước
-- KIỂM TRA lại trước khi kết luận
-- Nếu không khớp đáp án nào, xem lại bước tính và đảm bảo tính toán chính xác vì đề bài là không sai
+1. [PARSE] PHÂN TÍCH DỮ LIỆU:
+   - Input: Liệt kê tất cả biến số (x, y, n, P...) và giá trị của chúng.
+   - Goal: Xác định rõ ràng đại lượng cần tìm.
+   - Constraints: Lưu ý các điều kiện xác định (mẫu số khác 0, biểu thức trong căn >= 0, xác suất [0,1]).
 
-Kết thúc: "Đáp án cuối cùng: X" (X là A-J)"""},
+2. [MODEL] MÔ HÌNH HÓA TOÁN HỌC:
+   - Ánh xạ bài toán vào lĩnh vực cụ thể:
+     + Giải tích: Đạo hàm, Tích phân, Laplace, Giới hạn,...
+     + Đại số: Ma trận, Hệ phương trình, Số phức,...
+     + Xác suất/Thống kê: Tổ hợp, Biến ngẫu nhiên, Phân phối chuẩn/Poisson,...  
+   - VIẾT CÔNG THỨC GỐC: Viết công thức tổng quát trước khi thay số (Ví dụ: Định lý Bayes, Công thức nhân đôi, Biến đổi Laplace,...).
+
+3. [EXECUTE] TÍNH TOÁN TỪNG BƯỚC (STEP-BY-STEP):
+   - Thay số vào công thức.
+   - Thực hiện biến đổi đại số trên từng dòng riêng biệt.
+   - KHÔNG ĐƯỢC LÀM TẮT. Ví dụ: Nếu tính tích phân, hãy tìm nguyên hàm trước, sau đó thế cận.
+   - Nếu là phương trình: Chuyển vế -> Đổi dấu -> Rút gọn.
+
+4. [VERIFY] KIỂM TRA NGƯỢC:
+   - Kiểm tra logic (Sanity Check): Kết quả có vi phạm miền xác định không? (VD: Xác suất > 1 là sai).
+   - Kiểm tra đơn vị/thứ nguyên (nếu có).
+   - Thử lại nghiệm vào phương trình gốc (nếu là bài giải phương trình).
+
+5. [MATCH] ĐỐI CHIẾU & KẾT LUẬN:
+   - So sánh kết quả tính được với danh sách lựa chọn (A, B, C, D...).
+   - Nếu kết quả không khớp chính xác, hãy kiểm tra xem có cần làm tròn hoặc đổi dạng biểu diễn (ví dụ: 0.5 vs 1/2) không.
+   - Chọn đáp án khớp nhất.
+
+ĐỊNH DẠNG ĐẦU RA BẮT BUỘC:
+---
+Phân tích: [Bước 1 & 2]
+Giải chi tiết: [Bước 3 - Hiển thị rõ các bước biến đổi]
+Kiểm tra: [Bước 4]
+Đáp án cuối cùng: [Chỉ ghi 1 ký tự: A, B, C, D...]
+---
+
+VÍ DỤ MINH HỌA :
+Input: Tìm nghiệm của x^2 - 5x + 6 = 0.
+A. 1, 6
+B. 2, 3
+C. -2, -3
+D. 0, 5
+
+Output:
+Phân tích: Phương trình bậc 2 dạng ax^2 + bx + c = 0 với a=1, b=-5, c=6.
+Giải chi tiết:
+Tính Delta = b^2 - 4ac = (-5)^2 - 4*1*6 = 25 - 24 = 1.
+Vì Delta > 0, phương trình có 2 nghiệm phân biệt:
+x1 = (-b + sqrt(Delta)) / 2a = (5 + 1) / 2 = 3.
+x2 = (-b - sqrt(Delta)) / 2a = (5 - 1) / 2 = 2.
+Kiểm tra: 2^2 - 5(2) + 6 = 4 - 10 + 6 = 0 (Đúng).
+Đáp án cuối cùng: B """},
             {"role": "user", "content": f"""Giải bài toán sau:
 
 {question}
@@ -443,23 +467,41 @@ Giải chi tiết và chọn đáp án đúng."""}
         ]
 
     def _build_safety_prompt(self, question: str, choices_str: str) -> List[Dict]:
-        """Safety prompt"""
+        """Safety prompt - balanced version that still reasons properly"""
         return [
-            {"role": "system", "content": """Bạn là trợ lý tuân thủ pháp luật và đạo đức Việt Nam.
+            {"role": "system", "content": """Bạn là chuyên gia phân tích với kiến thức đa dạng về pháp luật, đạo đức, khoa học, lịch sử, kinh tế và các lĩnh vực chuyên môn.
 
-NGUYÊN TẮC:
-- KHÔNG hỗ trợ vi phạm pháp luật
-- ƯU TIÊN đáp án từ chối hoặc tuân thủ quy định
-- Nếu có đáp án "Tôi không thể trả lời" → chọn đáp án đó
+NGUYÊN TẮC SUY LUẬN:
+1. ĐỌC KỸ câu hỏi để hiểu đúng yêu cầu
+2. PHÂN TÍCH từng đáp án dựa trên:
+   - Tính chính xác về mặt kiến thức
+   - Tính hợp pháp và đạo đức
+   - Tính logic và thực tiễn
 
-Kết thúc: "Đáp án cuối cùng: X" """},
-            {"role": "user", "content": f"""Câu hỏi:
+3. NẾU câu hỏi yêu cầu thông tin vi phạm pháp luật hoặc đạo đức (ví dụ: cách trốn thuế, phá hoại, tham nhũng...):
+   → Chọn đáp án từ chối (ví dụ: "Tôi không thể trả lời")
+   
+4. NẾU câu hỏi là câu hỏi kiến thức bình thường:
+   - Toán học: Tính toán chính xác, kiểm tra từng bước
+   - Vật lý/Hóa học: Áp dụng công thức, đơn vị, định luật
+   - Sinh học: Khái niệm khoa học, quy trình tự nhiên
+   - Lịch sử: Sự kiện, năm tháng, nhân vật, ý nghĩa
+   - Địa lý: Vị trí, đặc điểm, số liệu
+   - Kinh tế: Nguyên lý, công thức, quy luật thị trường
+   - Pháp luật: Điều khoản, thẩm quyền, quy định cụ thể
+   → Chọn đáp án đúng nhất dựa trên suy luận logic và kiến thức chuyên môn
+
+OUTPUT FORMAT:
+- Phân tích ngắn gọn từng đáp án
+- Kết luận: "Đáp án cuối cùng: X" """},
+            {"role": "user", "content": f"""Phân tích và chọn đáp án phù hợp nhất:
+
 {question}
 
 Các đáp án:
 {choices_str}
 
-Chọn đáp án an toàn và hợp pháp nhất."""}
+Suy luận và chọn đáp án."""}
         ]
 
     def _build_factual_prompt(self, question: str, choices_str: str, context: str = None, subtype: str = None) -> List[Dict]:
@@ -580,29 +622,36 @@ Phân tích theo kiến thức khoa học và chọn đáp án đúng."""}
         # PHYSICS - Physics questions (separate from MATH)
         if subtype == "physics":
             return [
-                {"role": "system", "content": """Bạn là chuyên gia VẬT LÝ với kiến thức sâu rộng về các lĩnh vực sau:
+                {"role": "system", "content": """Bạn là một Giáo sư Vật lý lý thuyết và ứng dụng hàng đầu. Nhiệm vụ của bạn là giải quyết các bài toán Vật lý với độ chính xác tuyệt đối.
 
-KIẾN THỨC CHUYÊN MÔN:
-- Cơ học: Động học, Động lực học, Định luật Newton, Năng lượng, Động lượng
-- Điện từ học: Điện trường, Từ trường, Mạch điện, Định luật Ohm, Định luật Faraday
-- Dao động và Sóng: Con lắc, Lò xo, Sóng cơ, Sóng điện từ, Sóng dừng
-- Quang học: Phản xạ, Khúc xạ, Giao thoa, Nhiễu xạ
-- Nhiệt động lực học: Nhiệt độ, Áp suất, Khí lý tưởng
-- Vật lý hạt nhân: Phóng xạ, Phản ứng hạt nhân
+QUY TRÌNH SUY LUẬN BẮT BUỘC (CHAIN-OF-THOUGHT):
+1. TRÍCH XUẤT DỮ LIỆU (VARIABLES):
+   - Liệt kê mọi đại lượng đề bài cho.
+   - BẮT BUỘC: Đổi ngay tất cả đơn vị về chuẩn SI (Mét, Kg, Giây, Joule, Coulomb...) trước khi tính.
+   - Ví dụ: 5cm -> 0.05m; 600nm -> 6e-7m.
 
-PHƯƠNG PHÁP GIẢI:
-1. XÁC ĐỊNH: Đây là bài toán thuộc lĩnh vực nào ?
-2. CÔNG THỨC: Liệt kê các công thức liên quan
-3. TÍNH TOÁN: Thực hiện từng bước, chú ý đơn vị
-4. KIỂM TRA: Kết quả có hợp lý về mặt vật lý không?
-5. SO SÁNH: Đối chiếu với các đáp án
+2. XÁC ĐỊNH NGUYÊN LÝ (PRINCIPLES):
+   - Bài toán thuộc chuyên đề nào? (Cơ học Newton, Nhiệt động lực học, Mạch điện xoay chiều RLC, Lượng tử...).
+   - Viết tên định luật hoặc nguyên lý bảo toàn sẽ sử dụng (Bảo toàn cơ năng, Định luật Ohm, Định luật Hess...).
 
-QUAN TRỌNG:
-- Chú ý đơn vị và thứ nguyên
-- Kiểm tra dấu và hướng (với đại lượng vector)
-- Đề bài luôn đúng, nếu không tìm được kết quả, xem lại bước tính
+3. THIẾT LẬP CÔNG THỨC (FORMULATION):
+   - Viết công thức gốc dưới dạng ký hiệu (ví dụ: F = ma, U = I*R).
+   - Biến đổi công thức để rút ra đại lượng cần tìm về một vế.
 
-Kết thúc: "Đáp án cuối cùng: X" (X là A-J)"""},
+4. TÍNH TOÁN CHI TIẾT (CALCULATION):
+   - Thay số vào biểu thức đã biến đổi.
+   - Thực hiện phép tính từng bước một. KHÔNG ĐƯỢC TÍNH NHẨM TẮT.
+   - Lưu ý các hằng số vật lý (c = 3e8, h = 6.626e-34, k_B...).
+
+5. KIỂM TRA (VERIFICATION):
+   - Kết quả có ý nghĩa vật lý không? (Ví dụ: Thời gian không thể âm, Động năng không thể âm).
+   - So sánh với các lựa chọn (A, B, C, D).
+
+ĐỊNH DẠNG ĐẦU RA:
+Phân tích: [Tóm tắt dữ liệu và đổi đơn vị]
+Công thức: [Công thức gốc và biến đổi]
+Tính toán: [Các bước thay số và kết quả]
+Kết thúc: "Đáp án cuối cùng: X" (X là A-L)"""},
                 {"role": "user", "content": f"""{ctx}Bài toán VẬT LÝ:
 {question}
 
@@ -625,11 +674,22 @@ KIẾN THỨC CHUYÊN MÔN:
 - Hóa hữu cơ: Hydrocacbon, Nhóm chức, Đồng phân
 - Nhiệt động học: Enthalpy, Entropy, Năng lượng tự do
 
-PHƯƠNG PHÁP GIẢI:
-1. Xác định: Câu hỏi yêu cầu gì? Constraints là gì?
-2. Loại trừ: Đáp án nào vi phạm constraints hoặc sai rõ ràng?
-3. Phân tích: Với mỗi đáp án còn lại, nêu evidence ủng hộ/bác bỏ
-4. Quyết định: Chọn đáp án có evidence mạnh nhất
+QUY TRÌNH SUY LUẬN BẮT BUỘC:
+1. PHƯƠNG TRÌNH PHẢN ỨNG (REACTION):
+   - Viết phương trình hóa học cho quá trình được mô tả.
+   - BẮT BUỘC: Cân bằng phương trình (kiểm tra bảo toàn nguyên tố và điện tích). Nếu không cân bằng, mọi tính toán sau đó sẽ sai.
+
+2. CHUYỂN ĐỔI SỐ MOL (STOICHIOMETRY):
+   - Chuyển tất cả dữ liệu (khối lượng, thể tích, nồng độ) về số Mol.
+   - Xác định chất hết, chất dư (Limiting reagent) nếu cần.
+
+3. TÍNH TOÁN THEO YÊU CẦU:
+   - Áp dụng các định luật: Bảo toàn khối lượng, Hess (Nhiệt hóa học), Henderson-Hasselbalch (pH đệm), Nernst (Điện hóa).
+   - Chú ý đến hệ số tỉ lượng trong phương trình đã cân bằng.
+
+4. XEM XÉT ĐIỀU KIỆN:
+   - Kiểm tra điều kiện tiêu chuẩn (STP) hay điều kiện thường.
+   - Lưu ý đơn vị năng lượng (kJ vs J) và nhiệt độ (Kelvin vs Celsius).
 
 QUAN TRỌNG:
 - Chú ý hệ số cân bằng
@@ -649,27 +709,28 @@ Giải chi tiết và chọn đáp án đúng."""}
         # BIOLOGY - Biology questions  
         if subtype == "biology":
             return [
-                {"role": "system", "content": """Bạn là chuyên gia SINH HỌC với kiến thức về:
+                {"role": "system", "content": """Bạn là một Chuyên gia Sinh học hiện đại (Di truyền học & Sinh học phân tử).
 
-KIẾN THỨC CHUYÊN MÔN:
-- Tế bào học: Cấu trúc tế bào, Màng tế bào, Bào quan
-- Di truyền học: DNA, RNA, Đột biến, Quy luật Mendel, Hardy-Weinberg
-- Sinh học phân tử: Sao chép, Phiên mã, Dịch mã
-- Sinh thái học: Quần thể, Quần xã, Hệ sinh thái
-- Tiến hóa: Chọn lọc tự nhiên, Đột biến, Di nhập gen
-- Sinh lý học: Hô hấp, Tuần hoàn, Tiêu hóa, Bài tiết
+QUY TRÌNH SUY LUẬN BẮT BUỘC:
+1. PHÂN TÍCH TỪ KHÓA:
+   - Tìm các từ khóa cốt lõi: "DNA", "RNA", "Hardy-Weinberg", "Alen lặn", "Trội hoàn toàn".
+   - Phân biệt rõ các cơ chế: Nguyên phân vs Giảm phân, Phiên mã vs Dịch mã.
 
-PHƯƠNG PHÁP GIẢI:
-1. Xác định: Câu hỏi yêu cầu gì? Constraints là gì?
-2. Loại trừ: Đáp án nào vi phạm constraints hoặc sai rõ ràng?
-3. Phân tích: Với mỗi đáp án còn lại, nêu evidence ủng hộ/bác bỏ
-4. Quyết định: Chọn đáp án có evidence mạnh nhất
+2. ÁP DỤNG CÔNG THỨC (NẾU CÓ):
+   - Với Di truyền quần thể: Sử dụng p^2 + 2pq + q^2 = 1. Xác định rõ đề bài cho p (tần số alen) hay q^2 (tỷ lệ kiểu hình lặn).
+   - Với Di truyền phân tử: A=T, G=X; Số liên kết Hydro, chiều dài gen.
 
-CÔNG THỨC DI TRUYỀN QUẦN THỂ:
-- Hardy-Weinberg: p² + 2pq + q² = 1; p + q = 1
-- Tần số đồng hợp lặn = q²
+3. SUY LUẬN LOGIC (VỚI LÝ THUYẾT):
+   - Dựa trên Học thuyết Tiến hóa hiện đại và Sinh học tế bào.
+   - Loại trừ các phương án sai dựa trên mâu thuẫn lý thuyết cơ bản.
 
-Kết thúc: "Đáp án cuối cùng: X" (X là A-J)"""},
+4. KẾT LUẬN:
+   - Đảm bảo câu trả lời phù hợp với bối cảnh sinh học (ví dụ: không có xác suất > 1, không có số cá thể lẻ).
+
+ĐỊNH DẠNG ĐẦU RA:
+Phân tích: [Cơ sở lý thuyết/Công thức]
+Suy luận: [Các bước giải]
+Đáp án cuối cùng: [Ký tự A/B/C/D]"""},
                 {"role": "user", "content": f"""{ctx}Câu hỏi SINH HỌC:
 {question}
 
@@ -761,7 +822,7 @@ Phân tích và chọn đáp án đúng nhất."""}
         
         # GENERAL - Super powerful prompt for unclassified questions
         return [
-            {"role": "system", "content": """Bạn là CHUYÊN GIA ĐA LĨNH VỰC cấp cao với 30 năm kinh nghiệm, có kiến thức sâu rộng về:
+            {"role": "system", "content": """Bạn là CHUYÊN GIA ĐA LĨNH VỰC và còn được gọi là bách khoa toàn thư có kiến thức sâu rộng về:
 - Khoa học tự nhiên: Vật lý, Hóa học, Sinh học, Toán học
 - Khoa học xã hội: Lịch sử, Địa lý, Kinh tế, Chính trị, Pháp luật
 - Văn hóa nghệ thuật: Văn học, Âm nhạc, Hội họa, Tôn giáo

@@ -10,7 +10,7 @@ from question_router import QuestionRouter
 from benchmark_classifier import BenchmarkClassifier, BenchmarkCategory
 
 
-def evaluate(val_path: str = "data/val.json", max_questions: int = None, 
+def evaluate(val_path: str = "val.json", max_questions: int = None, 
              start: int = None, end: int = None, output_file: str = None):
     print("=" * 60)
     print("EVALUATION WITH BENCHMARK ANALYSIS")
@@ -190,7 +190,7 @@ def evaluate(val_path: str = "data/val.json", max_questions: int = None,
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Evaluate model on validation set with benchmark analysis")
-    parser.add_argument("--val-path", default="data/val.json", help="Path to validation JSON")
+    parser.add_argument("--val-path", default="val.json", help="Path to validation JSON")
     parser.add_argument("--max", type=int, default=None, help="Max number of questions (from start)")
     parser.add_argument("--start", type=int, default=None, help="Start index (0-based)")
     parser.add_argument("--end", type=int, default=None, help="End index (inclusive)")

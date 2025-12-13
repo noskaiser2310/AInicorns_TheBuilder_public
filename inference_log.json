@@ -1,0 +1,545 @@
+[
+  {
+    "qid": "test_0071",
+    "question": "Đoạn thông tin:\nTiêu đề: Trần Thu Hà\nNội dung: Trần Thu Hà (sinh ngày 26 tháng 8 năm 1977 tại Hà Nội), nghệ danh Hà Trần, là một ca sĩ và nhà sản xuất nhạc người Việt Nam. Cô là con gái của NSND Trần ...",
+    "choices": [
+      "họ",
+      "trai",
+      "gái"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\nTiêu đề: Trần Thu Hà\nNội dung: Trần Thu Hà (sinh ngày 26 tháng 8 năm 1977 tại Hà Nội), nghệ danh Hà Trần, là một ca sĩ và nhà sản xuất nhạc người Việt Nam. Cô là con gái của NSND Trần Hiếu và NGƯT Vũ Thúy Huyền. Hà Trần là nghệ sĩ đã giành được 9 đề cử, xuất hiện trong danh sách những người được đề cử nhiều nhất và chiến thắng ở 4 hạng mục tại giải Cống hiến. Cô cũng được biết đến là một nghệ sĩ có trường phái nghệ thuật đa dạng và nhiều màu sắc, luôn tìm tòi, sáng tạo và thử ngh...",
+    "reading_votes": [
+      "C",
+      "C"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "Dưới đây là phân tích chuyên sâu theo phương pháp 5 bước:\n\n**Bước 1: Đọc và Hiểu Văn Bản**\n\n* Đọc toàn bộ văn bản về Trần Thu Hà (Hà Trần)\n* Xác định chủ đề chính: Tiểu sử và sự nghiệp của ca sĩ Hà Trần\n* Ghi nhận từ khóa, cụm từ quan trọng: Trần Thu Hà, Hà Trần, nghệ sĩ, ca sĩ, nhà sản xuất nhạc, gia đình nghệ thuật, Trần Thanh Phương\n\n**Bước 2: Phân Loại Câu Hỏi**\n\n* Loại câu hỏi: Chi tiết cụ thể\n* Lý do: Câu hỏi hỏi về mối quan hệ cụ thể giữa Trần Thanh Phương và Hà Trần\n\n**Bước 3: Trích Dẫn Bằng Chứng**\n\n* Bằng chứng: \"chú là nhạc sĩ Trần Tiến, anh họ là được mệnh danh là 'tay chơi đàn hay nhất Việt Nam' nhà sản xuất âm nhạc Trần Thanh Phương\"\n* Giải thích: Đoạn văn này chỉ rõ mối quan hệ giữa Trần Thanh Phương và Hà Trần\n\n**Bước 4: Đánh Giá Từng Đáp Án**\n\n* A. họ: ✗ SAI (không phải họ hàng trực tiếp)\n* B. trai: ✗ SAI (không phải anh em trai)\n* C. gái: ✗ SAI (không phải chị em gái)\n* Đáp án đúng: Không có trong các lựa chọn (theo bằng chứng, Trần Thanh Phương là anh họ của Hà Trần)\n\n**Bước 5: Quyết Định Cuối Cùng**\n\n* Do không có đáp án đúng trong các lựa chọn, cần chọn đáp án ít sai nhất hoặc không có đáp án phù hợp.\n* Tuy nhiên, dựa trên bằng chứng, có thể kết luận rằng Trần Thanh Phương là anh họ của Hà Trần, nhưng không có lựa chọn nào phản ánh mối quan hệ này.\n\nKết luận: Không có đáp án chính xác trong các lựa chọn cung cấp. Mối quan hệ giữa Trần Thanh Phương và Hà Trần là anh họ.",
+      "BƯỚC 1: Phân tích & Định vị\n- Xác định từ khóa: Trần Thanh Phương, Hà Trần, quan hệ\n- Tìm tất cả các đoạn văn có liên quan: \n  + \"chú là nhạc sĩ Trần Tiến, anh họ là được mệnh danh là 'tay chơi đàn hay nhất Việt Nam' nhà sản xuất âm nhạc Trần Thanh Phương\"\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n- Trích dẫn nguyên văn các câu chứa thông tin:\n  + \"chú là nhạc sĩ Trần Tiến, anh họ là được mệnh danh là 'tay chơi đàn hay nhất Việt Nam' nhà sản xuất âm nhạc Trần Thanh Phương\"\n\nBƯỚC 3: Xử lý Logic (Dành cho câu hỏi khó/suy luận)\n- Tìm mối liên hệ \"Vì... nên...\" giữa các trích dẫn:\n  + Vì Trần Thanh Phương là anh họ của Hà Trần nên quan hệ giữa hai người là họ hàng.\n\nBƯỚC 4: Kết luận\n- Chọn đáp án khớp với kết quả ở Bước 3.\n- ĐÁP ÁN CUỐI CÙNG: A. họ 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》\n[END] 》"
+    ],
+    "extracted_answer": "C"
+  },
+  {
+    "qid": "test_0077",
+    "question": "Đoạn thông tin:\nNguyễn Bảo Trị\nNguyễn Bảo Trị (sinh năm 1929) nguyên là tướng lĩnh bộ binh của Quân lực Việt Nam Cộng hòa, cấp bậc Trung tướng. Ông xuất thân từ khóa đầu tiên và cũng là khóa duy nhất ...",
+    "choices": [
+      "Tổng trưởng Xây dựng Nông thôn",
+      "Tổng ủy viên Thông tin Chiêu hồi",
+      "Tư lệnh Sư đoàn 7 bộ binh",
+      "Phụ tá Quân huấn Tổng tham mưu trưởng"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\nNguyễn Bảo Trị\nNguyễn Bảo Trị (sinh năm 1929) nguyên là tướng lĩnh bộ binh của Quân lực Việt Nam Cộng hòa, cấp bậc Trung tướng. Ông xuất thân từ khóa đầu tiên và cũng là khóa duy nhất ở trường sĩ quan trừ bị do Quốc gia Việt Nam mở ra tại miền bắc Việt Nam. Tốt nghiệp được chọn về đơn vị bộ binh. Khởi đầu với chức vụ Đại đội trưởng của một đơn vị bộ binh tác chiến. Tuần tự theo hệ thống chỉ huy lên đến chức vụ chỉ huy cấp Sư đoàn, Quân đoàn trước khi được chuyển sang làm Chỉ huy ...",
+    "reading_votes": [
+      "B",
+      "B"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "Dưới đây là phân tích chuyên sâu theo phương pháp 5 bước:\n\n**BƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN**\n\n* Đọc toàn bộ văn bản về Nguyễn Bảo Trị.\n* Xác định chủ đề chính: Tiểu sử và binh nghiệp của Nguyễn Bảo Trị.\n* Ghi nhận các từ khóa, cụm từ quan trọng: Nguyễn Bảo Trị, Quân lực Việt Nam Cộng hòa, Trung tướng, Tổng thống Nguyễn Cao Kỳ, Nội các Chính phủ.\n\n**BƯỚC 2 - PHÂN LOẠI CÂU HỎI**\n\n* Loại câu hỏi: Chi tiết cụ thể (hỏi về thông tin có trong văn bản)\n\n**BƯỚC 3 - TRÍCH DẪN BẰNG CHỨNG**\n\n* Tìm câu/đoạn trong văn bản trực tiếp liên quan đến câu hỏi:\n\"Bằng chứng: Tháng 7 cùng năm, ông được kiêm chức vụ Tổng uỷ viên Thông tin Chiêu hồi thay thế Luật sư Trịnh Đình Chính trong Nội các Chính phủ Thủ tướng Nguyễn Cao Kỳ.\"\n\n**BƯỚC 4 - ĐÁNH GIÁ TỪNG ĐÁP ÁN**\n\n* A. Tổng trưởng Xây dựng Nông thôn: ✗ SAI (tham chính trong Nội các Thủ tướng Nguyễn Văn Lộc, không phải Nguyễn Cao Kỳ)\n* B. Tổng ủy viên Thông tin Chiêu hồi: ✓ ĐÚNG (có bằng chứng trực tiếp trong văn bản)\n* C. Tư lệnh Sư đoàn 7 bộ binh: ✗ SAI (là chức vụ trong Quân đội Việt Nam Cộng hòa, không liên quan đến Nội các Chính phủ)\n* D. Phụ tá Quân huấn Tổng tham mưu trưởng: ✗ SAI (là chức vụ trong Bộ Tổng tham mưu, không liên quan đến Nội các Chính phủ)\n\n**BƯỚC 5 - QUYẾT ĐỊNH CUỐI CÙNG**\n\n* Chọn đáp án được hỗ trợ trực tiếp và đầy đủ nhất.\n* Đáp án cuối cùng: B. Tổng ủy viên Thông tin Chiêu hồi\n\nKết quả:\n1. Loại câu hỏi: Chi tiết cụ thể\n2. Bằng chứng: \"Tháng 7 cùng năm, ông được kiêm chức vụ Tổng uỷ viên Thông tin Chiêu hồi thay thế Luật sư Trịnh Đình Chính trong Nội các Chính phủ Thủ tướng Nguyễn Cao Kỳ.\"\n3. Phân tích:\n   * A: ✗ SAI\n   * B: ✓ ĐÚNG\n   * C: ✗ SAI\n   * D: ✗ SAI\n4. Đáp án cuối cùng: B",
+      "BƯỚC 1: Phân tích & Định vị\n- Xác định từ khóa: Nguyễn Bảo Trị, Tổng thống Nguyễn Cao Kỳ, chức vụ\n- Tìm tất cả các đoạn văn có liên quan:\n + Tháng 7 cùng năm, ông được kiêm chức vụ Tổng uỷ viên Thông tin Chiêu hồi thay thế Luật sư Trịnh Đình Chính trong Nội các Chính phủ Thủ tướng Nguyễn Cao Kỳ.\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n- Trích dẫn nguyên văn các câu chứa thông tin:\n + Tháng 7 cùng năm, ông được kiêm chức vụ Tổng uỷ viên Thông tin Chiêu hồi thay thế Luật sư Trịnh Đình Chính trong Nội các Chính phủ Thủ tướng Nguyễn Cao Kỳ.\n\nBƯỚC 3: Xử lý Logic (Dành cho câu hỏi khó/suy luận)\n- Nếu cần tính toán: Không cần\n- Nếu cần so sánh: Không cần\n- Nếu cần tìm nguyên nhân: Không cần\n\nBƯỚC 4: Kết luận\n- Chọn đáp án khớp với kết quả ở Bước 3.\n- ĐÁP ÁN CUỐI CÙNG: [B]"
+    ],
+    "extracted_answer": "B"
+  },
+  {
+    "qid": "test_0078",
+    "question": "Xét hàm số $ g(x) = 2x^2 - 3x + 1 $. Nếu chúng ta thực hiện phép biến đổi $ x \\to x - 2 $ đối với $ g(x) $, đa thức kết quả là gì?",
+    "choices": [
+      "$ 2x^2 - 11x + 15 $",
+      "$ 2x^2 - 7x + 7 $",
+      "$ 2x^2 - 11x + 13 $",
+      "$ 2x^2 - 7x + 9 $",
+      "$ 2x^2 - 11x + 11 $",
+      "$ 2x^2 - 7x + 5 $",
+      "$ 2x^2 - 7x + 11 $",
+      "$ 2x^2 - 11x + 9 $",
+      "$ 2x^2 - 7x + 3 $",
+      "$ 2x^2 - 11x + 7 $"
+    ],
+    "type": "math",
+    "model": "large",
+    "prompt_system": "Bạn là một Giáo sư Toán học và Chuyên gia Tính toán Hình thức (Formal Computation). Nhiệm vụ của bạn là giải quyết các bài toán với độ chính xác tuyệt đối, không chấp nhận sai số.\n\nTƯ DUY THUẬT TOÁN (ALGORITHMIC REASONING):\nĐể giải quyết bài toán này, bạn BẮT BUỘC phải tuân thủ quy trình 5 bước sau ...",
+    "prompt_user": "Giải bài toán sau:\n\nXét hàm số $ g(x) = 2x^2 - 3x + 1 $. Nếu chúng ta thực hiện phép biến đổi $ x \\to x - 2 $ đối với $ g(x) $, đa thức kết quả là gì?\n\nCác đáp án:\nA. $ 2x^2 - 11x + 15 $\nB. $ 2x^2 - 7x + 7 $\nC. $ 2x^2 - 11x + 13 $\nD. $ 2x^2 - 7x + 9 $\nE. $ 2x^2 - 11x + 11 $\nF. $ 2x^2 - 7x + 5 $\nG. $ 2x^2 - 7x + 11 $\nH. $ 2x^2 - 11x + 9 $\nI. $ 2x^2 - 7x + 3 $\nJ. $ 2x^2 - 11x + 7 $\n\nGiải chi tiết và chọn đáp án đúng....",
+    "first_answer": "A",
+    "verification": true,
+    "model_responses": [
+      "Phân tích:\n- Input: Hàm số $g(x) = 2x^2 - 3x + 1$ và biến đổi $x \\to x - 2$.\n- Goal: Tìm đa thức kết quả sau biến đổi.\n- Constraints: Không có.\n\nModel hóa toán học:\n- Lĩnh vực: Đại số.\n- Công thức gốc: Thay $x$ bằng $(x-2)$ trong $g(x)$.\n\nGiải chi tiết:\n1. Thay $x$ bằng $(x-2)$ trong $g(x)$:\n   $$g(x-2) = 2(x-2)^2 - 3(x-2) + 1$$\n2. Mở rộng biểu thức:\n   $$= 2(x^2 - 4x + 4) - 3x + 6 + 1$$\n3. Phân phối hằng số và kết hợp như hạng tử:\n   $$= 2x^2 - 8x + 8 - 3x + 7$$\n4. Kết hợp như hạng tử:\n   $$= 2x^2 - 11x + 15$$\n\nKiểm tra:\n- Logic: Kết quả không vi phạm miền xác định nào.\n- Đơn vị/thứ nguyên: Không áp dụng vì đây là biểu thức đại số thuần túy.\n\nĐáp án cuối cùng: A",
+      "Tôi sẽ kiểm tra lại từng bước tính toán của học sinh và xác định xem đáp án A có đúng không.\n\nBước 1: Thay $x$ bằng $(x-2)$ trong $g(x)$:\n\n$$g(x-2) = 2(x-2)^2 - 3(x-2) + 1$$\n\nBước này đúng.\n\nBước 2: Mở rộng biểu thức:\n\n$$= 2(x^2 - 4x + 4) - 3x + 6 + 1$$\n\nBước này đúng.\n\nBước 3: Phân phối hằng số và kết hợp như hạng tử:\n\n$$= 2x^2 - 8x + 8 - 3x + 7$$\n\nBước này đúng.\n\nBước 4: Kết hợp như hạng tử:\n\n$$= 2x^2 - 11x + 15$$\n\nBước này đúng.\n\nSau khi kiểm tra lại từng bước tính toán, tôi thấy rằng đáp án A là đúng.\n\nĐáp án cuối cùng: A"
+    ],
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0083",
+    "question": "Đoạn thông tin:\nEdward I của Anh\nCác sử gia thế kỉ XX và XXI đã tiến hành nghiên cứu sâu rộng về Edward và triều đại của ông. Hầu hết họ đã kết luận đây là một giai đoạn rất quan trọng trong lịch sử t...",
+    "choices": [
+      "Những thành công trong việc củng cố luật pháp và công lý",
+      "Tính cách khắc nghiệt và khó chịu trong con người Edward",
+      "Những thất bại chính trị và hậu quả của chúng",
+      "Vai trò của Edward trong việc mở rộng lãnh thổ Anh"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\nEdward I của Anh\nCác sử gia thế kỉ XX và XXI đã tiến hành nghiên cứu sâu rộng về Edward và triều đại của ông. Hầu hết họ đã kết luận đây là một giai đoạn rất quan trọng trong lịch sử thời Trung cổ nước Anh, một số đi xa hơn và mô tả Edward là một trong những vị vua lớn thời Trung Cổ, mặc dù hầu hết cũng đồng ý rằng năm cuối của ông ít thành công hơn so với thập kỷ đầu cầm quyền.[t] Ba câu chuyện về Edward được xuất bản trong thời kì này. Tác phẩm của Frederick Powicke, xuất bản n...",
+    "reading_votes": [
+      "C",
+      "C"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "**PHÂN TÍCH CHUYÊN SÂU**\n\n### BƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n\n*   Đọc TOÀN BỘ văn bản\n*   Chủ đề chính: Các sử gia thế kỷ XX và XXI nghiên cứu về Edward I của Anh\n*   Tác giả muốn truyền tải: Các quan điểm khác nhau về Edward I từ các sử gia\n*   Từ khóa, cụm từ quan trọng: \"Michael Prestwich\", \"thất bại chính trị\", \"hậu quả\"\n\n### BƯỚC 2 - PHÂN LOẠI CÂU HỎI:\n\n*   Loại câu hỏi: Chi tiết cụ thể (Hỏi về thông tin có trong văn bản)\n\n### BƯỚC 3 - TRÍCH DẪN BẰNG CHỨNG:\n\n*   Bằng chứng: \"Năm 1988, Michael Prestwich xuất bản một quyển tiểu sử về Nhà vua, tập trung vào sự nghiệp chánh trị của ông, vẫn miêu tả về tình cảm của ông, nhưng làm nổi bật những hậu quả từ những thất bại chánh trị của ông.\"\n\n### BƯỚC 4 - ĐÁNH GIÁ TỪNG ĐÁP ÁN:\n\n*   A. Những thành công trong việc củng cố luật pháp và công lý: ✗ SAI (Không liên quan đến nội dung về Michael Prestwich)\n*   B. Tính cách khắc nghiệt và khó chịu trong con người Edward: ✗ SAI (Liên quan đến Marc Morris, không phải Michael Prestwich)\n*   C. Những thất bại chính trị và hậu quả của chúng: ✓ ĐÚNG (Trích dẫn trực tiếp từ văn bản)\n*   D. Vai trò của Edward trong việc mở rộng lãnh thổ Anh: ✗ SAI (Không được đề cập trong văn bản về Michael Prestwich)\n\n### BƯỚC 5 - QUYẾT ĐỊNH CUỐI CÙNG:\n\n*   Đáp án cuối cùng: C. Những thất bại chính trị và hậu quả của chúng\n\n**TRẢ LỜI CHUYÊN SÂU**\n\n1.  Loại câu hỏi: Chi tiết cụ thể\n2.  Bằng chứng: \"Năm 1988, Michael Prestwich xuất bản một quyển tiểu sử về Nhà vua, tập trung vào sự nghiệp chánh trị của ông, vẫn miêu tả về tình cảm của ông, nhưng làm nổi bật những hậu quả từ những thất bại chánh trị của ông.\"\n3.  Phân tích:\n    *   A: ✗ SAI (Không liên quan đến nội dung về Michael Prestwich)\n    *   B: ✗ SAI (Liên quan đến Marc Morris, không phải Michael Prestwich)\n    *   C: ✓ ĐÚNG (Trích dẫn trực tiếp từ văn bản)\n    *   D: ✗ SAI (Không được đề cập trong văn bản về Michael Prestwich)\n4.  Đáp án cuối cùng: C. Những thất bại chính trị và hậu quả của chúng",
+      "BƯỚC 1: Phân tích & Định vị\n- Từ khóa: Michael Prestwich, Edward I, thế kỷ XX và XXI\n- Đoạn văn liên quan: \"Năm 1988, Michael Prestwich xuất bản một quyển tiểu sử về Nhà vua, tập trung vào sự nghiệp chánh trị của ông, vẫn miêu tả về tình cảm của ông, nhưng làm nổi bật những hậu quả từ những thất bại chánh trị của ông.\"\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n- Evidence 1: \"Năm 1988, Michael Prestwich xuất bản một quyển tiểu sử về Nhà vua, tập trung vào sự nghiệp chánh trị của ông, vẫn miêu tả về tình cảm của ông, nhưng làm nổi bật những hậu quả từ những thất bại chánh trị của ông.\"\n\nBƯỚC 3: Xử lý Logic\n- Không cần tính toán hoặc so sánh.\n- Tìm mối liên hệ \"Vì... nên...\" giữa các trích dẫn: Vì Michael Prestwich tập trung vào sự nghiệp chính trị của Edward I, nên ông làm nổi bật những hậu quả từ những thất bại chính trị của ông.\n\nBƯỚC 4: Kết luận\n- Chọn đáp án khớp với kết quả ở Bước 3: C. Những thất bại chính trị và hậu quả của chúng.\n\nĐÁP ÁN CUỐI CÙNG: [C]"
+    ],
+    "extracted_answer": "C"
+  },
+  {
+    "qid": "test_0085",
+    "question": "Phương trình hoá học nào sau đây thể hiện cách điều chế Cu theo phương pháp thuỷ luyện?",
+    "choices": [
+      "Zn + CuSO₄ → Cu + ZnSO₄",
+      "H₂ + CuO → Cu + H₂O",
+      "CuCl₂ → Cu + Cl₂",
+      "2CuSO₄ + 2H₂O → 2Cu + 2H₂SO₄ + O₂"
+    ],
+    "type": "math",
+    "model": "large",
+    "prompt_system": "Bạn là một Giáo sư Toán học và Chuyên gia Tính toán Hình thức (Formal Computation). Nhiệm vụ của bạn là giải quyết các bài toán với độ chính xác tuyệt đối, không chấp nhận sai số.\n\nTƯ DUY THUẬT TOÁN (ALGORITHMIC REASONING):\nĐể giải quyết bài toán này, bạn BẮT BUỘC phải tuân thủ quy trình 5 bước sau ...",
+    "prompt_user": "Giải bài toán sau:\n\nPhương trình hoá học nào sau đây thể hiện cách điều chế Cu theo phương pháp thuỷ luyện?\n\nCác đáp án:\nA. Zn + CuSO₄ → Cu + ZnSO₄\nB. H₂ + CuO → Cu + H₂O\nC. CuCl₂ → Cu + Cl₂\nD. 2CuSO₄ + 2H₂O → 2Cu + 2H₂SO₄ + O₂\n\nGiải chi tiết và chọn đáp án đúng....",
+    "first_answer": "A",
+    "verification": true,
+    "model_responses": [
+      "Phân tích:\n- Input: Các phương trình hóa học (A, B, C, D)\n- Goal: Xác định phương trình hóa học thể hiện cách điều chế Cu theo phương pháp thủy luyện.\n- Constraints: Phương pháp thủy luyện thường liên quan đến phản ứng giữa kim loại và muối để tạo thành kim loại mới và muối mới.\n\nGiải chi tiết:\n\n1. Phương pháp thủy luyện thường liên quan đến việc sử dụng kim loại hoạt động hơn để đẩy kim loại ít hoạt động ra khỏi dung dịch muối của nó.\n\n2. Phân tích từng phương trình:\n   - A. Zn + CuSO₄ → Cu + ZnSO₄: Đây là phản ứng mà kẽm (Zn), một kim loại hoạt động hơn, đẩy đồng (Cu) ra khỏi dung dịch muối đồng sunfat (CuSO₄). Điều này phù hợp với phương pháp thủy luyện.\n   - B. H₂ + CuO → Cu + H₂O: Đây là phản ứng nhiệt luyện, nơi hydro (H₂) khử oxit đồng (CuO) thành đồng và nước. Không phải là thủy luyện.\n   - C. CuCl₂ → Cu + Cl₂: Đây không phải là một phản ứng thủy luyện vì không có sự tham gia của kim loại hoạt động đẩy kim loại khác ra khỏi dung dịch muối.\n   - D. 2CuSO₄ + 2H₂O → 2Cu + 2H₂SO₄ + O₂: Đây là phản ứng phân hủy, không phải là thủy luyện.\n\n3. Dựa trên phân tích, chỉ có phương trình A mô tả quá trình thủy luyện để điều chế Cu.\n\nKiểm tra:\n- Logic: Phản ứng A tuân theo nguyên tắc của phương pháp thủy luyện, nơi một kim loại hoạt động hơn đẩy một kim loại ít hoạt động ra khỏi dung dịch muối của nó.\n- Đơn vị/thứ nguyên: Không áp dụng cho hóa học.\n- Thử lại nghiệm: Không cần thiết vì đã xác định được phản ứng phù hợp với thủy luyện.\n\nĐáp án cuối cùng: A.",
+      "Sau khi kiểm tra lại từng bước tính toán của học sinh, tôi thấy rằng:\n\n* Học sinh đã hiểu đúng về phương pháp thủy luyện và mục tiêu của bài toán.\n* Phân tích từng phương trình hóa học là chính xác:\n\t+ Phương trình A (Zn + CuSO₄ → Cu + ZnSO₄) đúng là một ví dụ về thủy luyện, nơi Zn đẩy Cu ra khỏi dung dịch muối CuSO₄.\n\t+ Phương trình B (H₂ + CuO → Cu + H₂O) là một phản ứng nhiệt luyện, không phải thủy luyện.\n\t+ Phương trình C (CuCl₂ → Cu + Cl₂) không phải là thủy luyện vì không có sự tham gia của kim loại hoạt động đẩy kim loại khác ra khỏi dung dịch muối.\n\t+ Phương trình D (2CuSO₄ + 2H₂O → 2Cu + 2H₂SO₄ + O₂) là một phản ứng phân hủy, không phải thủy luyện.\n* Kết luận của học sinh dựa trên phân tích là logic và chính xác.\n\nVì vậy, tôi xác nhận rằng đáp án A là đúng.\n\nĐáp án cuối cùng: A."
+    ],
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0091",
+    "question": "Đoạn thông tin:\nTitle: Dự án Eden\nContent: Dự án Eden là một địa điểm rất được ưa chuộng bởi khách du lịch tới Cornwall, Anh. Đó là công trình phức hợp về môi trường quy mô lớn bao gồm hai khu vực quầ...",
+    "choices": [
+      "Đồng",
+      "ETFE",
+      "Thép",
+      "Kính"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\nTitle: Dự án Eden\nContent: Dự án Eden là một địa điểm rất được ưa chuộng bởi khách du lịch tới Cornwall, Anh. Đó là công trình phức hợp về môi trường quy mô lớn bao gồm hai khu vực quần thể có mái vòm có chứa hai quần xã sinh vật khác nhau, gồm thực vật được thu thập từ nhiều vùng khí hậu và môi trường đa dạng. Dự án nằm trong một hố Kaolinit khai hoang, nằm cách 2 km (1,2 mi) từ thị trấn St Blazey và 5 km (3 dặm) từ một thành phố lớn hơn, St Austell, Cornwall.Hai khu vực quần th...",
+    "reading_votes": [
+      "A",
+      "A"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "Tôi sẽ phân tích câu hỏi theo phương pháp 5 bước như sau:\n\n**Bước 1: Đọc và hiểu văn bản**\n\n* Chủ đề chính: Dự án Eden, một địa điểm du lịch nổi tiếng tại Cornwall, Anh.\n* Tác giả muốn truyền tải thông tin về thiết kế, xây dựng, và các khía cạnh môi trường của dự án.\n* Từ khóa quan trọng: Dự án Eden, The Core, mái nhà, vật liệu xây dựng.\n\n**Bước 2: Phân loại câu hỏi**\n\n* Loại câu hỏi: Chi tiết cụ thể (hỏi về thông tin có trong văn bản)\n\n**Bước 3: Trích dẫn bằng chứng**\n\n* Bằng chứng: \"Đồng lấy từ các nguồn nhất định, và Dự án Eden đang làm việc với nhóm Rio Tinto để khám phá các nguồn cung cấp kim loại đáng khuyến khích, cho phép người sử dụng tránh dùng kim loại khai thác không có đạo đức.\"\n* Bằng chứng: \"Grimshaw phát triển hình học của mái nhà bọc đồng với sự hợp tác của một nhà điêu khắc, Peter Randall-Page, và Mike Purvis của hãng kỹ sư kết cấu SKM Anthony Hunt.\"\n\n**Bước 4: Đánh giá từng đáp án**\n\n* A. Đồng: Có bằng chứng trực tiếp trong văn bản, đề cập đến việc sử dụng đồng trong mái nhà của The Core.\n* B. ETFE: Không có bằng chứng trực tiếp liên quan đến mái nhà của The Core, mặc dù ETFE được sử dụng trong các quần xã sinh vật.\n* C. Thép: Không có bằng chứng trực tiếp liên quan đến mái nhà của The Core, mặc dù thép được sử dụng trong khung của các quần xã sinh vật.\n* D. Kính: Không có bằng chứng trực tiếp liên quan đến mái nhà của The Core, và kính không được sử dụng trong các quần xã sinh vật do trọng lượng và nguy hiểm.\n\n**Bước 5: Quyết định cuối cùng**\n\n* Đáp án cuối cùng: A. Đồng\n\nLý do: Có bằng chứng trực tiếp trong văn bản đề cập đến việc sử dụng đồng trong mái nhà của The Core, và không có bằng chứng nào hỗ trợ các đáp án khác.",
+      "BƯỚC 1: Phân tích & Định vị\n- Xác định từ khóa: \"vật liệu\", \"xây dựng mái nhà\", \"The Core\"\n- Tìm tất cả các đoạn văn có liên quan:\n  + Đoạn 3: \"The Core là một bổ sung mới nhất cho dự án...\"\n  + Đoạn 3.1: \"Nghệ thuật tại The Core\"\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n- Trích dẫn nguyên văn các câu chứa thông tin:\n  + \"The Core là một bổ sung mới nhất cho dự án và được khai mạc vào tháng 9 năm 2005. Nó cung cấp cho dự án Eden với một cơ sở giáo dục, kết hợp các lớp học và không gian trưng bày được thiết kế để giúp truyền đạt thông điệp trung tâm Eden về mối quan hệ giữa con người và thực vật. Theo đó, tòa nhà được xây dựng lấy cảm hứng từ thực vật, đáng chú ý nhất trong các hình thức của những mái nhà gỗ cao vút, tạo cho tòa nhà hình dạng đặc biệt của nó.\"\n  + \"Grimshaw phát triển hình học của mái nhà bọc đồng với sự hợp tác của một nhà điêu khắc, Peter Randall-Page, và Mike Purvis của hãng kỹ sư kết cấu SKM Anthony Hunt.\"\n\nBƯỚC 3: Xử lý Logic (Dành cho câu hỏi khó/suy luận)\n- Tìm mối liên hệ \"Vì... nên...\" giữa các trích dẫn:\n  + Vì \"tòa nhà được xây dựng lấy cảm hứng từ thực vật\" nên \"mái nhà gỗ cao vút\".\n  + Vì \"Grimshaw phát triển hình học của mái nhà bọc đồng\" nên vật liệu được sử dụng là \"đồng\".\n\nBƯỚC 4: Kết luận\n- Chọn đáp án khớp với kết quả ở Bước 3.\n- ĐÁP ÁN CUỐI CÙNG: A. Đồng"
+    ],
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0254",
+    "question": "Đoạn thông tin:\n[1] Tiêu đề: Yaroslav. Một ngàn năm trước\nNội dung: Yaroslav. Một ngàn năm trước (tiếng Nga: Ярослав. Тысячу лет назад) là một bộ phim về sự hình thành Yaroslavl.\nYaroslavl là một đô t...",
+    "choices": [
+      "Để ngăn chặn các cuộc xâm lược của người Pechenegs.",
+      "Để xây dựng một trung tâm thương mại mới nối với Ba Tư.",
+      "Để chấm dứt nạn buôn bán nô lệ do Varangians/Varyags thực hiện.",
+      "Để củng cố quyền lực bằng cách thiết lập các tu viện Chính thống giáo."
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\n[1] Tiêu đề: Yaroslav. Một ngàn năm trước\nNội dung: Yaroslav. Một ngàn năm trước (tiếng Nga: Ярослав. Тысячу лет назад) là một bộ phim về sự hình thành Yaroslavl.\nYaroslavl là một đô thị cổ kính nằm trên lộ trình du lịch nổi tiếng Vành đai vàng của nước Nga và trong năm 2010 kỷ niệm tròn một ngàn năm tuổi. Dịp chào mừng sự kiện trọng đại hiếm có trong lịch sử, các nhà điện ảnh Nga đã quyết định thực hiện một bộ phim thể loại lịch sử - phiêu lưu, đó là Yaroslavl. Một ngàn năm trướ...",
+    "reading_votes": [
+      "C",
+      "C"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "Tôi sẽ phân tích câu hỏi theo phương pháp 5 bước như sau:\n\n**Bước 1: Đọc và hiểu văn bản**\n\n* Chủ đề chính: Bộ phim \"Yaroslav. Một ngàn năm trước\" về sự hình thành Yaroslavl và Công tước Yaroslav.\n* Tác giả muốn truyền tải: Sự kiện lịch sử quan trọng về việc Công tước Yaroslav xây dựng pháo đài Yaroslavl và những đóng góp của ông cho lịch sử nước Nga.\n* Từ khóa, cụm từ quan trọng: Yaroslav, pháo đài Yaroslavl, Công tước Yaroslav, Varangians/Varyags, buôn bán nô lệ, Rus-Kiev, Đại Công tước Kiev.\n\n**Bước 2: Phân loại câu hỏi**\n\n* Loại câu hỏi: Chi tiết cụ thể (hỏi về thông tin có trong văn bản)\n\n**Bước 3: Trích dẫn bằng chứng**\n\n* Bằng chứng: \"Để chặn đứng bọn cướp, Công tước Yaroslav vùng Rostov... đã quyết định kiến thiết một pháo đài ở mũi đất cao tại địa thế hiểm trở ven Volga.\"\n* Bằng chứng thêm: \"Tòa pháo đài mọc lên chắn ngang con đường mua bán nô lệ từ Varangians hoặc từ Varyags đến Ba Tư...\"\n\n**Bước 4: Đánh giá từng đáp án**\n\n* A. Để ngăn chặn các cuộc xâm lược của người Pechenegs.\n + Đánh giá: Không có bằng chứng trực tiếp trong văn bản. Mặc dù Công tước Yaroslav đã giải phóng xứ Rus khỏi người Pechenegs, nhưng lý do xây dựng pháo đài không được đề cập là để ngăn chặn họ.\n* B. Để xây dựng một trung tâm thương mại mới nối với Ba Tư.\n + Đánh giá: Không có bằng chứng trực tiếp trong văn bản. Văn bản chỉ đề cập đến việc pháo đài chắn ngang con đường mua bán nô lệ đến Ba Tư, không phải để xây dựng trung tâm thương mại.\n* C. Để chấm dứt nạn buôn bán nô lệ do Varangians/Varyags thực hiện.\n + Đánh giá: Có bằng chứng trực tiếp trong văn bản. Văn bản đề cập đến việc Công tước Yaroslav quyết định xây dựng pháo đài để chặn đứng bọn cướp và chắn ngang con đường mua bán nô lệ từ Varangians/Varyags.\n* D. Để củng cố quyền lực bằng cách thiết lập các tu viện Chính thống giáo.\n + Đánh giá: Không có bằng chứng trực tiếp trong văn bản. Mặc dù Công tước Yaroslav đã dựng các tu viện Chính thống giáo Nga, nhưng lý do xây dựng pháo đài không được đề cập là để củng cố quyền lực.\n\n**Bước 5: Quyết định cuối cùng**\n\n* Đáp án cuối cùng: C. Để chấm dứt nạn buôn bán nô lệ do Varangians/Varyags thực hiện.\n\nKết luận: Lý do chính mà Công tước Yaroslav quyết định xây dựng pháo đài Yaroslavl là để chấm dứt nạn buôn bán nô lệ do Varangians/Varyags thực hiện.",
+      "BƯỚC 1: Phân tích & Định vị\n\n* Từ khóa: Công tước Yaroslav, xây dựng pháo đài Yaroslavl, lý do chính\n* Đoạn văn liên quan: Đoạn 3 (\"Mốc lịch sử là năm 1010...\")\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n\n* Evidence 1: \"Để chặn đứng bọn cướp, Công tước Yaroslav vùng Rostov - là con trai của người được ban phép thánh rửa tội đầu tiên ở xứ Rus, đã quyết định kiến thiết một pháo đài ở mũi đất cao tại địa thế hiểm trở ven Volga.\"\n* Evidence 2: \"Tòa pháo đài mọc lên chắn ngang con đường mua bán nô lệ từ Varangians hoặc từ Varyags đến Ba Tư, tức là thị trường châu Á và Cận Đông.\"\n\nBƯỚC 3: Xử lý Logic\n\n* So sánh các Evidence:\n\t+ Evidence 1 đề cập đến việc chặn đứng bọn cướp, nhưng không cụ thể hóa loại hình cướp.\n\t+ Evidence 2 cụ thể hóa rằng pháo đài chặn ngang con đường mua bán nô lệ từ Varangians/Varyags đến Ba Tư.\n* Kết luận Logic: Lý do chính mà Công tước Yaroslav quyết định xây dựng pháo đài Yaroslavl là để chấm dứt nạn buôn bán nô lệ do Varangians/Varyags thực hiện.\n\nBƯỚC 4: Kết luận\n\n* Đáp án khớp với kết quả ở Bước 3: C. Để chấm dứt nạn buôn bán nô lệ do Varangians/Varyags thực hiện.\n* ĐÁP ÁN CUỐI CÙNG: [C]"
+    ],
+    "extracted_answer": "C"
+  },
+  {
+    "qid": "test_0255",
+    "question": "Một bàn là điện có công suất định mức 1100W và cường độ dòng điện định mức 5A. Điện trở suất là ρ = 1,1.10–6 Ωm và tiết diện của dây là S = 0,5mm², chiều dài của dây dẫn là",
+    "choices": [
+      "A.20m",
+      "10m",
+      "40m",
+      "50m"
+    ],
+    "type": "physics",
+    "model": "large",
+    "prompt_system": "Bạn là một Giáo sư Vật lý lý thuyết và ứng dụng hàng đầu. Nhiệm vụ của bạn là giải quyết các bài toán Vật lý với độ chính xác tuyệt đối.\n\nQUY TRÌNH SUY LUẬN BẮT BUỘC (CHAIN-OF-THOUGHT):\n1. TRÍCH XUẤT DỮ LIỆU (VARIABLES):\n   - Liệt kê mọi đại lượng đề bài cho.\n   - BẮT BUỘC: Đổi ngay tất cả đơn vị về...",
+    "prompt_user": "Bài toán VẬT LÝ:\nMột bàn là điện có công suất định mức 1100W và cường độ dòng điện định mức 5A. Điện trở suất là ρ = 1,1.10–6 Ωm và tiết diện của dây là S = 0,5mm², chiều dài của dây dẫn là\n\nCác đáp án:\nA. A.20m\nB. 10m\nC. 40m\nD. 50m\n\nGiải chi tiết theo phương pháp trên và chọn đáp án đúng....",
+    "single_call": true,
+    "model_responses": [
+      "Phân tích:\n\n* Công suất định mức của bàn là điện: P = 1100 W\n* Cường độ dòng điện định mức: I = 5 A\n* Điện trở suất của dây dẫn: ρ = 1,1 × 10^(-6) Ωm\n* Tiết diện của dây dẫn: S = 0,5 mm² = 0,5 × 10^(-6) m² (đổi sang m²)\n\nCông thức:\n\n* Công suất tiêu thụ của thiết bị điện: P = UI (với U là hiệu điện thế)\n* Điện trở của dây dẫn: R = ρ(L/S), với L là chiều dài của dây dẫn\n* Áp dụng định luật Ohm: U = IR\n\nBiến đổi công thức để tìm chiều dài L:\n\n* Từ P = UI, ta có U = P/I\n* Thay U vào định luật Ohm: P/I = IR\n* Sắp xếp lại: R = P/(I^2)\n* Thay R bằng biểu thức ρ(L/S): ρ(L/S) = P/(I^2)\n* Giải cho L: L = (P/(I^2)) \\* (S/ρ)\n\nTính toán:\n\n* Thay số vào biểu thức: L = (1100/(5^2)) \\* ((0,5 × 10^(-6))/(1,1 × 10^(-6)))\n* Tính từng bước:\n\t+ 5^2 = 25\n\t+ 1100/25 = 44\n\t+ (0,5 × 10^(-6))/(1,1 × 10^(-6)) ≈ 0,4545\n\t+ 44 × 0,4545 ≈ 20\n\nKết thúc:\n\nĐáp án cuối cùng: A. 20m"
+    ],
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0256",
+    "question": "Đoạn thông tin:\n-- Document 1 --\nTitle: Đoàn cố vấn quân sự Liên Xô tại Việt Nam - Hoạt động các chuyên gia thuộc Lực lượng Phòng không Liên Xô. Kết quả thực tiễn và đóng góp cho nền khoa học quân sự ...",
+    "choices": [
+      "Hệ thống radar phát sóng quản lý bầu trời",
+      "Bệ phóng tên lửa (SAM)",
+      "Máy bay MiG-21",
+      "Pháo cao xạ 37mm"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\n-- Document 1 --\nTitle: Đoàn cố vấn quân sự Liên Xô tại Việt Nam - Hoạt động các chuyên gia thuộc Lực lượng Phòng không Liên Xô. Kết quả thực tiễn và đóng góp cho nền khoa học quân sự Liên Xô.\nContent: Ngày 28/12/2012, tại buổi làm việc với Trung tướng V.N. Bondarev, Bộ trưởng Quốc phòng Việt Nam, Đại tướng Phùng Quang Thanh nhấn mạnh, chiến thắng của Việt Nam trong cuộc kháng chiến chống Mỹ cứu nước có được là nhờ công sức của hàng nghìn chiến sĩ phòng không Liên Xô trong mười h...",
+    "reading_votes": [
+      "B",
+      "B"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "**Phân tích chuyên sâu**\n\n### Bước 1: Đọc và Hiểu Văn Bản\n\n* Chủ đề chính: Chiến dịch \"Điện Biên Phủ trên không\" (Linebacker II) và các hệ thống vũ khí tham gia.\n* Tác giả muốn truyền tải: Sự đóng góp của các hệ thống vũ khí trong việc bắn rơi máy bay B-52 của Mỹ.\n* Từ khóa, cụm từ quan trọng: \"Điện Biên Phủ trên không\", \"chiến dịch Linebacker II\", \"B-52\", \"hệ thống vũ khí\", \"lập công\".\n\n### Bước 2: Phân Loại Câu Hỏi\n\n* Loại câu hỏi: Chi tiết cụ thể\n* Nội dung câu hỏi: Hệ thống vũ khí nào đã lập công bắn rơi chiếc máy bay B-52 đầu tiên trong chiến dịch \"Điện Biên Phủ trên không\"?\n\n### Bước 3: Trích Dẫn Bằng Chứng\n\n* Bằng chứng: \"Bệ phóng tên lửa lập công bắn rơi máy bay B-52 đầu tiên trong Chiến dịch 'Hà Nội - Điện Biên Phủ trên không' tháng 12/1972.\" (Document 2)\n\n### Bước 4: Đánh Giá Từng Đáp Án\n\n* A. Hệ thống radar phát sóng quản lý bầu trời:\n\t+ Đánh giá: ✗ SAI - Hệ thống radar giúp phát hiện và theo dõi máy bay, nhưng không trực tiếp bắn rơi máy bay.\n* B. Bệ phóng tên lửa (SAM):\n\t+ Đánh giá: ✓ ĐÚNG - Bằng chứng trực tiếp từ Document 2.\n* C. Máy bay MiG-21:\n\t+ Đánh giá: ✗ THIẾU - Máy bay MiG-21 đã bắn rơi máy bay B-52, nhưng không phải là chiếc đầu tiên trong chiến dịch.\n* D. Pháo cao xạ 37mm:\n\t+ Đánh giá: ✗ SAI - Không có bằng chứng về việc pháo cao xạ 37mm bắn rơi máy bay B-52 đầu tiên.\n\n### Bước 5: Quyết Định Cuối Cùng\n\n* Đáp án cuối cùng: B. Bệ phóng tên lửa (SAM)\n* Lý do: Có bằng chứng trực tiếp từ Document 2, khẳng định bệ phóng tên lửa đã lập công bắn rơi máy bay B-52 đầu tiên trong chiến dịch \"Điện Biên Phủ trên không\".",
+      "BƯỚC 1: Phân tích & Định vị\n- Xác định từ khóa: \"chiến dịch 'Điện Biên Phủ trên không'\", \"lập công bắn rơi\", \"chiếc máy bay B-52 đầu tiên\"\n- Tìm tất cả các đoạn văn có liên quan:\n  + Document 2: \"...Bệ phóng tên lửa lập công bắn rơi máy bay B-52 đầu tiên trong Chiến dịch \"Hà Nội - Điện Biên Phủ trên không\" tháng 12/1972;\"\n  + Không có thông tin liên quan khác trong các Document khác.\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n- Trích dẫn nguyên văn các câu chứa thông tin:\n  + \"Bệ phóng tên lửa lập công bắn rơi máy bay B-52 đầu tiên trong Chiến dịch \"Hà Nội - Điện Biên Phủ trên không\" tháng 12/1972;\" (Document 2)\n\nBƯỚC 3: Xử lý Logic (Dành cho câu hỏi khó/suy luận)\n- Không cần tính toán hoặc so sánh.\n- Tìm mối liên hệ \"Vì... nên...\": \n  + Vì Bệ phóng tên lửa đã lập công bắn rơi máy bay B-52 đầu tiên trong Chiến dịch \"Hà Nội - Điện Biên Phủ trên không\" tháng 12/1972,\n  + Nên hệ thống vũ khí đã lập công bắn rơi chiếc máy bay B-52 đầu tiên trong chiến dịch 'Điện Biên Phủ trên không' là Bệ phóng tên lửa.\n\nBƯỚC 4: Kết luận\n- Chọn đáp án khớp với kết quả ở Bước 3.\n- ĐÁP ÁN CUỐI CÙNG: [B] Bệ phóng tên lửa (SAM) 》\n[END] </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s> </s>"
+    ],
+    "extracted_answer": "B"
+  },
+  {
+    "qid": "test_0257",
+    "question": "Đoạn thông tin:\nÂm nhạc cổ điển thế kỷ 20\nNhạc cổ điển thế kỷ 20 là một giai đoạn trong lịch sử phát triển của nhạc cổ điển. Đây là giai đoạn nối tiếp thời kỳ âm nhạc Lãng mạn. Đây là thời kỳ trải qua...",
+    "choices": [
+      "Olivier Messiaen",
+      "Béla Bartók",
+      "Ralph Vaughan Williams",
+      "Igor Stravinsky"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\nÂm nhạc cổ điển thế kỷ 20\nNhạc cổ điển thế kỷ 20 là một giai đoạn trong lịch sử phát triển của nhạc cổ điển. Đây là giai đoạn nối tiếp thời kỳ âm nhạc Lãng mạn. Đây là thời kỳ trải qua rất nhiều biến động của lịnh sử, những biến động mang tính chất toàn cầu. Hai cuộc chiến tranh thế giới, Chiến tranh Lạnh, Cách mạng công nghiệp lần thứ ba, toàn cầu hóa, tất cả đã ảnh hưởng rất nhiều đến sáng tác của các nhà soạn nhạc. Có nhiều chất liệu mới để sáng tác đến nỗi thật khó đếm hết có...",
+    "reading_votes": [
+      "A",
+      "C"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "error": "cannot access local variable 'resp' where it is not associated with a value",
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0261",
+    "question": "Đoạn thông tin:\nTiêu đề: Kỷ Permi\nNội dung: Permi cũng là tên gọi khác cho phân nhóm ngôn ngữ thuộc hệ ngôn ngữ PermiKỷ Permi (Nhị Điệp) là một kỷ địa chất kéo dài từ khoảng 298,9 ± 0,15 triệu năm trư...",
+    "choices": [
+      "Thế Cisural",
+      "Thế Guadalupe",
+      "Thế Lạc Bình",
+      "Kỷ Trias"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\nTiêu đề: Kỷ Permi\nNội dung: Permi cũng là tên gọi khác cho phân nhóm ngôn ngữ thuộc hệ ngôn ngữ PermiKỷ Permi (Nhị Điệp) là một kỷ địa chất kéo dài từ khoảng 298,9 ± 0,15 triệu năm trước (Ma) tới 252,17 ± 0,06 Ma. Nó là kỷ cuối cùng của đại Cổ Sinh. Cũng giống như các kỷ địa chất khác, các địa tầng xác định kỷ Permi được xác định rất rõ ràng, nhưng niên đại chính xác của sự bắt đầu của kỷ là không chắc chắn với sai số vài triệu năm. Kỷ Permi diễn ra sau kỷ Than Đá (thế Pennsylvan...",
+    "reading_votes": [
+      "C",
+      "C"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "Tôi sẽ phân tích câu hỏi theo phương pháp 5 bước như sau:\n\n**Bước 1: Đọc và hiểu văn bản**\n\n* Chủ đề chính: Kỷ Permi, một kỷ địa chất kéo dài từ khoảng 298,9 ± 0,15 triệu năm trước (Ma) tới 252,17 ± 0,06 Ma.\n* Tác giả muốn truyền tải thông tin về kỷ Permi, bao gồm thời gian, sự kiện, và các đơn vị phân chia nhỏ.\n\n**Bước 2: Phân loại câu hỏi**\n\n* Loại câu hỏi: Chi tiết cụ thể (hỏi về thông tin có trong văn bản)\n\n**Bước 3: Trích dẫn bằng chứng**\n\n* Bằng chứng: \"Thế Lạc Bình (Lopingian) [260.4 ± 0.7 Ma - 251.0 ± 0.4 Ma]... Kết thúc của kỷ Permi, bọ ba thùy và 90% các nhóm động vật biển khác đã bị tuyệt chủng.\"\n\n**Bước 4: Đánh giá từng đáp án**\n\n* A. Thế Cisural: ✗ SAI (là đơn vị phân chia nhỏ nhất, không phải trẻ nhất)\n* B. Thế Guadalupe: ✗ SAI (không phải đơn vị trẻ nhất)\n* C. Thế Lạc Bình: ✓ ĐÚNG (được xác định là trẻ nhất và kết thúc bằng sự kiện tuyệt chủng hàng loạt)\n* D. Kỷ Trias: ✗ SAI (là kỷ tiếp theo sau kỷ Permi, không phải đơn vị phân chia nhỏ của kỷ Permi)\n\n**Bước 5: Quyết định cuối cùng**\n\n* Đáp án cuối cùng: C. Thế Lạc Bình\n\nVậy, đơn vị trẻ nhất (mới nhất) trong kỷ Permi và kết thúc bằng sự kiện tuyệt chủng hàng loạt vào cuối kỷ này là Thế Lạc Bình.",
+      "BƯỚC 1: Phân tích & Định vị\n\n* Từ khóa: \"kỷ Permi\", \"trẻ nhất\", \"sự kiện tuyệt chủng\"\n* Đoạn văn liên quan: Phần I. Phân chia, phần IV. Sự sống\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n\n* \"Ba đơn vị phân chia nhỏ của kỷ Permi được đưa ra dưới đây từ già (cổ) nhất tới trẻ nhất...\"\n* \"Thế Lạc Bình (Lopingian) [260.4 ± 0.7 Ma - 251.0 ± 0.4 Ma]\"\n* \"Kết thúc của kỷ Permi, bọ ba thùy và 90% các nhóm động vật biển khác đã bị tuyệt chủng.\"\n\nBƯỚC 3: Xử lý Logic\n\n* Theo thứ tự từ già nhất tới trẻ nhất, Thế Lạc Bình là đơn vị phân chia nhỏ nhất (trẻ nhất) của kỷ Permi.\n* Sự kiện tuyệt chủng hàng loạt xảy ra vào cuối kỷ Permi, trùng với thời gian kết thúc của Thế Lạc Bình.\n\nBƯỚC 4: Kết luận\n\n* Đáp án khớp với kết quả ở Bước 3 là: C. Thế Lạc Bình\n\nĐÁP ÁN CUỐI CÙNG: [C]"
+    ],
+    "extracted_answer": "C"
+  },
+  {
+    "qid": "test_0347",
+    "question": "Xét hàm số $ f(t) = e^{-at} \\cos(bt) $ với $ t \\geq 0 $, trong đó $ a $ và $ b $ là các hằng số dương. Biến đổi Laplace của $ f(t) $ là gì?",
+    "choices": [
+      "$ \\frac{s+a}{(s+a)^2 + b^2} $",
+      "$ \\frac{s}{(s+a)^2 + b^2} $",
+      "$ \\frac{b}{(s+a)^2 + b^2} $",
+      "$ \\frac{s}{s^2 + b^2} $",
+      "$ \\frac{s+a}{s^2 + b^2} $",
+      "$ \\frac{a}{(s+a)^2 + b^2} $",
+      "$ \\frac{s}{(s-a)^2 + b^2} $",
+      "$ \\frac{a}{s^2 + a^2} $",
+      "$ \\frac{b}{s^2 + a^2} $",
+      "$ \\frac{s+a}{(s-a)^2 + b^2} $"
+    ],
+    "type": "math",
+    "model": "large",
+    "prompt_system": "Bạn là một Giáo sư Toán học và Chuyên gia Tính toán Hình thức (Formal Computation). Nhiệm vụ của bạn là giải quyết các bài toán với độ chính xác tuyệt đối, không chấp nhận sai số.\n\nTƯ DUY THUẬT TOÁN (ALGORITHMIC REASONING):\nĐể giải quyết bài toán này, bạn BẮT BUỘC phải tuân thủ quy trình 5 bước sau ...",
+    "prompt_user": "Giải bài toán sau:\n\nXét hàm số $ f(t) = e^{-at} \\cos(bt) $ với $ t \\geq 0 $, trong đó $ a $ và $ b $ là các hằng số dương. Biến đổi Laplace của $ f(t) $ là gì?\n\nCác đáp án:\nA. $ \\frac{s+a}{(s+a)^2 + b^2} $\nB. $ \\frac{s}{(s+a)^2 + b^2} $\nC. $ \\frac{b}{(s+a)^2 + b^2} $\nD. $ \\frac{s}{s^2 + b^2} $\nE. $ \\frac{s+a}{s^2 + b^2} $\nF. $ \\frac{a}{(s+a)^2 + b^2} $\nG. $ \\frac{s}{(s-a)^2 + b^2} $\nH. $ \\frac{a}{s^2 + a^2} $\nI. $ \\frac{b}{s^2 + a^2} $\nJ. $ \\frac{s+a}{(s-a)^2 + b^2} $\n\nGiải chi tiết và chọn đáp ...",
+    "first_answer": "C",
+    "verification": true,
+    "model_responses": [
+      "Phân tích:\n\n- Input: Hàm số $f(t) = e^{-at} \\cos(bt)$ với $t \\geq 0$, $a > 0$, $b > 0$.\n- Goal: Tìm biến đổi Laplace của $f(t)$.\n- Constraints: Sử dụng công thức biến đổi Laplace cho hàm số nhân với hàm mũ và hàm cosin.\n\nGiải chi tiết:\n\nBiến đổi Laplace của $f(t)$ được định nghĩa là:\n\n$$F(s) = \\int_{0}^{\\infty} e^{-st} f(t) dt$$\n\nThay $f(t) = e^{-at} \\cos(bt)$ vào công thức trên, ta có:\n\n$$F(s) = \\int_{0}^{\\infty} e^{-st} e^{-at} \\cos(bt) dt$$\n\nKết hợp các hàm mũ:\n\n$$F(s) = \\int_{0}^{\\infty} e^{-(s+a)t} \\cos(bt) dt$$\n\nSử dụng công thức biến đổi Laplace cho hàm cosin:\n\n$$\\mathcal{L}\\{\\cos(bt)\\} = \\frac{s}{s^2 + b^2}$$\n\nTuy nhiên, vì chúng ta có thêm hàm mũ $e^{-(s+a)t}$, nên ta cần sử dụng công thức biến đổi Laplace cho hàm số nhân với hàm mũ:\n\n$$\\mathcal{L}\\{e^{-at} f(t)\\} = F(s+a)$$\n\nTrong trường hợp này, $f(t) = \\cos(bt)$, nên:\n\n$$F(s) = \\frac{s+a}{(s+a)^2 + b^2}$$\n\nKiểm tra:\n\nKhông có thông tin cụ thể để kiểm tra ngược, nhưng công thức biến đổi Laplace đã được áp dụng chính xác.\n\nĐáp án cuối cùng:\n\nA. $\\frac{s+a}{(s+a)^2 + b^2}$\n\nLưu ý: Đáp án này dựa trên việc áp dụng chính xác công thức biến đổi Laplace cho hàm số nhân với hàm mũ và hàm cosin. Nếu có bất kỳ sai sót nào trong quá trình tính toán, vui lòng cho tôi biết để tôi có thể sửa chữa.",
+      "Để xác thực kết quả và đưa ra đáp án cuối cùng, tôi sẽ kiểm tra lại từng bước tính toán của học sinh.\n\nBước 1: Kiểm tra lại công thức biến đổi Laplace của hàm số $f(t) = e^{-at} \\cos(bt)$.\n\nCông thức biến đổi Laplace của hàm số $f(t) = e^{-at} \\cos(bt)$ được định nghĩa là:\n\n$$F(s) = \\int_{0}^{\\infty} e^{-st} f(t) dt$$\n\nThay $f(t) = e^{-at} \\cos(bt)$ vào công thức trên, ta có:\n\n$$F(s) = \\int_{0}^{\\infty} e^{-st} e^{-at} \\cos(bt) dt$$\n\nKết hợp các hàm mũ:\n\n$$F(s) = \\int_{0}^{\\infty} e^{-(s+a)t} \\cos(bt) dt$$\n\nBước 2: Kiểm tra lại công thức biến đổi Laplace cho hàm cosin.\n\nCông thức biến đổi Laplace cho hàm cosin là:\n\n$$\\mathcal{L}\\{\\cos(bt)\\} = \\frac{s}{s^2 + b^2}$$\n\nTuy nhiên, vì chúng ta có thêm hàm mũ $e^{-(s+a)t}$, nên ta cần sử dụng công thức biến đổi Laplace cho hàm số nhân với hàm mũ:\n\n$$\\mathcal{L}\\{e^{-at} f(t)\\} = F(s+a)$$\n\nTrong trường hợp này, $f(t) = \\cos(bt)$, nên:\n\n$$F(s) = \\frac{s+a}{(s+a)^2 + b^2}$$\n\nBước 3: Xác định xem đáp án A có đúng không.\n\nDựa trên các bước tính toán trên, đáp án A là đúng.\n\nĐáp án cuối cùng: A"
+    ],
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0348",
+    "question": "Tìm đạo hàm của hàm số $ g(x) = \\ln(5x^3 - 2x + 1) $ theo $ x $.",
+    "choices": [
+      "$ \\frac{15x^2 - 2}{5x^3 - 2x + 1} $",
+      "$ \\frac{15x^2 - 2}{(5x^3 - 2x + 1)^2} $",
+      "$ \\frac{15x^2 - 2}{5x^3 - 2x} $",
+      "$ \\frac{15x^2 - 2}{5x^3 + 1} $",
+      "$ \\frac{15x^2 - 2}{5x^3 - 2x + 1} \\cdot \\ln(5x^3 - 2x + 1) $",
+      "$ \\frac{15x^2 - 2}{5x^3 - 2x + 1} \\cdot (5x^3 - 2x + 1) $",
+      "$ \\frac{15x^2 - 2}{5x^3 - 2x + 1} \\cdot (15x^2 - 2) $",
+      "$ \\frac{15x^2}{5x^3 - 2x + 1} $",
+      "$ \\frac{15x^2 - 2}{5x^3 - 2x + 1} \\cdot \\ln(5) $",
+      "$ \\frac{15x^2 - 2}{5x^3 - 2x + 1} \\cdot \\ln(x) $"
+    ],
+    "type": "math",
+    "model": "large",
+    "prompt_system": "Bạn là một Giáo sư Toán học và Chuyên gia Tính toán Hình thức (Formal Computation). Nhiệm vụ của bạn là giải quyết các bài toán với độ chính xác tuyệt đối, không chấp nhận sai số.\n\nTƯ DUY THUẬT TOÁN (ALGORITHMIC REASONING):\nĐể giải quyết bài toán này, bạn BẮT BUỘC phải tuân thủ quy trình 5 bước sau ...",
+    "prompt_user": "Giải bài toán sau:\n\nTìm đạo hàm của hàm số $ g(x) = \\ln(5x^3 - 2x + 1) $ theo $ x $.\n\nCác đáp án:\nA. $ \\frac{15x^2 - 2}{5x^3 - 2x + 1} $\nB. $ \\frac{15x^2 - 2}{(5x^3 - 2x + 1)^2} $\nC. $ \\frac{15x^2 - 2}{5x^3 - 2x} $\nD. $ \\frac{15x^2 - 2}{5x^3 + 1} $\nE. $ \\frac{15x^2 - 2}{5x^3 - 2x + 1} \\cdot \\ln(5x^3 - 2x + 1) $\nF. $ \\frac{15x^2 - 2}{5x^3 - 2x + 1} \\cdot (5x^3 - 2x + 1) $\nG. $ \\frac{15x^2 - 2}{5x^3 - 2x + 1} \\cdot (15x^2 - 2) $\nH. $ \\frac{15x^2}{5x^3 - 2x + 1} $\nI. $ \\frac{15x^2 - 2}{5x^3 - 2x + ...",
+    "first_answer": "A",
+    "verification": true,
+    "model_responses": [
+      "Phân tích:\n- Input: Hàm số $g(x) = \\ln(5x^3 - 2x + 1)$\n- Goal: Tìm đạo hàm của $g(x)$ theo $x$\n- Constraints: Không có điều kiện xác định đặc biệt ngoài việc đảm bảo biểu thức bên trong hàm logarit tự nhiên ($\\ln$) luôn dương để tránh vi phạm miền xác định của $\\ln$.\n\nMô hình hóa toán học:\n- Sử dụng quy tắc chuỗi (Chain Rule) cho đạo hàm của hàm hợp, với hàm ngoài là $\\ln(u)$ và hàm trong là $u = 5x^3 - 2x + 1$.\n- Công thức gốc cho đạo hàm của $\\ln(u)$ theo $x$ là $\\frac{d}{dx}\\ln(u) = \\frac{1}{u} \\cdot \\frac{du}{dx}$.\n\nGiải chi tiết:\n1. Xác định $u$: $u = 5x^3 - 2x + 1$\n2. Tìm đạo hàm của $u$ theo $x$: $\\frac{du}{dx} = \\frac{d}{dx}(5x^3 - 2x + 1) = 15x^2 - 2$\n3. Áp dụng công thức đạo hàm của $\\ln(u)$: \n   $$g'(x) = \\frac{d}{dx}\\ln(5x^3 - 2x + 1) = \\frac{1}{5x^3 - 2x + 1} \\cdot (15x^2 - 2)$$\n4. Kết quả đạo hàm: $g'(x) = \\frac{15x^2 - 2}{5x^3 - 2x + 1}$\n\nKiểm tra:\n- Logic (Sanity Check): Đạo hàm của một hàm logarit tự nhiên sẽ không bao giờ là một hằng số trừ khi hàm số bên trong cũng là một hằng số. Điều này phù hợp với kết quả tính được.\n- Kiểm tra ngược bằng cách thử lại: Không cần thiết vì đây là một bài toán tính toán trực tiếp mà không liên quan đến việc giải phương trình.\n\nĐáp án cuối cùng: A",
+      "Tôi sẽ kiểm tra lại từng bước tính toán của học sinh và xác định xem đáp án A có đúng không.\n\nBước 1: Xác định $u$\nHọc sinh đã xác định $u = 5x^3 - 2x + 1$, đây là bước đúng.\n\nBước 2: Tìm đạo hàm của $u$ theo $x$\nHọc sinh đã tìm đạo hàm của $u$ theo $x$ là $\\frac{du}{dx} = 15x^2 - 2$, đây là bước đúng.\n\nBước 3: Áp dụng công thức đạo hàm của $\\ln(u)$\nHọc sinh đã áp dụng công thức đạo hàm của $\\ln(u)$ là $\\frac{d}{dx}\\ln(u) = \\frac{1}{u} \\cdot \\frac{du}{dx}$, đây là bước đúng.\n\nBước 4: Kết quả đạo hàm\nHọc sinh đã tính được kết quả đạo hàm là $g'(x) = \\frac{15x^2 - 2}{5x^3 - 2x + 1}$, đây là bước đúng.\n\nSau khi kiểm tra lại từng bước tính toán, tôi xác định rằng đáp án A là đúng.\n\nĐáp án cuối cùng: A"
+    ],
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0356",
+    "question": "Xét một dãy các biến ngẫu nhiên độc lập và cùng phân phối (i.i.d.) $ Y_1, Y_2, \\ldots, Y_n $, trong đó mỗi $ Y_i $ tuân theo phân phối nhị thức với tham số $ n = 3 $ và xác suất thành công $ p $. Gọi ...",
+    "choices": [
+      "15p",
+      "3p",
+      "5p",
+      "10p",
+      "12p",
+      "18p",
+      "20p",
+      "15(1-p)",
+      "3(1-p)",
+      "5(1-p)"
+    ],
+    "type": "math",
+    "model": "large",
+    "prompt_system": "Bạn là một Giáo sư Toán học và Chuyên gia Tính toán Hình thức (Formal Computation). Nhiệm vụ của bạn là giải quyết các bài toán với độ chính xác tuyệt đối, không chấp nhận sai số.\n\nTƯ DUY THUẬT TOÁN (ALGORITHMIC REASONING):\nĐể giải quyết bài toán này, bạn BẮT BUỘC phải tuân thủ quy trình 5 bước sau ...",
+    "prompt_user": "Giải bài toán sau:\n\nXét một dãy các biến ngẫu nhiên độc lập và cùng phân phối (i.i.d.) $ Y_1, Y_2, \\ldots, Y_n $, trong đó mỗi $ Y_i $ tuân theo phân phối nhị thức với tham số $ n = 3 $ và xác suất thành công $ p $. Gọi $ T_n = Y_1 + Y_2 + \\cdots + Y_n $. Giá trị kỳ vọng của $ T_n $ khi $ n = 5 $ là bao nhiêu?\n\nCác đáp án:\nA. 15p\nB. 3p\nC. 5p\nD. 10p\nE. 12p\nF. 18p\nG. 20p\nH. 15(1-p)\nI. 3(1-p)\nJ. 5(1-p)\n\nGiải chi tiết và chọn đáp án đúng....",
+    "first_answer": "A",
+    "verification": true,
+    "model_responses": [
+      "Phân tích:\n\n* Input: \n\t+ Dãy biến ngẫu nhiên độc lập và cùng phân phối (i.i.d.) $ Y_1, Y_2, \\ldots, Y_n $.\n\t+ Mỗi $ Y_i $ tuân theo phân phối nhị thức với tham số $ n = 3 $ và xác suất thành công $ p $.\n\t+ $ T_n = Y_1 + Y_2 + \\cdots + Y_n $.\n\t+ Giá trị $ n = 5 $.\n* Goal: Tìm giá trị kỳ vọng của $ T_n $ khi $ n = 5 $.\n* Constraints: \n\t+ Các biến ngẫu nhiên độc lập và cùng phân phối.\n\t+ Mỗi biến tuân theo phân phối nhị thức.\n\nGiải chi tiết:\n\n* Mô hình hóa toán học: Sử dụng tính chất của phân phối nhị thức và công thức tính kỳ vọng.\n* Công thức gốc: Kỳ vọng của phân phối nhị thức là $ E[X] = np $, trong đó $ n $ là số lần thử và $ p $ là xác suất thành công.\n* Tính toán từng bước:\n\t1. Kỳ vọng của mỗi $ Y_i $ là $ E[Y_i] = 3p $ vì mỗi $ Y_i $ tuân theo phân phối nhị thức với $ n = 3 $ và xác suất thành công $ p $.\n\t2. Vì các biến ngẫu nhiên độc lập và cùng phân phối, kỳ vọng của tổng $ T_n $ là tổng của kỳ vọng các phần tử:\n\t$ E[T_n] = E[Y_1 + Y_2 + \\cdots + Y_n] = E[Y_1] + E[Y_2] + \\cdots + E[Y_n] $\n\t3. Với $ n = 5 $, ta có:\n\t$ E[T_5] = E[Y_1] + E[Y_2] + E[Y_3] + E[Y_4] + E[Y_5] = 3p + 3p + 3p + 3p + 3p = 15p $\n\nKiểm tra:\n\n* Logic: Không có giới hạn nào bị vi phạm.\n* Đơn vị/thứ nguyên: Không áp dụng vì đây là giá trị kỳ vọng thuần túy.\n* Thử lại nghiệm vào phương trình gốc: Không cần thiết vì tính toán dựa trên công thức và tính chất của phân phối nhị thức.\n\nĐáp án cuối cùng: A. 15p",
+      "Sau khi kiểm tra lại từng bước tính toán của học sinh, tôi thấy rằng:\n\n* Học sinh đã hiểu đúng về phân phối nhị thức và công thức tính kỳ vọng.\n* Tính toán từng bước của học sinh là chính xác:\n\t1. Kỳ vọng của mỗi $ Y_i $ là $ E[Y_i] = 3p $.\n\t2. Kỳ vọng của tổng $ T_n $ là tổng của kỳ vọng các phần tử: $ E[T_n] = E[Y_1 + Y_2 + \\cdots + Y_n] = E[Y_1] + E[Y_2] + \\cdots + E[Y_n] $.\n\t3. Với $ n = 5 $, ta có: $ E[T_5] = E[Y_1] + E[Y_2] + E[Y_3] + E[Y_4] + E[Y_5] = 3p + 3p + 3p + 3p + 3p = 15p $.\n* Không có lỗi logic hoặc sai sót trong tính toán.\n\nVì vậy, tôi xác nhận rằng đáp án A. 15p là đúng.\n\nĐáp án cuối cùng: A"
+    ],
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0357",
+    "question": "Xét ma trận $ A = \\begin{pmatrix} a & b & c \\\\ d & e & f \\\\ g & h & i \\end{pmatrix} $. Nếu định thức của $ A $ bằng không, điều kiện nào trong các điều kiện sau phải được thỏa mãn?",
+    "choices": [
+      "$ a + e + i = 0 $",
+      "$ a = d = g $",
+      "$ b = e = h $",
+      "$ c = f = i $",
+      "$ aei + bfg + cdh = bdi + afh + ceg $",
+      "$ a + d + g = 0 $",
+      "$ b + e + h = 0 $",
+      "$ c + f + i = 0 $",
+      "$ a + b + c = 0 $",
+      "$ d + e + f = 0 $"
+    ],
+    "type": "math",
+    "model": "large",
+    "prompt_system": "Bạn là một Giáo sư Toán học và Chuyên gia Tính toán Hình thức (Formal Computation). Nhiệm vụ của bạn là giải quyết các bài toán với độ chính xác tuyệt đối, không chấp nhận sai số.\n\nTƯ DUY THUẬT TOÁN (ALGORITHMIC REASONING):\nĐể giải quyết bài toán này, bạn BẮT BUỘC phải tuân thủ quy trình 5 bước sau ...",
+    "prompt_user": "Giải bài toán sau:\n\nXét ma trận $ A = \\begin{pmatrix} a & b & c \\\\ d & e & f \\\\ g & h & i \\end{pmatrix} $. Nếu định thức của $ A $ bằng không, điều kiện nào trong các điều kiện sau phải được thỏa mãn?\n\nCác đáp án:\nA. $ a + e + i = 0 $\nB. $ a = d = g $\nC. $ b = e = h $\nD. $ c = f = i $\nE. $ aei + bfg + cdh = bdi + afh + ceg $\nF. $ a + d + g = 0 $\nG. $ b + e + h = 0 $\nH. $ c + f + i = 0 $\nI. $ a + b + c = 0 $\nJ. $ d + e + f = 0 $\n\nGiải chi tiết và chọn đáp án đúng....",
+    "first_answer": "C",
+    "verification": true,
+    "model_responses": [
+      "Phân tích:\n\nMa trận $A$ là một ma trận vuông cấp 3, và chúng ta biết rằng định thức của nó bằng 0. Để tìm điều kiện cần thiết cho điều này, chúng ta cần nhớ rằng định thức của một ma trận vuông cấp 3 được tính theo công thức:\n\n$\\det(A) = aei + bfg + cdh - bdi - afh - ceg$\n\nVì $\\det(A) = 0$, nên chúng ta có:\n\n$aei + bfg + cdh - bdi - afh - ceg = 0$\n\nHoặc, tương đương:\n\n$aei + bfg + cdh = bdi + afh + ceg$\n\nĐây là điều kiện cần thiết và đủ để đảm bảo rằng định thức của ma trận $A$ bằng 0.\n\nGiải chi tiết:\n\nKhông cần thực hiện bất kỳ bước tính toán nào vì chúng ta đã có điều kiện cần thiết và đủ từ công thức định thức.\n\nKiểm tra:\n\nKhông cần kiểm tra vì điều kiện đã được suy ra trực tiếp từ công thức định thức.\n\nĐáp án cuối cùng:\n\nE. $aei + bfg + cdh = bdi + afh + ceg$",
+      "1. Kiểm tra lại từng bước tính toán của học sinh:\n\n- Học sinh đã sử dụng công thức đúng để tính định thức của ma trận $A$: $\\det(A) = aei + bfg + cdh - bdi - afh - ceg$\n- Học sinh đã thiết lập đúng điều kiện cần thiết và đủ để $\\det(A) = 0$: $aei + bfg + cdh = bdi + afh + ceg$\n\n2. Xác định xem đáp án E có đúng không:\n\n- Đáp án E chính là điều kiện mà học sinh đã suy ra, và nó hoàn toàn chính xác dựa trên công thức định thức.\n- Không có lỗi tính toán nào được tìm thấy trong lời giải của học sinh.\n\n3. Kết luận:\n\n- Do không có lỗi tính toán và logic, đáp án E là chính xác.\n- Không cần giải lại vì quá trình suy luận và tính toán của học sinh đã được xác nhận là đúng.\n\nĐáp án cuối cùng: E"
+    ],
+    "extracted_answer": "E"
+  },
+  {
+    "qid": "test_0359",
+    "question": "Trong một phản ứng hạt nhân giả định, một hạt nhân của nguyên tố Y có số khối là 200 bị phân hạch thành hai hạt nhân, mỗi hạt có số khối là 100. Biết rằng năng lượng liên kết trên nuclôn của nguyên tố...",
+    "choices": [
+      "140 MeV",
+      "160 MeV",
+      "180 MeV",
+      "200 MeV",
+      "220 MeV",
+      "240 MeV",
+      "260 MeV",
+      "280 MeV",
+      "300 MeV",
+      "320 MeV"
+    ],
+    "type": "physics",
+    "model": "large",
+    "prompt_system": "Bạn là một Giáo sư Vật lý lý thuyết và ứng dụng hàng đầu. Nhiệm vụ của bạn là giải quyết các bài toán Vật lý với độ chính xác tuyệt đối.\n\nQUY TRÌNH SUY LUẬN BẮT BUỘC (CHAIN-OF-THOUGHT):\n1. TRÍCH XUẤT DỮ LIỆU (VARIABLES):\n   - Liệt kê mọi đại lượng đề bài cho.\n   - BẮT BUỘC: Đổi ngay tất cả đơn vị về...",
+    "prompt_user": "Bài toán VẬT LÝ:\nTrong một phản ứng hạt nhân giả định, một hạt nhân của nguyên tố Y có số khối là 200 bị phân hạch thành hai hạt nhân, mỗi hạt có số khối là 100. Biết rằng năng lượng liên kết trên nuclôn của nguyên tố Y là 7,8 MeV và của các hạt nhân tạo thành là 8,5 MeV, hỏi năng lượng tổng cộng được giải phóng trong phản ứng này là bao nhiêu?\n\nCác đáp án:\nA. 140 MeV\nB. 160 MeV\nC. 180 MeV\nD. 200 MeV\nE. 220 MeV\nF. 240 MeV\nG. 260 MeV\nH. 280 MeV\nI. 300 MeV\nJ. 320 MeV\n\nGiải chi tiết theo phương phá...",
+    "single_call": true,
+    "model_responses": [
+      "Phân tích:\n- Số khối của hạt nhân Y: A_Y = 200\n- Số khối của mỗi hạt nhân tạo thành: A_tạo_thành = 100\n- Năng lượng liên kết trên nuclôn của nguyên tố Y: E_LK_Y = 7,8 MeV\n- Năng lượng liên kết trên nuclôn của các hạt nhân tạo thành: E_LK_tạo_thành = 8,5 MeV\n\nChuyển đổi đơn vị không cần thiết vì tất cả dữ liệu đã ở đơn vị MeV.\n\nCông thức:\n- Năng lượng liên kết của hạt nhân Y: W_LK_Y = A_Y * E_LK_Y\n- Năng lượng liên kết của mỗi hạt nhân tạo thành: W_LK_tạo_thành = A_tạo_thành * E_LK_tạo_thành\n- Năng lượng tổng cộng được giải phóng: ΔW = W_LK_Y - 2*W_LK_tạo_thành\n\nBiến đổi công thức để tìm ΔW:\nΔW = A_Y * E_LK_Y - 2*A_tạo_thành * E_LK_tạo_thành\n\nTính toán:\nThay số vào biểu thức:\nΔW = 200 * 7,8 - 2*100 * 8,5\n= 1560 - 1700\n= -140 MeV\n\nTuy nhiên, kết quả âm cho thấy chúng ta đã tính sai dấu. Năng lượng giải phóng thực tế là sự chênh lệch giữa năng lượng liên kết ban đầu và năng lượng liên kết sau phản ứng, nhưng với dấu dương vì nó được giải phóng.\n\nΔW = |1560 - 1700|\n= |-140|\n= 140 MeV\n\nKết thúc:\nĐáp án cuối cùng: A. 140 MeV"
+    ],
+    "extracted_answer": "A"
+  },
+  {
+    "qid": "test_0364",
+    "question": "Đoạn thông tin:\n-- Đoạn văn 1 --\nTiêu đề: Quá cảnh của Sao Kim, 2004\nNội dung: Quá cảnh sao Kim gần đây thứ hai được quan sát từ Trái Đất diễn ra vào ngày 8 tháng 6 năm 2004. Sự kiện này đã nhận được ...",
+    "choices": [
+      "1 ca khúc",
+      "2 ca khúc",
+      "3 ca khúc",
+      "4 ca khúc"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\n-- Đoạn văn 1 --\nTiêu đề: Quá cảnh của Sao Kim, 2004\nNội dung: Quá cảnh sao Kim gần đây thứ hai được quan sát từ Trái Đất diễn ra vào ngày 8 tháng 6 năm 2004. Sự kiện này đã nhận được sự chú ý đáng kể, vì đây là lần vận chuyển đầu tiên của Sao Kim sau khi phát minh ra phương tiện truyền thông phát sóng. Không có con người nào còn sống vào thời điểm đó đã chứng kiến hiện tượng quá cảnh sao Kim trước đó kể từ khi quá cảnh đó xảy ra vào ngày 6 tháng 12 năm 1882. Đài thiên văn Nam ch...",
+    "reading_votes": [
+      "B",
+      "B"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "**Phân tích chuyên sâu**\n\n### Bước 1: Đọc và Hiểu Văn Bản\n\n* Đọc TOÀN BỘ văn bản, đặc biệt là Đoạn văn 3.\n* Xác định: Chủ đề chính là về sự hợp tác giữa Trần Thu Hà và nhạc sĩ Đỗ Bảo trong các album \"Cánh cung\" và \"Thời gian để yêu\".\n* Ghi nhận các từ khóa, cụm từ quan trọng: \"Trần Thu Hà\", \"Đỗ Bảo\", \"Cánh cung\", \"Thời gian để yêu\".\n\n### Bước 2: Phân Loại Câu Hỏi\n\n* Loại câu hỏi: Chi tiết cụ thể (về số lượng ca khúc Trần Thu Hà thể hiện trong mỗi album).\n\n### Bước 3: Trích Dẫn Bằng Chứng\n\n* Bằng chứng: \"Sau đó, Trần Thu Hà chỉ hát 2 bài cho mỗi album 'Cánh cung' và 'Thời gian để yêu' (hay 'Cánh cung 2', 2008)\".\n* Nguồn: Đoạn văn 3.\n\n### Bước 4: Đánh Giá Từng Đáp Án\n\n* A. 1 ca khúc: ✗ SAI (Không khớp với bằng chứng)\n* B. 2 ca khúc: ✓ ĐÚNG (Khớp với bằng chứng)\n* C. 3 ca khúc: ✗ SAI (Không khớp với bằng chứng)\n* D. 4 ca khúc: ✗ SAI (Không khớp với bằng chứng)\n\n### Bước 5: Quyết Định Cuối Cùng\n\n* Đáp án cuối cùng: B. 2 ca khúc\n\n**Kết Luận**\n\nTrần Thu Hà đã thể hiện 2 ca khúc cho mỗi album \"Cánh cung\" và \"Thời gian để yêu\" của nhạc sĩ Đỗ Bảo.",
+      "BƯỚC 1: Phân tích & Định vị\n- Xác định từ khóa: Trần Thu Hà, Đỗ Bảo, Cánh cung, Thời gian để yêu.\n- Tìm tất cả các đoạn văn có liên quan: Đoạn văn 3.\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n- Trích dẫn nguyên văn các câu chứa thông tin:\n  * \"Sau đó, Trần Thu Hà chỉ hát 2 bài cho mỗi album 'Cánh cung' và 'Thời gian để yêu' (hay 'Cánh cung 2', 2008)...\"\n\nBƯỚC 3: Xử lý Logic (Dành cho câu hỏi khó/suy luận)\n- Không cần tính toán hoặc so sánh.\n- Thông tin đã rõ ràng trong trích dẫn.\n\nBƯỚC 4: Kết luận\n- Chọn đáp án khớp với kết quả ở Bước 3.\n- ĐÁP ÁN CUỐI CÙNG: B. 2 ca khúc."
+    ],
+    "extracted_answer": "B"
+  },
+  {
+    "qid": "test_0366",
+    "question": "Đoạn thông tin:\n[1] Tiêu đề: Nhất đại tông sư\nNội dung: Nhất đại tông sư (chữ Hán: 一代宗師, tựa tiếng Anh: The Grandmaster) là một bộ phim điện ảnh chính kịch võ thuật Hồng Kông-Trung Quốc năm 2013 dựa t...",
+    "choices": [
+      "Lời thề của cô không bao giờ dạy võ hay sinh con.",
+      "Nạn thương tích nghiêm trọng từ trận đấu với Mã Tam năm 1940.",
+      "Sự từ chối của cô khi không muốn tái đấu võ với Diệp Vấn.",
+      "Hy vọng cuối cùng của Cung Bảo Sâm là cô sống hạnh phúc."
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\n[1] Tiêu đề: Nhất đại tông sư\nNội dung: Nhất đại tông sư (chữ Hán: 一代宗師, tựa tiếng Anh: The Grandmaster) là một bộ phim điện ảnh chính kịch võ thuật Hồng Kông-Trung Quốc năm 2013 dựa trên cuộc đời thực của võ sư Vịnh Xuân quyền Diệp Vấn. Phim do Vương Gia Vệ đạo diễn kiêm viết kịch bản với sự góp mặt của Lương Triều Vĩ và Chương Tử Di. Phim được phát hành tại Trung Quốc vào ngày 8 tháng 1 năm 2013. Đây là phim chiếu mở màn tại Liên hoan phim quốc tế Berlin lần thứ 63 vào tháng 2 ...",
+    "reading_votes": [
+      "B",
+      "B"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "Tôi sẽ phân tích câu hỏi theo phương pháp 5 bước như sau:\n\n**Bước 1: Đọc và hiểu văn bản**\n\n* Chủ đề chính: Bộ phim \"Nhất đại tông sư\" kể về cuộc đời của võ sư Vịnh Xuân quyền Diệp Vấn và mối quan hệ với Cung Nhị.\n* Tác giả muốn truyền tải: Thông điệp về cuộc đời của Diệp Vấn, mối quan hệ với Cung Nhị, và sự phát triển của Vịnh Xuân quyền.\n* Từ khóa, cụm từ quan trọng: Diệp Vấn, Cung Nhị, võ thuật, Vịnh Xuân quyền, Chiến tranh Trung-Nhật.\n\n**Bước 2: Phân loại câu hỏi**\n\n* Loại câu hỏi: Chi tiết cụ thể (hỏi về thông tin có trong văn bản)\n\n**Bước 3: Trích dẫn bằng chứng**\n\n* Bằng chứng: \"Diệp Vấn giải thích rằng trong cuộc giao chiến với Mã Tam, Cung Nhị bị thương nặng đến nỗi phải dùng thuốc phiện thường xuyên để giảm đau và đây là sự suy sụp của cô.\"\n\n**Bước 4: Đánh giá từng đáp án**\n\n* A: Lời thề của cô không bao giờ dạy võ hay sinh con. → ✗ SAI: Không liên quan trực tiếp đến nguyên nhân cái chết của Cung Nhị.\n* B: Nạn thương tích nghiêm trọng từ trận đấu với Mã Tam năm 1940. → ✓ ĐÚNG: Bằng chứng trực tiếp trong văn bản.\n* C: Sự từ chối của cô khi không muốn tái đấu võ với Diệp Vấn. → ✗ SAI: Không liên quan trực tiếp đến nguyên nhân cái chết của Cung Nhị.\n* D: Hy vọng cuối cùng của Cung Bảo Sâm là cô sống hạnh phúc. → ✗ SAI: Không liên quan trực tiếp đến nguyên nhân cái chết của Cung Nhị.\n\n**Bước 5: Quyết định cuối cùng**\n\n* Đáp án cuối cùng: B. Nạn thương tích nghiêm trọng từ trận đấu với Mã Tam năm 1940.\n\nKết luận: Nguyên nhân trực tiếp dẫn đến cái chết của Cung Nhị là nạn thương tích nghiêm trọng từ trận đấu với Mã Tam năm 1940, khiến cô phải dùng thuốc phiện thường xuyên để giảm đau và dẫn đến sự suy sụp của cô.",
+      "BƯỚC 1: Phân tích & Định vị\n\n* Từ khóa: Nguyên nhân trực tiếp dẫn đến cái chết của Cung Nhị\n* Đoạn văn liên quan: Phần I. Nội dung, đoạn cuối cùng (\"Bộ phim sau đó chuyển cảnh đến năm 1952...\")\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n\n* Evidence 1: \"Cung Nhị thú nhận với Diệp sư phụ rằng cô đã có tình cảm với anh ngay từ lần đầu gặp nhau. Vài ngày sau cô qua đời.\"\n* Evidence 2: \"Diệp Vấn giải thích rằng trong cuộc giao chiến với Mã Tam, Cung Nhị bị thương nặng đến nỗi phải dùng thuốc phiện thường xuyên để giảm đau và đây là sự suy sụp của cô.\"\n\nBƯỚC 3: Xử lý Logic\n\n* Mối liên hệ \"Vì... nên...\": Vì Cung Nhị bị thương nặng trong trận đấu với Mã Tam năm 1940, nên cô phải dùng thuốc phiện thường xuyên để giảm đau, dẫn đến sự suy sụp của cô và cuối cùng là cái chết của cô.\n\nBƯỚC 4: Kết luận\n\n* Đáp án khớp với kết quả ở Bước 3: B. Nạn thương tích nghiêm trọng từ trận đấu với Mã Tam năm 1940.\n\nĐÁP ÁN CUỐI CÙNG: [B]"
+    ],
+    "extracted_answer": "B"
+  },
+  {
+    "qid": "test_0367",
+    "question": "Đoạn thông tin:\nTitle: Cầy thảo nguyên\nContent: Cầy thảo nguyên, còn gọi là dúi đồng cỏ hay là sóc chó (tên khoa học Cynomys) là loài gặm nhấm ăn cỏ biết đào hang có nguồn gốc từ những đồng cỏ ở Bắc M...",
+    "choices": [
+      "Họ Cầy (Mustelidae)",
+      "Họ Sóc (Sciuridae)",
+      "Họ Chuột (Muridae)",
+      "Họ Hám (Cricetidae)"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\nTitle: Cầy thảo nguyên\nContent: Cầy thảo nguyên, còn gọi là dúi đồng cỏ hay là sóc chó (tên khoa học Cynomys) là loài gặm nhấm ăn cỏ biết đào hang có nguồn gốc từ những đồng cỏ ở Bắc Mỹ. Có năm loài như sau: Cầy thảo nguyên đuôi đen, Cầy thảo nguyên đuôi trắng, Cầy thảo nguyên Gunnison, Cầy thảo nguyên Utah và Cầy thảo nguyên Mexico. Chúng là một loại sóc đất, được tìm thấy ở Hoa Kỳ, Canada và Mexico. Ở Mexico, cầy thảo nguyên được tìm thấy chủ yếu ở các bang phía bắc, nằm ở cuối...",
+    "reading_votes": [
+      "B",
+      "B"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "Tôi sẽ phân tích câu hỏi theo phương pháp 5 bước như sau:\n\n**Bước 1: Đọc và hiểu văn bản**\n\n* Văn bản cung cấp thông tin về loài cầy thảo nguyên, bao gồm nguồn gốc, phân loại, đặc điểm, sinh thái và hành vi.\n* Chủ đề chính là loài cầy thảo nguyên và các đặc điểm của nó.\n* Từ khóa quan trọng: Cầy thảo nguyên, phân loại, họ động vật.\n\n**Bước 2: Phân loại câu hỏi**\n\n* Loại câu hỏi: Từ vựng/Phân loại\n* Câu hỏi yêu cầu thông tin về họ động vật của cầy thảo nguyên trong phân loại học.\n\n**Bước 3: Trích dẫn bằng chứng**\n\n* Bằng chứng: \"Khác hẳn với tên gọi, chúng không thuộc họ Cầy.\"\n* Bằng chứng: \"Bộ Gặm nhấm / Phân bộ Sóc / Họ Sóc (Họ sóc, sóc chuột, marmota, và cầy thảo nguyên)\"\n\n**Bước 4: Đánh giá từng đáp án**\n\n* A. Họ Cầy (Mustelidae): ✗ SAI, vì văn bản nêu rõ \"khác hẳn với tên gọi, chúng không thuộc họ Cầy\".\n* B. Họ Sóc (Sciuridae): ✓ ĐÚNG, vì văn bản nêu rõ \"Họ Sóc (Họ sóc, sóc chuột, marmota, và cầy thảo nguyên)\".\n* C. Họ Chuột (Muridae): ✗ SAI, vì không có thông tin nào trong văn bản đề cập đến họ Chuột.\n* D. Họ Hám (Cricetidae): ✗ SAI, vì không có thông tin nào trong văn bản đề cập đến họ Hám.\n\n**Bước 5: Quyết định cuối cùng**\n\n* Đáp án cuối cùng: B. Họ Sóc (Sciuridae)\n* Lý do: Văn bản cung cấp thông tin rõ ràng về phân loại của cầy thảo nguyên, và họ Sóc là đáp án duy nhất được hỗ trợ trực tiếp bởi văn bản.",
+      "BƯỚC 1: Phân tích & Định vị\n\n* Từ khóa: Cầy thảo nguyên, phân loại học, họ động vật\n* Đoạn văn liên quan: Phần II. Phân loại và nhận dạng đầu tiên\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n\n* \"Bộ Gặm nhấm / Phân bộ Sóc / Họ Sóc (Họ sóc, sóc chuột, marmota, và cầy thảo nguyên) / Phân họ Sóc đất / Chi Cynomys\"\n\nBƯỚC 3: Xử lý Logic\n\n* Dựa trên thông tin trích dẫn, cầy thảo nguyên thuộc về Bộ Gặm nhấm, Phân bộ Sóc, và cụ thể hơn là thuộc về Họ Sóc (Sciuridae), cùng với các loài sóc, sóc chuột, và marmota.\n\nBƯỚC 4: Kết luận\n\n* Đáp án khớp với kết quả ở Bước 3 là B. Họ Sóc (Sciuridae).\n\nĐÁP ÁN CUỐI CÙNG: [B]"
+    ],
+    "extracted_answer": "B"
+  },
+  {
+    "qid": "test_0369",
+    "question": "Đoạn thông tin:\n-- Đoạn văn 1 --\nTiêu đề: Thiên văn học\nNội dung: Thiên văn học (; từ , nghĩa đen là khoa học nghiên cứu quy luật của các vì sao) là một ngành khoa học tự nhiên nghiên cứu những thiên ...",
+    "choices": [
+      "Hóa học vũ trụ",
+      "Hóa học thiên thể",
+      "Khoa học hành tinh",
+      "Thiên văn học lý thuyết"
+    ],
+    "type": "reading",
+    "model": "large",
+    "prompt_system": "Bạn là chuyên gia đọc hiểu văn bản tiếng Việt cấp cao với 20 năm kinh nghiệm giảng dạy.\n\n=== PHƯƠNG PHÁP PHÂN TÍCH CHUYÊN SÂU ===\n\nBƯỚC 1 - ĐỌC VÀ HIỂU VĂN BẢN:\n- Đọc TOÀN BỘ văn bản \n- Xác định: Chủ đề chính là gì? Tác giả muốn truyền tải điều gì?\n- Ghi nhận các từ khóa, cụm từ quan trọng\n\nBƯỚC 2 -...",
+    "prompt_user": "Đoạn thông tin:\n-- Đoạn văn 1 --\nTiêu đề: Thiên văn học\nNội dung: Thiên văn học (; từ , nghĩa đen là khoa học nghiên cứu quy luật của các vì sao) là một ngành khoa học tự nhiên nghiên cứu những thiên thể (như các ngôi sao, hành tinh, sao chổi, tinh vân, quần tinh, thiên hà) và các hiện tượng có nguồn gốc bên ngoài vũ trụ (như bức xạ nền vũ trụ). Nó nghiên cứu sự phát triển, tính chất vật lý, hóa học, khí tượng học, và chuyển động của các vật thể vũ trụ, cũng như sự hình thành và phát triển của v...",
+    "reading_votes": [
+      "B",
+      "B"
+    ],
+    "reading_models": [
+      "large",
+      "large"
+    ],
+    "fallback_used": false,
+    "reading_consensus": true,
+    "model_responses": [
+      "Tôi sẽ phân tích câu hỏi theo phương pháp 5 bước như sau:\n\n**Bước 1: Đọc và hiểu văn bản**\n\n* Đọc toàn bộ các đoạn văn bản liên quan đến thiên văn học.\n* Xác định chủ đề chính: Thiên văn học và các lĩnh vực nhỏ chuyên biệt của nó.\n* Ghi nhận các từ khóa, cụm từ quan trọng: Hóa học thiên thể, Hóa học vũ trụ, Khoa học hành tinh, Thiên văn học lý thuyết.\n\n**Bước 2: Phân loại câu hỏi**\n\n* Loại câu hỏi: Chi tiết cụ thể (hỏi về thông tin có trong văn bản)\n\n**Bước 3: Trích dẫn bằng chứng**\n\n* Tìm câu/đoạn trong văn bản trực tiếp liên quan đến câu hỏi:\n + Đoạn văn 5: \"Việc nghiên cứu các hoá chất được tìm thấy trong vũ trụ, gồm sự thành tạo, tương tác và phá huỷ của chúng, được gọi là hoá học thiên thể (Astrochemistry). Các chất đó thường được tìm thấy trong các đám mây phân tử, dù chúng có thể xuất hiện trong những ngôi sao nhiệt độ thấp, sao lùn nâu và các hành tinh.\"\n\n**Bước 4: Đánh giá từng đáp án**\n\n* A. Hóa học vũ trụ: ✗ SAI (theo Đoạn văn 5, Hóa học vũ trụ nghiên cứu các hoá chất được tìm thấy bên trong Hệ mặt trời)\n* B. Hóa học thiên thể: ✓ ĐÚNG (theo Đoạn văn 5, Hóa học thiên thể nghiên cứu sự thành tạo, tương tác và phá huỷ của các hoá chất trong vũ trụ)\n* C. Khoa học hành tinh: ✗ SAI (theo Đoạn văn 3, Khoa học hành tinh nghiên cứu sự tập hợp của các hành tinh, vệ tinh, hành tinh lùn, sao chổi, thiên thạch, và các vật thể quay xung quanh Mặt trời)\n* D. Thiên văn học lý thuyết: ✗ SAI (theo Đoạn văn 4, Thiên văn học lý thuyết định hướng theo sự phát triển các mô hình máy tính hay mô hình phân tích để miêu tả các vật thể và hiện tượng thiên văn)\n\n**Bước 5: Quyết định cuối cùng**\n\n* Chọn đáp án được hỗ trợ trực tiếp và đầy đủ nhất: B. Hóa học thiên thể\n\nĐáp án cuối cùng: B. Hóa học thiên thể",
+      "BƯỚC 1: Phân tích & Định vị\n- Xác định từ khóa: \"nghiên cứu sự hình thành, tương tác và phá hủy của các hóa chất trong vũ trụ\", \"đám mây phân tử\", \"sao nhiệt độ thấp\", \"sao lùn nâu\", \"hành tinh\".\n- Tìm tất cả các đoạn văn có liên quan: Đoạn văn 5.\n\nBƯỚC 2: Trích dẫn dữ liệu (Data Extraction)\n- Trích dẫn nguyên văn các câu chứa thông tin:\n  + \"Việc nghiên cứu các hoá chất được tìm thấy trong vũ trụ, gồm sự thành tạo, tương tác và phá huỷ của chúng, được gọi là hoá học thiên thể (Astrochemistry).\"\n  + \"Các chất đó thường được tìm thấy trong các đám mây phân tử, dù chúng có thể xuất hiện trong những ngôi sao nhiệt độ thấp, sao lùn nâu và các hành tinh.\"\n\nBƯỚC 3: Xử lý Logic (Dành cho câu hỏi khó/suy luận)\n- Không cần tính toán hoặc so sánh.\n- Tìm mối liên hệ \"Vì... nên...\" giữa các trích dẫn: Vì các chất được tìm thấy trong vũ trụ, bao gồm đám mây phân tử, sao nhiệt độ thấp, sao lùn nâu và hành tinh, nên lĩnh vực nghiên cứu sự hình thành, tương tác và phá hủy của các hóa chất trong vũ trụ là Hóa học thiên thể.\n\nBƯỚC 4: Kết luận\n- Chọn đáp án khớp với kết quả ở Bước 3: B. Hóa học thiên thể.\n- ĐÁP ÁN CUỐI CÙNG: [B]"
+    ],
+    "extracted_answer": "B"
+  }
+]

@@ -94,11 +94,13 @@ class VNPTAPIClient:
 
         self._check_rate_limit(model)
 
-        max_retries = 2
+        max_retries = 3  # Increased for timeout retries
         for attempt in range(max_retries):
             try:
                 headers = self._headers(model)
-                resp = requests.post(url, headers=headers, json=payload, timeout=120)
+                # Timeout: 5 phút (300s) cho cả 2 model - đủ cho câu hỏi phức tạp
+                timeout = 300
+                resp = requests.post(url, headers=headers, json=payload, timeout=timeout)
                 
                 if resp.status_code in [429, 401]:
                     raise Exception(f"Rate limit {resp.status_code} for {model}")
@@ -107,6 +109,15 @@ class VNPTAPIClient:
                 self._record_call(model)
                 return resp.json()
                 
+            except requests.exceptions.Timeout as e:
+                # Timeout error - retry with increased wait
+                if attempt < max_retries - 1:
+                    wait_time = 30 * (attempt + 1)  # 30s, 60s, 90s
+                    print(f"[TIMEOUT] {model} model timed out, waiting {wait_time}s before retry {attempt+2}/{max_retries}...")
+                    import time
+                    time.sleep(wait_time)
+                else:
+                    raise Exception(f"Timeout after {max_retries} retries for {model}")
             except requests.exceptions.HTTPError as e:
                 if attempt < max_retries - 1:
                     time.sleep(2)

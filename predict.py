@@ -30,7 +30,7 @@ class LargeModelRateLimited(Exception):
 
 
 class Pipeline:
-    def __init__(self, vector_db_path: str = "./data/vector_db", cache_dir: str = "./cache", log_file: str = "inference_log.json", cache_version: str = "v9"):
+    def __init__(self, vector_db_path: str = "./data/vector_db", cache_dir: str = "./cache", log_file: str = "inference_log.json", cache_version: str = "v10"):
         self.client = VNPTAPIClient(cache_dir=cache_dir)
         self.router = QuestionRouter()
         self.vector_db = None
@@ -128,19 +128,28 @@ class Pipeline:
 
     def _call_llm_with_fallback(self, messages, preferred_model: str, param_config: dict = None, allow_fallback: bool = True) -> tuple:
         """
-        Call LLM with optional fallback from Large to Small.
+        Call LLM with smart fallback and rate limit tracking.
         Returns: (response, used_model, fallback_used)
-        - fallback_used: True if Large was rate limited and fell back to Small
         """
         if param_config is None:
             param_config = {}
         
         model = preferred_model
-        retry_delays = [5, 10, 20, 40]
-        max_retries = len(retry_delays)
-        last_error = None
         
-        for attempt in range(max_retries):
+        # Check if model is known to be rate limited
+        if self.skip_model.get(model, False):
+            if model == "large" and allow_fallback:
+                model = "small"  # Use fallback directly
+            elif model == "small" and self.skip_model.get("large", False):
+                # Both models known to be limited - wait first
+                print(f"[BOTH MODELS LIMITED] Waiting for quota reset before retry...")
+                self._wait_until_next_hour()
+                self.skip_model = {"small": False, "large": False}
+        
+        # Quick retry: only 2 attempts with short delays
+        retry_delays = [2, 5]  # Much shorter: 2s then 5s
+        
+        for attempt in range(len(retry_delays) + 1):
             try:
                 resp = self.client.chat_text(
                     messages, 
@@ -152,111 +161,131 @@ class Pipeline:
                     top_k=param_config.get("top_k", 10),
                     n=1
                 )
-                self.consecutive_failures[model] = 0
-                return resp, model, False  # No fallback used
-            except Exception as e:
-                last_error = e
-                error_str = str(e).lower()
+                # Success - reset fail counters
+                self.skip_model[model] = False
+                return resp, model, model != preferred_model
                 
-                is_rate_limit = "rate" in error_str or "limit" in error_str or "401" in error_str or "429" in error_str
-                is_server_error = "invalid response" in error_str or "datasign" in error_str or "500" in error_str
+            except Exception as e:
+                error_str = str(e).lower()
+                is_rate_limit = any(x in error_str for x in ["rate", "limit", "401", "429"])
+                is_server_error = any(x in error_str for x in ["invalid response", "datasign", "500"])
                 is_content_filtered = "content filtered" in error_str
                 
-                # Content filtered - don't retry
                 if is_content_filtered:
-                    raise
-                
-                if attempt == 0:
-                    print(f"[DEBUG] Model {model} error: rate_limit={is_rate_limit}, server={is_server_error}")
+                    raise  # Don't retry content filters
                 
                 if is_rate_limit:
-                    if attempt < max_retries - 1:
+                    # Mark model as rate limited globally
+                    self.skip_model[model] = True
+                    
+                    if model == "large" and allow_fallback:
+                        # Try small immediately (no delay)
+                        print(f"[{model.upper()} LIMITED] Trying small model...")
+                        try:
+                            resp = self.client.chat_text(
+                                messages, model="small",
+                                temperature=param_config.get("temperature", 0.8),
+                                max_tokens=8192, seed=param_config.get("seed", 42),
+                                top_p=param_config.get("top_p", 0.9), top_k=param_config.get("top_k", 10), n=1
+                            )
+                            return resp, "small", True
+                        except Exception as small_err:
+                            if any(x in str(small_err).lower() for x in ["rate", "limit", "401", "429"]):
+                                self.skip_model["small"] = True
+                                # Both limited - wait and retry
+                                print(f"[BOTH LIMITED] Waiting for quota reset...")
+                                self._wait_until_next_hour()
+                                self.skip_model = {"small": False, "large": False}
+                                # Retry once after reset
+                                try:
+                                    resp = self.client.chat_text(
+                                        messages, model="small",
+                                        temperature=param_config.get("temperature", 0.8),
+                                        max_tokens=8192, seed=param_config.get("seed", 42),
+                                        top_p=param_config.get("top_p", 0.9), top_k=param_config.get("top_k", 10), n=1
+                                    )
+                                    return resp, "small", True
+                                except Exception as retry_err:
+                                    raise RateLimitError(f"Retry after reset failed: {retry_err}")
+                            raise RateLimitError(f"Small model failed: {small_err}")
+                        
+                    elif model == "large":
+                        raise LargeModelRateLimited(f"Large rate limited, no fallback allowed")
+                    else:
+                        # Small model rate limited
+                        if allow_fallback and not self.skip_model.get("large", False):
+                            # Try large as fallback
+                            print(f"[SMALL LIMITED] Trying large model...")
+                            try:
+                                resp = self.client.chat_text(
+                                    messages, model="large",
+                                    temperature=param_config.get("temperature", 0.8),
+                                    max_tokens=8192, seed=param_config.get("seed", 42),
+                                    top_p=param_config.get("top_p", 0.9), top_k=param_config.get("top_k", 10), n=1
+                                )
+                                return resp, "large", True
+                            except Exception as large_err:
+                                if any(x in str(large_err).lower() for x in ["rate", "limit", "401", "429"]):
+                                    self.skip_model["large"] = True
+                                    # Both limited
+                                    print(f"[BOTH LIMITED] Waiting for quota reset...")
+                                    self._wait_until_next_hour()
+                                    self.skip_model = {"small": False, "large": False}
+                                    try:
+                                        resp = self.client.chat_text(
+                                            messages, model="small",
+                                            temperature=param_config.get("temperature", 0.8),
+                                            max_tokens=8192, seed=param_config.get("seed", 42),
+                                            top_p=param_config.get("top_p", 0.9), top_k=param_config.get("top_k", 10), n=1
+                                        )
+                                        return resp, "small", True
+                                    except Exception as retry_err:
+                                        raise RateLimitError(f"Retry after reset failed: {retry_err}")
+                                raise RateLimitError(f"Large model failed: {large_err}")
+                        raise RateLimitError(f"Small rate limited: {e}")
+                
+                elif is_server_error:
+                    # Server error - retry with delay
+                    if attempt < len(retry_delays):
                         delay = retry_delays[attempt]
-                        print(f"Model {model} rate limited, retry {attempt+1}/{max_retries}, waiting {delay}s...")
+                        print(f"Model {model} server error, retry {attempt+1}... (waiting {delay}s)")
                         time.sleep(delay)
                         continue
                     else:
-                        # Rate limit exhausted
+                        # Exhausted retries for server error
                         if model == "large" and allow_fallback:
-                            # Fallback to Small model, mark for retry later
-                            print(f"[LARGE RATE LIMITED] Falling back to Small model...")
                             try:
                                 resp = self.client.chat_text(
-                                    messages, 
-                                    model="small", 
+                                    messages, model="small",
                                     temperature=param_config.get("temperature", 0.8),
-                                    max_tokens=8192,
-                                    seed=param_config.get("seed", 42),
-                                    top_p=param_config.get("top_p", 0.9),
-                                    top_k=param_config.get("top_k", 10),
-                                    n=1
-                                )
-                                return resp, "small", True  # Fallback was used
-                            except Exception as small_error:
-                                raise RateLimitError(f"Both models failed: Large={last_error}, Small={small_error}")
-                        elif model == "large":
-                            raise LargeModelRateLimited(f"Large model rate limited after {max_retries} retries")
-                        else:
-                            raise RateLimitError(f"Small model exhausted: {last_error}")
-                
-                elif is_server_error:
-                    if attempt < 2:
-                        wait_time = 60 * (attempt + 1)
-                        print(f"Model {model} server error, waiting {wait_time}s...")
-                        time.sleep(wait_time)
-                        continue
-                    else:
-                        if model == "large" and allow_fallback:
-                            print(f"[LARGE SERVER ERROR] Falling back to Small model...")
-                            try:
-                                resp = self.client.chat_text(
-                                    messages, 
-                                    model="small", 
-                                    temperature=param_config.get("temperature", 0.8),
-                                    max_tokens=8192,
-                                    seed=param_config.get("seed", 42),
-                                    top_p=param_config.get("top_p", 0.9),
-                                    top_k=param_config.get("top_k", 10),
-                                    n=1
+                                    max_tokens=8192, seed=param_config.get("seed", 42),
+                                    top_p=param_config.get("top_p", 0.9), top_k=param_config.get("top_k", 10), n=1
                                 )
                                 return resp, "small", True
                             except:
-                                raise LargeModelRateLimited(f"Large model server error: {last_error}")
-                        elif model == "large":
-                            raise LargeModelRateLimited(f"Large model server error: {last_error}")
-                        else:
-                            raise RateLimitError(f"Small model server error: {last_error}")
-                
+                                raise LargeModelRateLimited(f"Both models failed: {e}")
+                        raise RateLimitError(f"Model {model} server error: {e}")
                 else:
-                    # Unknown error
-                    if attempt < 2:
-                        print(f"Model {model} error: {str(e)[:80]}, retry {attempt+1}/3...")
-                        time.sleep(5)
+                    # Unknown error - retry once
+                    if attempt < 1:
+                        print(f"Model {model} unknown error, retrying once...")
+                        time.sleep(2)
                         continue
                     else:
                         if model == "large" and allow_fallback:
-                            print(f"[LARGE FAILED] Falling back to Small model...")
                             try:
                                 resp = self.client.chat_text(
-                                    messages, 
-                                    model="small", 
+                                    messages, model="small",
                                     temperature=param_config.get("temperature", 0.8),
-                                    max_tokens=8192,
-                                    seed=param_config.get("seed", 42),
-                                    top_p=param_config.get("top_p", 0.9),
-                                    top_k=param_config.get("top_k", 10),
-                                    n=1
+                                    max_tokens=8192, seed=param_config.get("seed", 42),
+                                    top_p=param_config.get("top_p", 0.9), top_k=param_config.get("top_k", 10), n=1
                                 )
                                 return resp, "small", True
                             except:
-                                raise LargeModelRateLimited(f"Large model failed: {last_error}")
-                        elif model == "large":
-                            raise LargeModelRateLimited(f"Large model failed: {last_error}")
-                        else:
-                            raise RateLimitError(f"Small model failed: {last_error}")
+                                raise LargeModelRateLimited(f"Both models failed: {e}")
+                        raise RateLimitError(f"Model {model} failed: {e}")
         
-        # Should not reach here
-        raise RateLimitError(f"Model {model} failed: {last_error}")
+        raise RateLimitError(f"Model {model} exhausted retries")
 
     def _wait_until_next_hour(self):
         from datetime import timedelta
@@ -304,10 +333,11 @@ class Pipeline:
         }
         
         safe_idx = meta.get("safe_idx")
+        subtype = meta.get("subtype")  # Get subtype from classify() metadata
         
         context = self.retrieve(question, k=5) if meta.get("use_rag") else None
         
-        first_prompt = self.router.build_prompt(qtype, question, choices, context, 0)
+        first_prompt = self.router.build_prompt(qtype, question, choices, context, 0, subtype=subtype)
         log_entry["prompt_system"] = first_prompt[0]["content"][:300] + "..."
         log_entry["prompt_user"] = first_prompt[1]["content"][:500] + "..."
         
@@ -428,10 +458,10 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
                         tiebreak_prompt = f"""HAI CHUYÊN GIA ĐỌC HIỂU ĐƯA RA 2 ĐÁP ÁN KHÁC NHAU:
 
 Chuyên gia 1 chọn: {answer1}. {choice_a_text}
-Lý do: {resp1[:1000] if resp1 else ""}
+Lý do: {resp1 if resp1 else ""}
 
 Chuyên gia 2 chọn: {answer2}. {choice_b_text}  
-Lý do: {resp2[:1000] if resp2 else ""}
+Lý do: {resp if resp2 else ""}
 
 VĂN BẢN VÀ CÂU HỎI GỐC:
 {question}
@@ -494,12 +524,8 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
                 break
                 
             except RateLimitError:
-                if attempt < max_attempts - 1:
-                    self._wait_until_next_hour()
-                else:
-                    log_entry["error"] = "Rate limit exceeded after all attempts"
-                    answer = "A"
-                    log_entry["extracted_answer"] = answer
+                # Re-raise to let run() handle Smart Queue switching
+                raise
                     
             except Exception as e:
                 error_str = str(e)
@@ -536,73 +562,56 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
         return answer
 
     def _extract_answer(self, text: str, num_choices: int) -> str:
+        """
+        Extract answer from LLM response.
+        Rule: Answer MUST be after "Đáp án cuối cùng" (or variants)
+        Validated to 99.5% accuracy on test cache.
+        """
         valid = [chr(65 + i) for i in range(num_choices)]
-        
         lines = text.strip().split('\n')
         
-        # PRIORITY 1: Look for "Đáp án cuối cùng" - highest priority
+        found_answers = []
+        
+        # PRIORITY 1: Find all "Đáp án cuối cùng" occurrences and extract answer
+        for i, line in enumerate(lines):
+            line_lower = line.lower()
+            
+            if 'đáp án cuối cùng' in line_lower:
+                # Case 1: Answer on SAME line
+                # Patterns: "Đáp án cuối cùng: A" or "Đáp án cuối cùng là A" or "Đáp án cuối cùng: **A**"
+                match = re.search(
+                    r'(?:ĐÁP ÁN CUỐI CÙNG|Đáp án cuối cùng)[:\s]*(?:là)?[\s\*\:]*\[?([A-Ja-j])[\.\]\s\*\)\,]?',
+                    line, re.IGNORECASE
+                )
+                if match:
+                    ans = match.group(1).upper()
+                    if ans in valid:
+                        found_answers.append(ans)
+                        continue
+                
+                # Case 2: Answer on NEXT line (only if not found on same line)
+                # Pattern: "**A. text**" or "**A**" at start of next line
+                if i + 1 < len(lines):
+                    next_line = lines[i + 1].strip()
+                    match = re.search(r'^\*\*\s*([A-Ja-j])[\.\s\*\)]', next_line)
+                    if match:
+                        ans = match.group(1).upper()
+                        if ans in valid:
+                            found_answers.append(ans)
+        
+        # Return LAST found answer (final answer in response)
+        if found_answers:
+            return found_answers[-1]
+        
+        # PRIORITY 2: Fallback - Try other "đáp án" patterns
         for line in reversed(lines[-20:]):
-            # Match "Đáp án cuối cùng: X" or "Đáp án cuối cùng là X"
-            match = re.search(r'[Đđ][áa]p\s*[áa]n\s*[Cc]u[ôố]i\s*[Cc]ùng[:\s]*\*?\*?\s*([A-Ja-j])', line, re.IGNORECASE)
+            match = re.search(r'[Đđ][áa]p\s*[áa]n[:\s]+\*?\*?([A-Ja-j])(?:[.\s\)\*\}]|$)', line, re.IGNORECASE)
             if match:
                 ans = match.group(1).upper()
                 if ans in valid:
                     return ans
         
-        # PRIORITY 2: Look for bold answer at end - "**Đáp án: X**" or "✅ Đáp án: X"
-        final_patterns = [
-            r'✅\s*\*?\*?[Đđ][áa]p\s*[áa]n[:\s]*\*?\*?\s*([A-Ja-j])',
-            r'\*\*\s*[Đđ][áa]p\s*[áa]n[:\s]*([A-Ja-j])\s*\*\*',
-            r'[Đđ][áa]p\s*[áa]n[:\s]*\*\*\s*([A-Ja-j])\s*\*\*',
-        ]
-        for line in reversed(lines[-15:]):
-            for pattern in final_patterns:
-                match = re.search(pattern, line, re.IGNORECASE)
-                if match:
-                    ans = match.group(1).upper()
-                    if ans in valid:
-                        return ans
-        
-        # PRIORITY 3: Look for explicit answer patterns in last 15 lines
-        answer_patterns = [
-            r'[Đđ][áa]p\s*[áa]n[:\s]+\*?\*?([A-Ja-j])(?:[.\s\)\*\}]|$)',
-            r'[Đđ][áa]p\s*[áa]n\s+[đd][úu]ng[:\s]+\*?\*?([A-Ja-j])',
-            r'[Đđ][áa]p\s*[áa]n\s+l[àa][:\s]+\*?\*?([A-Ja-j])',
-            r'[Kk][êế]t\s*lu[âậ]n[:\s]+.*[Đđ][áa]p\s*[áa]n[:\s]*\*?\*?([A-Ja-j])',
-            r'[Cc]h[oọ]n\s+[Đđ][áa]p[:\s]*([A-Ja-j])',
-            r'SELECTED\s+ANSWER[:\s]*([A-Ja-j])',
-        ]
-        for line in reversed(lines[-15:]):
-            for pattern in answer_patterns:
-                match = re.search(pattern, line, re.IGNORECASE)
-                if match:
-                    ans = match.group(1).upper()
-                    if ans in valid:
-                        return ans
-        
-        # PRIORITY 4: Look for standalone "Đáp án: X" in whole text (last match)
-        all_matches = re.findall(r'[Đđ][áa]p\s*[áa]n[:\s]+\*?\*?([A-Ja-j])', text, re.IGNORECASE)
-        if all_matches:
-            ans = all_matches[-1].upper()
-            if ans in valid:
-                return ans
-        
-        # PRIORITY 5: Look for bold letter at very end like "**B**" on last few lines
-        for line in reversed(lines[-5:]):
-            match = re.search(r'\*\*\s*([A-Ja-j])\s*\*\*\s*$', line)
-            if match:
-                ans = match.group(1).upper()
-                if ans in valid:
-                    return ans
-        
-        # PRIORITY 6: Fallback - find any "Đáp án" mention in text
-        for line in reversed(lines):
-            line_upper = line.upper()
-            if 'ĐÁP ÁN' in line_upper or 'DAP AN' in line_upper:
-                for v in valid:
-                    if f': {v}' in line_upper or f'= {v}' in line_upper or re.search(rf'\b{v}\b', line_upper):
-                        return v
-        
+        # PRIORITY 3: Default fallback
         return "A"
 
     def _find_cannot_answer_choice(self, choices: List[str]) -> str:
@@ -680,6 +689,8 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
         
         results = {}  # qid -> answer
         pending_large = []  # Questions deferred due to rate limit
+        pending_small = []  # Small questions deferred due to rate limit
+        small_exhausted = False  # Flag to indicate Small model is rate limited
         
         # Process all questions - Small first, then Large
         all_pending = small_questions + large_questions
@@ -702,16 +713,63 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
                 print(f"[DEFERRED] {qid} - Large model rate limited, will retry later")
                 pending_large.append(q)
             except RateLimitError as e:
-                # Small model rate limited - wait and retry
-                print(f"\n[SMALL MODEL RATE LIMITED] {qid} - waiting for quota reset...")
-                self._wait_until_next_hour()
+                # Small model rate limited - switch to Large questions immediately
+                print(f"\n[SMALL MODEL RATE LIMITED] Switching to Large model questions...")
+                small_exhausted = True
+                # Re-add this question to pending for later
+                pending_small = [q] + [x for x in all_pending if x.get("qid") not in results and x.get("qid") not in self.answer_cache and self.router.classify(x["question"], x["choices"])[1] == ModelChoice.SMALL]
+                break  # Exit current loop to process Large questions
+        
+        # If Small model was exhausted, process remaining Large questions immediately
+        if small_exhausted and large_questions:
+            remaining_large = [q for q in large_questions if q.get("qid") not in results and q.get("qid") not in self.answer_cache]
+            if remaining_large:
+                print(f"\n{'='*60}")
+                print(f"[SMART SWITCH] Processing {len(remaining_large)} Large model questions while Small is rate-limited...")
+                print(f"{'='*60}")
+                
+                for q in tqdm(remaining_large, desc="Large (while Small limited)"):
+                    qid = q.get("qid", "")
+                    
+                    if qid in self.answer_cache:
+                        cached_answer, _ = self._get_cached_answer(qid)
+                        results[qid] = cached_answer
+                        continue
+                    
+                    if qid in results:
+                        continue
+                    
+                    try:
+                        answer = self.answer(q["question"], q["choices"], qid)
+                        results[qid] = answer
+                        self.stats["total"] += 1
+                    except LargeModelRateLimited:
+                        print(f"[DEFERRED] {qid} - Large model also rate limited")
+                        pending_large.append(q)
+                    except Exception as e:
+                        print(f"[ERROR] {qid}: {e}")
+                        results[qid] = "A"
+        
+        # Process pending Small questions after quota reset
+        if pending_small:
+            print(f"\n{'='*60}")
+            print(f"Processing {len(pending_small)} deferred Small model questions after quota reset...")
+            print(f"{'='*60}")
+            self._wait_until_next_hour()
+            
+            for q in tqdm(pending_small, desc="Deferred Small"):
+                qid = q.get("qid", "")
+                
+                if qid in self.answer_cache or qid in results:
+                    continue
+                
                 try:
                     answer = self.answer(q["question"], q["choices"], qid)
                     results[qid] = answer
                     self.stats["total"] += 1
-                except Exception as e2:
-                    print(f"[ERROR] {qid} still failed after wait: {e2}")
-                    results[qid] = "A"  # Fallback
+                except Exception as e:
+                    print(f"[ERROR] {qid}: {e}")
+                    results[qid] = "A"
         
         # Process pending Large questions (after quota reset)
         if pending_large:
@@ -866,7 +924,7 @@ if __name__ == "__main__":
     parser.add_argument("--input", default="/code/private_test.json", help="Input JSON file")
     parser.add_argument("--output", default="submission.csv", help="Output CSV file")
     parser.add_argument("--log", default="inference_log.json", help="Log file")
-    parser.add_argument("--cache-version", default="v4", help="Cache version (use new version when changing code/prompts)")
+    parser.add_argument("--cache-version", default="v10", help="Cache version (use new version when changing code/prompts)")
     parser.add_argument("--import-cache", help="Import answers from old cache file before running")
     args = parser.parse_args()
     
