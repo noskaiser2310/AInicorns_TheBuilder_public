@@ -1,10 +1,11 @@
 # 🏆 VNPT AI Hackathon - Track 2: The Builder
-evaluate.py --start 0 --end 40   
+
 <div align="center">
 
 ![Team Just2Try](https://img.shields.io/badge/Team-Just2Try-blue?style=for-the-badge)
 ![VNPT AI](https://img.shields.io/badge/VNPT-AI%20Hackathon-orange?style=for-the-badge)
 ![Python 3.10+](https://img.shields.io/badge/Python-3.10+-green?style=for-the-badge&logo=python)
+![CUDA 12.2](https://img.shields.io/badge/CUDA-12.2-76B900?style=for-the-badge&logo=nvidia)
 
 **Vietnamese Multi-Domain Question Answering System**  
 *Powered by VNPT AI LLM with Advanced Reasoning & Multi-Strategy Voting*
@@ -14,163 +15,164 @@ evaluate.py --start 0 --end 40
 ---
 
 ## 📋 Table of Contents
-- [Overview](#-overview)
-- [Key Features](#-key-features)
-- [Architecture](#-architecture)
-- [Question Types & Strategies](#-question-types--strategies)
-- [Installation](#-installation)
-- [Usage](#-usage)
+- [Pipeline Flow](#-pipeline-flow)
+- [Data Processing](#-data-processing)
+- [Resource Initialization](#-resource-initialization)
 - [Project Structure](#-project-structure)
-- [Technical Details](#-technical-details)
 - [Docker Deployment](#-docker-deployment)
 - [Team](#-team)
 
 ---
 
-## 🎯 Overview
+## 🔄 Pipeline Flow
 
-A high-accuracy Vietnamese question answering system designed for the **VNPT AI Hackathon - Age of Just2Try**. The system handles 5 domain categories:
-
-| Domain | Description |
-|--------|-------------|
-| **Precision Critical** | Questions requiring refusal/safety responses |
-| **Compulsory** | Must-answer questions with high accuracy |
-| **RAG** | Long-form reading comprehension |
-| **STEM** | Mathematics and logical reasoning |
-| **Multidomain** | General knowledge across fields |
-
----
-
-## ✨ Key Features
-
-### 🧠 Intelligent Question Routing
-- Automatic classification into READING, MATH, FACTUAL, SAFETY types
-- Sub-type detection (History, Law, Geography, Science, etc.)
-- Dynamic model selection (Small vs Large) based on complexity
-
-### 🗳️ Multi-Strategy Voting System
-- **3-Approach Voting** for READING: Quote-Match, Elimination, Summary
-- **2-Step Verification** for MATH: Solve → Verify → Confirm
-- Majority voting with conflict resolution
-
-### 🔍 Robust Answer Extraction
-- 6-priority extraction system with "Đáp án cuối cùng" priority
-- Bold pattern detection (**A**)
-- Fallback mechanisms for edge cases
-
-### ⚡ Smart Rate Limiting
-- Rolling 60-minute window detection
-- Automatic wait and retry with quota reset
-- Graceful fallback between models
-
----
-
-## 🏗️ Architecture
+### High-Level Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        INFERENCE PIPELINE                                │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  Input (JSON) ──► Question Router ──► Strategy Selection                │
-│                   │                                                      │
-│                   ├── READING ────► LARGE ──► 3-Approach Voting         │
-│                   │                          (Quote / Eliminate / Sum)   │
-│                   │                                                      │
-│                   ├── MATH ───────► LARGE ──► Solve + Verify (2 calls)  │
-│                   │                                                      │
-│                   ├── FACTUAL ────► SMALL ──► Single Call + Analysis    │
-│                   │                                                      │
-│                   └── SAFETY ─────► SMALL ──► Single Call (Refusal)     │
-│                                                                          │
-│                              ▼                                           │
-│                    Answer Extraction (6-Level Priority)                  │
-│                              ▼                                           │
-│                       submission.csv                                     │
-│                                                                          │
-└─────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           INFERENCE PIPELINE                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│   ┌──────────────┐    ┌─────────────────┐    ┌─────────────────────────┐   │
+│   │ private_test │───►│ Question Router │───►│   Strategy Selection    │   │
+│   │    .json     │    │  (Classify &    │    │                         │   │
+│   └──────────────┘    │   Route)        │    │  ┌─────────────────┐    │   │
+│                       └─────────────────┘    │  │ READING → LARGE │    │   │
+│                                              │  │ (2-call voting) │    │   │
+│                                              │  ├─────────────────┤    │   │
+│                                              │  │ MATH → LARGE    │    │   │
+│                                              │  │ (Solve+Verify)  │    │   │
+│                                              │  ├─────────────────┤    │   │
+│                                              │  │ FACTUAL → SMALL │    │   │
+│                                              │  │ (Single call)   │    │   │
+│                                              │  ├─────────────────┤    │   │
+│                                              │  │ SAFETY → SMALL  │    │   │
+│                                              │  │ (Refusal)       │    │   │
+│                                              │  └─────────────────┘    │   │
+│                                              └─────────────────────────┘   │
+│                                                          │                  │
+│                                                          ▼                  │
+│                                              ┌─────────────────────────┐   │
+│                                              │   VNPT AI LLM API       │   │
+│                                              │   (Small / Large)       │   │
+│                                              └─────────────────────────┘   │
+│                                                          │                  │
+│                                                          ▼                  │
+│                                              ┌─────────────────────────┐   │
+│                                              │   Answer Extraction     │   │
+│                                              │   (6-Level Priority)    │   │
+│                                              └─────────────────────────┘   │
+│                                                          │                  │
+│                                                          ▼                  │
+│                                              ┌─────────────────────────┐   │
+│                                              │    submission.csv       │   │
+│                                              │    (qid, answer)        │   │
+│                                              └─────────────────────────┘   │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
----
+### Detailed Flow
 
-## 📊 Question Types & Strategies
+#### Step 1: Question Classification (`question_router.py`)
+```
+Input Question → Analyze Content → Classify Type → Select Model → Build Prompt
+```
 
-| Type | Model | Strategy | API Calls | Description |
-|------|-------|----------|-----------|-------------|
-| **READING** | LARGE | 3-Approach Voting | 3 | Quote-Match, Elimination, Summary methods |
-| **MATH** | LARGE | 2-Step Verification | 2 | Solve → Examiner Verify |
-| **FACTUAL** | SMALL | Analysis Method | 1 | Domain-specific prompts (Law, History, etc.) |
-| **SAFETY** | SMALL | Direct Response | 1 | Prioritize refusal options |
+| Type | Detection Method | Model | Strategy |
+|------|------------------|-------|----------|
+| **READING** | Contains passage + comprehension question | LARGE | 2-call voting |
+| **MATH** | Contains numbers, equations, calculations | LARGE | Solve + Verify |
+| **FACTUAL** | General knowledge (History, Law, Science) | SMALL | Single call |
+| **SAFETY** | Harmful/sensitive content detection | SMALL | Refusal priority |
 
-### Answer Extraction Priority
+#### Step 2: LLM Processing (`predict.py`)
+- **READING Questions**: 2 different prompts → 2 answers → Vote for majority
+- **MATH Questions**: Solve → Verify solution → Final answer
+- **FACTUAL Questions**: Domain-specific prompt → Single answer
+- **SAFETY Questions**: Detect refusal option → Select safe answer
+
+#### Step 3: Answer Extraction (6-Level Priority)
 1. 🔴 `Đáp án cuối cùng: X` - Highest priority
-2. 🟠 `✅ Đáp án: X` or `**Đáp án: X**`
-3. 🟡 Standard patterns: `Đáp án: X`, `Kết luận...Đáp án: X`
-4. 🟢 Last match of `Đáp án: X` in text
-5. 🔵 Standalone bold `**X**` at end
-6. ⚪ Fallback to A
+2. 🟠 `**Đáp án: X**` - Bold pattern
+3. 🟡 `Đáp án: X` - Standard pattern
+4. 🟢 Last occurrence of answer pattern
+5. 🔵 Standalone bold letter `**X**`
+6. ⚪ Fallback to `A`
 
 ---
 
-## 🚀 Installation
+## 📊 Data Processing
 
-### Prerequisites
-- Python 3.10+
-- VNPT API credentials
-
-### Setup
-```bash
-# Clone repository
-git clone https://github.com/your-repo/Just2Try_TheBuilder.git
-cd Just2Try_TheBuilder
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Configure API keys
-cp api-keys.example.json api-keys.json
-# Edit api-keys.json with your credentials
-```
-
-### API Keys Format
+### Input Format
 ```json
 [
-  {"llmApiName": "LLM small", "authorization": "Bearer ...", "tokenId": "...", "tokenKey": "..."},
-  {"llmApiName": "LLM large", "authorization": "Bearer ...", "tokenId": "...", "tokenKey": "..."},
-  {"llmApiName": "LLM embedings", "authorization": "Bearer ...", "tokenId": "...", "tokenKey": "..."}
+  {
+    "qid": "test_0001",
+    "question": "Câu hỏi tiếng Việt...",
+    "choices": ["A. Đáp án 1", "B. Đáp án 2", "C. Đáp án 3", "D. Đáp án 4"]
+  }
 ]
 ```
 
+### Output Format
+```csv
+qid,answer
+test_0001,A
+test_0002,B
+test_0003,C
+```
+
+### Data Flow
+```
+/code/private_test.json → predict.py → /code/submission.csv
+```
+
+### Question Categories Handled
+| Category | Description | Strategy |
+|----------|-------------|----------|
+| Precision Critical | Safety/refusal questions | Prioritize "cannot answer" option |
+| Compulsory | Must-answer correctly | High-accuracy prompts |
+| RAG | Reading comprehension | Multi-approach voting |
+| STEM | Math/Science | Step-by-step verification |
+| Multidomain | General knowledge | Domain-specific prompts |
+
 ---
 
-## 💻 Usage
+## ⚙️ Resource Initialization
 
-### Inference
-```bash
-# Run on test set
-python predict.py --input data/private_test.json --output submission.csv
+### Prerequisites
+- Python 3.8+ (Docker uses Python 3 from Ubuntu 20.04)
+- VNPT API credentials (`api-keys.json`)
 
-# With custom cache version
-python predict.py --input data/test.json --output submission.csv --cache-version v3
+### API Keys Configuration
+File `api-keys.json` should contain:
+```json
+[
+  {"llmApiName": "LLM small", "authorization": "Bearer ...", "tokenId": "...", "tokenKey": "..."},
+  {"llmApiName": "LLM large", "authorization": "Bearer ...", "tokenId": "...", "tokenKey": "..."}
+]
 ```
 
-### Evaluation
+### Dependencies Installation
 ```bash
-# Evaluate questions 1-50
-python evaluate.py --start 1 --end 50
-
-# Full validation set
-python evaluate.py --start 1 --end 93
+pip install -r requirements.txt
 ```
 
-### Build Legal RAG Index (Optional)
-```bash
-# Build BM25 index from legal corpus
-python legal_rag_builder.py --json data/datasets/legal_corpus/legal_corpus.json
+**Required packages:**
+- `requests>=2.28.0` - HTTP client for API calls
+- `tqdm>=4.65.0` - Progress bar
+- `numpy>=1.24.0` - Numerical operations
+- `pandas>=2.0.0` - Data manipulation
 
-# Evaluate RAG quality
-python legal_rag_eval.py --questions 20
-```
+### No External Resources Required
+This solution uses **VNPT AI LLM API only** - no additional:
+- ❌ Vector Database
+- ❌ Pre-trained model weights
+- ❌ External indexing
+- ❌ Local GPU inference
+
+All processing is done via VNPT API calls.
 
 ---
 
@@ -178,77 +180,60 @@ python legal_rag_eval.py --questions 20
 
 ```
 Just2Try_TheBuilder/
-├── 📄 Core Files
-│   ├── predict.py              # Main inference pipeline
-│   ├── question_router.py      # Question classification & prompt building
-│   ├── vnpt_api_client.py      # API client with rate limiting
-│   └── evaluate.py             # Evaluation on validation set
-│
-├── 📄 RAG System (Optional)
-│   ├── legal_rag_builder.py    # Build legal corpus index
-│   ├── legal_rag.py            # Hybrid search (BM25 + Semantic)
-│   └── legal_rag_eval.py       # RAG evaluation
-│
-├── 📄 Docker
-│   ├── Dockerfile              # Container configuration
-│   ├── inference.sh            # Entry point script
-│   └── requirements.txt        # Python dependencies
-│
-├── 📄 Data
-│   ├── data/val.json           # Validation set
-│   ├── data/test.json          # Test set
-│   └── data/datasets/          # Legal corpus datasets
-│
-└── 📄 Config
-    ├── api-keys.json           # API credentials (gitignored)
-    └── .dockerignore           # Docker ignore rules
+├── predict.py              # Main entry point - reads JSON, outputs CSV
+├── question_router.py      # Question classification & prompt building
+├── vnpt_api_client.py      # VNPT API client with rate limiting
+├── inference.sh            # Docker entry point script
+├── Dockerfile              # Container configuration (CUDA 12.2)
+├── requirements.txt        # Python dependencies
+├── README.md               # This file
+└── .dockerignore           # Exclude unnecessary files from build
 ```
 
----
+### Core Files Description
 
-## 🔧 Technical Details
-
-### Rate Limiting
-- **Small Model**: 60 req/hour, 1000 req/day
-- **Large Model**: 40 req/hour, 500 req/day
-- **Embedding**: 500 req/minute
-
-### Retry Strategy
-| Error Type | Action |
-|------------|--------|
-| Rate Limit (429) | Exponential backoff (5s → 80s) |
-| Server Error | Wait 60s → 120s → Switch model |
-| Both Models Fail | Wait 65 minutes (rolling window) |
-
-### Caching
-- Answers cached by question ID + cache version
-- Resume capability for interrupted runs
-- Cache stored in `answer_cache_v{version}.json`
+| File | Purpose |
+|------|---------|
+| `predict.py` | Main pipeline: load questions → classify → call LLM → extract answer → save CSV |
+| `question_router.py` | Classify question type, build appropriate prompts for each type |
+| `vnpt_api_client.py` | Handle API calls with retry logic and rate limit handling |
+| `inference.sh` | Entry point that runs `python predict.py` |
 
 ---
 
 ## 🐳 Docker Deployment
 
-### Build
-```bash
-docker build -t Just2Try_thebuilder .
+### Docker Hub Image
+```
+noskaiser231000/just2try_thebuilder:latest
 ```
 
-### Run
+### Build Locally
 ```bash
-# With GPU support
-docker run --gpus all -v /path/to/data:/code Just2Try_thebuilder
-
-# CPU only
-docker run -v /path/to/data:/code Just2Try_thebuilder
+docker build -t just2try_thebuilder .
 ```
+
+### Run Container
+```bash
+# BTC will run with:
+docker run --gpus all \
+  -v /path/to/api-keys.json:/code/api-keys.json \
+  -v /path/to/private_test.json:/code/private_test.json \
+  just2try_thebuilder
+```
+
+### Dockerfile Spec
+- **Base Image**: `nvidia/cuda:12.2.0-devel-ubuntu20.04`
+- **Entry Point**: `inference.sh`
+- **Input**: `/code/private_test.json`
+- **Output**: `/code/submission.csv`
 
 ### Submission Checklist
 - [x] Dockerfile với CUDA 12.2 base
 - [x] requirements.txt với tất cả dependencies
 - [x] inference.sh entry point
 - [x] Đọc `/code/private_test.json` → `/code/submission.csv`
-- [x] Team name: Just2Try
+- [x] Docker image pushed to Docker Hub
 
 ---
 
@@ -259,28 +244,9 @@ docker run -v /path/to/data:/code Just2Try_thebuilder
 ### 🦄 Team Just2Try
 
 **Track 2: The Builder**  
-*VNPT AI Hackathon - Age of Just2Try 2024*
+*VNPT AI Hackathon - Age of AInicorns 2024*
 
 </div>
-
----
-
-## 📈 Performance
-
-| Metric | Value |
-|--------|-------|
-| Validation Accuracy | 80%+ |
-| READING Accuracy | 80%+ |
-| MATH Accuracy | 72%+ |
-| FACTUAL Accuracy | 82%+ |
-
-*Note: Results may vary based on API response quality and rate limits.*
-
----
-
-## 📜 License
-
-This project is developed for the VNPT AI Hackathon competition.
 
 ---
 

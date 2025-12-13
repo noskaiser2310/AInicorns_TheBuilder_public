@@ -386,8 +386,7 @@ BƯỚC 3: Xử lý Logic (Dành cho câu hỏi khó/suy luận)
 - Nếu cần tìm nguyên nhân: Tìm mối liên hệ "Vì... nên..." giữa các trích dẫn.
 
 BƯỚC 4: Kết luận
-- Chọn đáp án khớp với kết quả ở Bước 3.
-- ĐÁP ÁN CUỐI CÙNG: [X] """},
+- ĐÁP ÁN CUỐI CÙNG: X """},
             {"role": "user", "content": f"""{question}
 
 Các lựa chọn:

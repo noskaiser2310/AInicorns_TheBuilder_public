@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import List
 from datetime import datetime
 from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from vnpt_api_client import VNPTAPIClient
 from question_router import QuestionRouter, QuestionType, ModelChoice
@@ -39,6 +40,7 @@ class Pipeline:
         self.logs = []
         self.consecutive_failures = {"small": 0, "large": 0}
         self.skip_model = {"small": False, "large": False}
+        self.pending_queues = {"small": 0, "large": 0}  # Track pending questions per queue
         
         # Answer caching with version support for resume capability
         # When you change code/prompts, use a new version to start fresh
@@ -178,9 +180,9 @@ class Pipeline:
                     # Mark model as rate limited globally
                     self.skip_model[model] = True
                     
-                    if model == "large" and allow_fallback:
-                        # Try small immediately (no delay)
-                        print(f"[{model.upper()} LIMITED] Trying small model...")
+                    if model == "large" and allow_fallback and self.pending_queues.get("small", 0) == 0:
+                        # Try small immediately - only if Small queue is empty
+                        print(f"[{model.upper()} LIMITED] Small queue empty, trying small model...")
                         try:
                             resp = self.client.chat_text(
                                 messages, model="small",
@@ -213,9 +215,9 @@ class Pipeline:
                         raise LargeModelRateLimited(f"Large rate limited, no fallback allowed")
                     else:
                         # Small model rate limited
-                        if allow_fallback and not self.skip_model.get("large", False):
-                            # Try large as fallback
-                            print(f"[SMALL LIMITED] Trying large model...")
+                        if allow_fallback and self.pending_queues.get("large", 0) == 0 and not self.skip_model.get("large", False):
+                            # Try large as fallback - only if Large queue is empty
+                            print(f"[SMALL LIMITED] Large queue empty, trying large model...")
                             try:
                                 resp = self.client.chat_text(
                                     messages, model="large",
@@ -652,6 +654,129 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
         # Return None to indicate we should try another approach
         return None  # Changed from "A" to None
 
+    def _process_single_question(self, q: dict) -> dict:
+        """Process a single question and return result dict"""
+        qid = q.get("qid", "")
+        
+        # Check cache first
+        if qid in self.answer_cache:
+            cached_answer, _ = self._get_cached_answer(qid)
+            return {"qid": qid, "answer": cached_answer, "status": "cached", "question": q}
+        
+        try:
+            answer = self.answer(q["question"], q["choices"], qid)
+            return {"qid": qid, "answer": answer, "status": "success", "question": q}
+        except LargeModelRateLimited as e:
+            return {"qid": qid, "question": q, "status": "large_limited", "error": str(e)}
+        except RateLimitError as e:
+            return {"qid": qid, "question": q, "status": "small_limited", "error": str(e)}
+        except Exception as e:
+            return {"qid": qid, "answer": "A", "status": "error", "error": str(e), "question": q}
+
+    def _save_to_cache_immediately(self, result: dict):
+        """Save a completed question to cache immediately with full details"""
+        qid = result.get("qid", "")
+        if not qid or result["status"] in ["large_limited", "small_limited"]:
+            return
+        
+        # Build cache entry with full question
+        q = result.get("question", {})
+        
+        # Get detailed info from the latest log entry for this qid
+        log_entry = None
+        for log in reversed(self.logs):
+            if log.get("qid") == qid:
+                log_entry = log
+                break
+        
+        entry = {
+            "question": q.get("question", ""),
+            "choices": q.get("choices", []),
+            "extracted_answer": result.get("answer", "A"),
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Add detailed info from log if available
+        if log_entry:
+            entry["type"] = log_entry.get("type", "unknown")
+            entry["model"] = log_entry.get("model", "unknown")
+            model_responses = log_entry.get("model_responses", [])
+            entry["response"] = model_responses[-1] if model_responses else ""
+            entry["prompt_system"] = log_entry.get("prompt_system", "")
+            entry["prompt_user"] = log_entry.get("prompt_user", "")
+            entry["all_responses"] = model_responses
+        else:
+            entry["type"] = "parallel"
+            entry["model"] = "unknown"
+        
+        # Update in-memory cache
+        self.answer_cache[qid] = entry
+        
+        # Write to disk immediately
+        self._save_answer_cache()
+
+    def _process_parallel_smart(self, questions: List[dict], max_workers: int = 5, 
+                                 desc: str = "Processing", stop_on_limit: bool = True) -> tuple:
+        """
+        Smart parallel processing with immediate stop on rate limit.
+        Returns: (results_dict, remaining_questions, rate_limit_type)
+        - rate_limit_type: None, "small", or "large"
+        """
+        results = {}
+        remaining = list(questions)  # Copy to track unprocessed
+        rate_limit_type = None
+        processed_qids = set()
+        
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_to_q = {executor.submit(self._process_single_question, q): q for q in questions}
+            
+            pbar = tqdm(total=len(questions), desc=desc)
+            
+            for future in as_completed(future_to_q):
+                result = future.result()
+                qid = result["qid"]
+                processed_qids.add(qid)
+                pbar.update(1)
+                
+                if result["status"] == "success":
+                    results[qid] = result["answer"]
+                    self.stats["total"] += 1
+                    # answer() already saved to cache, just persist to disk
+                    self._save_answer_cache()
+                    
+                elif result["status"] == "cached":
+                    results[qid] = result["answer"]
+                    
+                elif result["status"] == "small_limited":
+                    rate_limit_type = "small"
+                    if stop_on_limit:
+                        print(f"\n[RATE LIMIT] Small model limited at {qid}. Stopping queue...")
+                        # Cancel remaining futures
+                        for f in future_to_q:
+                            f.cancel()
+                        break
+                        
+                elif result["status"] == "large_limited":
+                    rate_limit_type = "large"
+                    if stop_on_limit:
+                        print(f"\n[RATE LIMIT] Large model limited at {qid}. Stopping queue...")
+                        for f in future_to_q:
+                            f.cancel()
+                        break
+                        
+                elif result["status"] == "error":
+                    results[qid] = result["answer"]
+                    # Error already handled, just persist cache to disk
+                    self._save_answer_cache()
+                    print(f"[ERROR] {qid}: {result.get('error', 'Unknown')[:50]}")
+            
+            pbar.close()
+        
+        # Calculate remaining questions (not processed)
+        remaining = [q for q in questions if q.get("qid") not in processed_qids]
+        
+        return results, remaining, rate_limit_type
+
     def save_logs(self):
         with open(self.log_file, 'w', encoding='utf-8') as f:
             json.dump(self.logs, f, ensure_ascii=False, indent=2)
@@ -688,155 +813,96 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
         print(f"To process: {len(small_questions)} Small model + {len(large_questions)} Large model questions")
         
         results = {}  # qid -> answer
-        pending_large = []  # Questions deferred due to rate limit
-        pending_small = []  # Small questions deferred due to rate limit
-        small_exhausted = False  # Flag to indicate Small model is rate limited
         
-        # Process all questions - Small first, then Large
-        all_pending = small_questions + large_questions
+        # CONCURRENT PROCESSING WITH QUEUE-AWARE FALLBACK
+        # Small và Large chạy ĐỒNG THỜI
+        # Fallback chỉ được phép khi queue target đã HẾT:
+        # - Large→Small: chỉ khi pending_small == 0
+        # - Small→Large: chỉ khi pending_large == 0
         
-        for q in tqdm(all_pending, desc="Processing"):
-            qid = q.get("qid", "")
-            
-            # Re-check cache (may have been filled during run)
-            if qid in self.answer_cache:
-                cached_answer, _ = self._get_cached_answer(qid)
-                results[qid] = cached_answer
-                continue
-            
-            try:
-                answer = self.answer(q["question"], q["choices"], qid)
-                results[qid] = answer
-                self.stats["total"] += 1
-            except LargeModelRateLimited as e:
-                # Large model rate limited - defer this question
-                print(f"[DEFERRED] {qid} - Large model rate limited, will retry later")
-                pending_large.append(q)
-            except RateLimitError as e:
-                # Small model rate limited - switch to Large questions immediately
-                print(f"\n[SMALL MODEL RATE LIMITED] Switching to Large model questions...")
-                small_exhausted = True
-                # Re-add this question to pending for later
-                pending_small = [q] + [x for x in all_pending if x.get("qid") not in results and x.get("qid") not in self.answer_cache and self.router.classify(x["question"], x["choices"])[1] == ModelChoice.SMALL]
-                break  # Exit current loop to process Large questions
+        pending_small = list(small_questions)
+        pending_large = list(large_questions)
         
-        # If Small model was exhausted, process remaining Large questions immediately
-        if small_exhausted and large_questions:
-            remaining_large = [q for q in large_questions if q.get("qid") not in results and q.get("qid") not in self.answer_cache]
-            if remaining_large:
-                print(f"\n{'='*60}")
-                print(f"[SMART SWITCH] Processing {len(remaining_large)} Large model questions while Small is rate-limited...")
-                print(f"{'='*60}")
-                
-                for q in tqdm(remaining_large, desc="Large (while Small limited)"):
-                    qid = q.get("qid", "")
-                    
-                    if qid in self.answer_cache:
-                        cached_answer, _ = self._get_cached_answer(qid)
-                        results[qid] = cached_answer
-                        continue
-                    
-                    if qid in results:
-                        continue
-                    
-                    try:
-                        answer = self.answer(q["question"], q["choices"], qid)
-                        results[qid] = answer
-                        self.stats["total"] += 1
-                    except LargeModelRateLimited:
-                        print(f"[DEFERRED] {qid} - Large model also rate limited")
-                        pending_large.append(q)
-                    except Exception as e:
-                        print(f"[ERROR] {qid}: {e}")
-                        results[qid] = "A"
+        # Track pending counts for fallback decisions
+        self.pending_queues = {"small": len(pending_small), "large": len(pending_large)}
         
-        # Process pending Small questions after quota reset
-        if pending_small:
-            print(f"\n{'='*60}")
-            print(f"Processing {len(pending_small)} deferred Small model questions after quota reset...")
-            print(f"{'='*60}")
-            self._wait_until_next_hour()
-            
-            for q in tqdm(pending_small, desc="Deferred Small"):
-                qid = q.get("qid", "")
-                
-                if qid in self.answer_cache or qid in results:
-                    continue
-                
-                try:
-                    answer = self.answer(q["question"], q["choices"], qid)
-                    results[qid] = answer
-                    self.stats["total"] += 1
-                except Exception as e:
-                    print(f"[ERROR] {qid}: {e}")
-                    results[qid] = "A"
+        import threading
+        results_lock = threading.Lock()
+        small_results = {}
+        large_results = {}
+        small_remaining = []
+        large_remaining = []
+        small_limit = [None]
+        large_limit = [None]
         
-        # Process pending Large questions (after quota reset)
-        if pending_large:
-            print(f"\n{'='*60}")
-            print(f"Processing {len(pending_large)} deferred Large model questions...")
-            print(f"{'='*60}")
-            
-            # Wait for quota reset before retrying Large questions
-            print("Waiting for Large model quota to reset...")
-            self._wait_until_next_hour()
-            
-            for q in tqdm(pending_large, desc="Deferred Large"):
-                qid = q.get("qid", "")
-                
-                if qid in self.answer_cache:
-                    cached_answer, _ = self._get_cached_answer(qid)
-                    results[qid] = cached_answer
-                    continue
-                
-                try:
-                    answer = self.answer(q["question"], q["choices"], qid)
-                    results[qid] = answer
-                    self.stats["total"] += 1
-                except LargeModelRateLimited:
-                    # After 5 fails, skip and add to retry queue
-                    print(f"[DEFERRED AGAIN] {qid} - adding to retry queue for next hour")
-                    pending_large.append(q)  # Re-add to pending queue
-                            
-                except Exception as e:
-                    print(f"[ERROR] {qid}: {e}")
-                    results[qid] = "A"
+        def process_small_queue():
+            nonlocal small_results, small_remaining
+            if pending_small:
+                print(f"\n[PARALLEL] Processing {len(pending_small)} SMALL model questions (5 workers)...")
+                small_results, small_remaining, small_limit[0] = self._process_parallel_smart(
+                    pending_small, max_workers=5, desc="Small Model", stop_on_limit=True
+                )
+                # Update pending count
+                with results_lock:
+                    self.pending_queues["small"] = len(small_remaining)
         
-        # Round-robin retry loop: keep retrying until all pending_large are done
-        while pending_large:
-            failed_this_round = []
-            
-            print(f"\n{'='*60}")
-            print(f"Waiting for next hour to retry {len(pending_large)} pending questions...")
-            print(f"{'='*60}")
-            self._wait_until_next_hour()
-            
-            for q in tqdm(pending_large, desc="Retry Round"):
-                qid = q.get("qid", "")
-                
-                if qid in self.answer_cache:
-                    cached_answer, _ = self._get_cached_answer(qid)
-                    results[qid] = cached_answer
-                    continue
-                
-                if qid in results:
-                    continue  # Already solved
-                
-                try:
-                    answer = self.answer(q["question"], q["choices"], qid)
-                    results[qid] = answer
-                    self.stats["total"] += 1
-                    print(f"[SUCCESS] {qid} -> {answer}")
-                except LargeModelRateLimited:
-                    print(f"[STILL RATE LIMITED] {qid} - will retry next hour")
-                    failed_this_round.append(q)
-                except Exception as e:
-                    print(f"[ERROR] {qid}: {e} - will retry next hour")
-                    failed_this_round.append(q)
-            
-            pending_large = failed_this_round
+        def process_large_queue():
+            nonlocal large_results, large_remaining
             if pending_large:
-                print(f"\n{len(pending_large)} questions still pending, will retry next hour...")
+                print(f"\n[PARALLEL] Processing {len(pending_large)} LARGE model questions (3 workers)...")
+                large_results, large_remaining, large_limit[0] = self._process_parallel_smart(
+                    pending_large, max_workers=3, desc="Large Model", stop_on_limit=True
+                )
+                # Update pending count
+                with results_lock:
+                    self.pending_queues["large"] = len(large_remaining)
+        
+        # Run both queues concurrently
+        print(f"\n[CONCURRENT] Starting Small (5 workers) + Large (3 workers) simultaneously...")
+        print(f"[INFO] Fallback only when target queue is EMPTY")
+        
+        small_thread = threading.Thread(target=process_small_queue)
+        large_thread = threading.Thread(target=process_large_queue)
+        
+        small_thread.start()
+        large_thread.start()
+        
+        small_thread.join()
+        large_thread.join()
+        
+        # Merge results
+        results.update(small_results)
+        results.update(large_results)
+        pending_small = small_remaining
+        pending_large = large_remaining
+        
+        print(f"\n[DONE] First run: {len(small_results)} Small + {len(large_results)} Large processed")
+        
+        # Handle rate limits with retry loop
+        while pending_small or pending_large:
+            print(f"\n[WAITING] {len(pending_small)} Small + {len(pending_large)} Large pending")
+            self._wait_until_next_hour()
+            print(f"[RETRY] Quota reset. Retrying...")
+            
+            # Update pending counts
+            self.pending_queues = {"small": len(pending_small), "large": len(pending_large)}
+            
+            # Run again concurrently
+            small_thread = threading.Thread(target=process_small_queue)
+            large_thread = threading.Thread(target=process_large_queue)
+            small_thread.start()
+            large_thread.start()
+            small_thread.join()
+            large_thread.join()
+            
+            # Merge results and update pending
+            results.update(small_results)
+            results.update(large_results)
+            pending_small = small_remaining
+            pending_large = large_remaining
+        
+        self.pending_queues = {"small": 0, "large": 0}
+        print(f"\n[COMPLETE] Processed {len(results)} questions total")
         
         # Retry questions that used Small fallback with Large model after quota reset
         needs_retry_qids = [
