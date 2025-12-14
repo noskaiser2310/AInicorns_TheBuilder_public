@@ -95,10 +95,7 @@ Input Question → Analyze Content → Classify Type → Select Model → Build 
 #### Step 3: Answer Extraction (6-Level Priority)
 1. 🔴 `Đáp án cuối cùng: X` - Highest priority
 2. 🟠 `**Đáp án: X**` - Bold pattern
-3. 🟡 `Đáp án: X` - Standard pattern
-4. 🟢 Last occurrence of answer pattern
-5. 🔵 Standalone bold letter `**X**`
-6. ⚪ Fallback to `A`
+3. ⚪ Fallback to `A`
 
 ---
 
