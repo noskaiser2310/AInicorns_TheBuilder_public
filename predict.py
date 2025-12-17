@@ -33,7 +33,7 @@ class LargeModelRateLimited(Exception):
 class Pipeline:
     def __init__(self, vector_db_path: str = "./data/vector_db", cache_dir: str = "./cache", 
                  log_file: str = "inference_log.json", cache_version: str = "v10",
-                 small_workers: int = 100, large_workers: int = 50):
+                 small_workers: int = 50, large_workers: int = 30):
         self.client = VNPTAPIClient(cache_dir=cache_dir)
         self.router = QuestionRouter()
         self.vector_db = None
@@ -1044,10 +1044,10 @@ if __name__ == "__main__":
     parser.add_argument("--import-cache", help="Import answers from old cache file before running")
     
     # Parallel workers configuration (no hard limit - rate limiting handled automatically)
-    parser.add_argument("--small-workers", type=int, default=100, 
-                        help="Number of parallel workers for SMALL model (default: 100)")
-    parser.add_argument("--large-workers", type=int, default=50,
-                        help="Number of parallel workers for LARGE model (default: 50)")
+    parser.add_argument("--small-workers", type=int, default=50, 
+                        help="Number of parallel workers for SMALL model (default: 50, recommended: 500)")
+    parser.add_argument("--large-workers", type=int, default=30,
+                        help="Number of parallel workers for LARGE model (default: 30, recommended: 200)")
     
     args = parser.parse_args()
     
