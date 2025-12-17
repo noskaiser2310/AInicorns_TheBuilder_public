@@ -1,37 +1,73 @@
-# Exclude large data files
-*.jsonl
-vietnamese_wiki.jsonl
-
-# Exclude virtual environments
+# Virtual environment & IDE
 .venv/
 .git/
 __pycache__/
+*.pyc
 
-# Exclude cache and temp files
+# API keys (BTC sẽ cung cấp)
+api-keys.json
+
+# Data files (BTC sẽ cung cấp private_test.json)
+data/
+test.json
+val.json
+test_mini.json
+
+# Cache & temp files
 cache/
 eval/
 experiment/
 sub/
 rec/
-# Exclude RAG data
-data/vector_db/
-data/wikipedia/
-data/culturax/
-data/datasets/
-data/crawl/
+docker_output/
 
-# Exclude Legal RAG files
-legal_rag*.py
+# Old submissions
+submission*.csv
 
-# Exclude sensitive files
-api-keys.json
+# Answer cache
+answer_cache*.json
+
+# RAG (không sử dụng)
+rag/
+
+# Logs & debug
+*.log
+*_log.json
+*_logs.json
+inference_log.json
+debug_*.txt
+debug_*.json
+
+# Reports (giữ README.md)
+doc.md
 env.template
+QUICKSTART.md
+report.md
+tech_report.md
 
-# Exclude docs
+# Test/debug scripts
+test_*.py
+check_*.py
+compare_caches.py
+eval_cache_quick.py
+evaluate_cache.py
+quick_eval.py
+benchmark_classifier.py
+convert_pdf_to_txt.py
+predict_all_large.py
+predict_all_small.py
+
+# Misc
+*.jsonl
 *.md
 !README.md
-
-# Exclude test/debug files
-*_logs.json
-debug_*.py
-test_*.py
+comparison_report.txt
+cache_eval_report.txt
+cache_evaluation_report.json
+eval_output.txt
+eval_result.json
+reading_test_result.json
+wrong_test_safe.txt
+test_reading_result.txt
+benchmark_summary.json
+dockerignore

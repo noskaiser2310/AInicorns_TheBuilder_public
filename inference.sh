@@ -1,6 +1,8 @@
 #!/bin/bash
 # VNPT AI Hackathon - Inference Pipeline
-# Reads /code/private_test.json and outputs /code/submission.csv
+# Entry-point theo yêu cầu BTC:
+# - Đọc /code/private_test.json (được BTC mount vào)
+# - Xuất submission.csv
 
 echo "============================================================"
 echo "VNPT AI Age of AInicorns - Track 2 The Builder"

@@ -31,7 +31,9 @@ class LargeModelRateLimited(Exception):
 
 
 class Pipeline:
-    def __init__(self, vector_db_path: str = "./data/vector_db", cache_dir: str = "./cache", log_file: str = "inference_log.json", cache_version: str = "v10"):
+    def __init__(self, vector_db_path: str = "./data/vector_db", cache_dir: str = "./cache", 
+                 log_file: str = "inference_log.json", cache_version: str = "v10",
+                 small_workers: int = 100, large_workers: int = 50):
         self.client = VNPTAPIClient(cache_dir=cache_dir)
         self.router = QuestionRouter()
         self.vector_db = None
@@ -41,6 +43,13 @@ class Pipeline:
         self.consecutive_failures = {"small": 0, "large": 0}
         self.skip_model = {"small": False, "large": False}
         self.pending_queues = {"small": 0, "large": 0}  # Track pending questions per queue
+        
+        # Worker settings (no limit - rate limiting handled automatically)
+        self.small_workers = small_workers
+        self.large_workers = large_workers
+        
+        import threading
+        self._cache_lock = threading.Lock()  # Thread-safe cache operations
         
         # Answer caching with version support for resume capability
         # When you change code/prompts, use a new version to start fresh
@@ -75,14 +84,17 @@ class Pipeline:
         return {}
     
     def _save_answer_cache(self):
-        """Save answer cache to file with metadata"""
-        data = {
-            "version": self.cache_version,
-            "count": len(self.answer_cache),
-            "answers": self.answer_cache
-        }
-        with open(self.answer_cache_file, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
+        """Save answer cache to file with metadata (thread-safe)"""
+        with self._cache_lock:
+            # Make a copy to avoid dict changed during iteration
+            cache_copy = dict(self.answer_cache)
+            data = {
+                "version": self.cache_version,
+                "count": len(cache_copy),
+                "answers": cache_copy
+            }
+            with open(self.answer_cache_file, 'w', encoding='utf-8') as f:
+                json.dump(data, f, ensure_ascii=False, indent=2)
     
     def import_from_cache(self, old_cache_file: str):
         """Import answers from an old cache file (different version)"""
@@ -180,9 +192,9 @@ class Pipeline:
                     # Mark model as rate limited globally
                     self.skip_model[model] = True
                     
-                    if model == "large" and allow_fallback and self.pending_queues.get("small", 0) == 0:
-                        # Try small immediately - only if Small queue is empty
-                        print(f"[{model.upper()} LIMITED] Small queue empty, trying small model...")
+                    if model == "large" and allow_fallback and not self.skip_model.get("small", False):
+                        # Try small immediately - if Small model quota is available
+                        print(f"[{model.upper()} LIMITED] Trying small model fallback...")
                         try:
                             resp = self.client.chat_text(
                                 messages, model="small",
@@ -212,7 +224,21 @@ class Pipeline:
                             raise RateLimitError(f"Small model failed: {small_err}")
                         
                     elif model == "large":
-                        raise LargeModelRateLimited(f"Large rate limited, no fallback allowed")
+                        # Both Large and Small are rate limited - wait and retry
+                        print(f"[BOTH MODELS LIMITED] Large limited, Small also limited. Waiting for reset...")
+                        self._wait_until_next_hour()
+                        self.skip_model = {"small": False, "large": False}
+                        # Retry with small after reset
+                        try:
+                            resp = self.client.chat_text(
+                                messages, model="small",
+                                temperature=param_config.get("temperature", 0.8),
+                                max_tokens=8192, seed=param_config.get("seed", 42),
+                                top_p=param_config.get("top_p", 0.9), top_k=param_config.get("top_k", 10), n=1
+                            )
+                            return resp, "small", True
+                        except Exception as retry_err:
+                            raise LargeModelRateLimited(f"Retry after reset failed: {retry_err}")
                     else:
                         # Small model rate limited
                         if allow_fallback and self.pending_queues.get("large", 0) == 0 and not self.skip_model.get("large", False):
@@ -410,60 +436,65 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
                         log_entry["needs_large_retry"] = True
                     
                 elif qtype == QuestionType.READING:
-                    # READING: 4-call voting (2 prompts x 2 models when Large fails)
+                    # READING: 3-prompt voting for better accuracy
                     choices_str = chr(10).join([f"{chr(65+i)}. {c}" for i, c in enumerate(choices)])
                     votes = []
                     fallback_used = False
                     
-                    # Call 1: 5-step deep analysis prompt with Large
+                    # Call 1: 5-step deep analysis prompt with SMALL (cheaper)
                     messages1 = self.router.build_prompt(qtype, question, choices, context, 0)
-                    resp1, model1, fb1 = self._call_llm_with_fallback(messages1, "large",
-                        {"temperature": 0.3, "top_p": 0.9, "top_k": 10, "seed": 42})
+                    resp1, model1, fb1 = self._call_llm_with_fallback(messages1, "small",
+                        {"temperature": 0.3, "top_p": 0.7, "top_k": 10, "seed": 42})
                     answer1 = self._extract_answer(resp1, len(choices))
                     votes.append({"answer": answer1, "model": model1, "prompt": "v1"})
                     if fb1:
                         fallback_used = True
                     
-                    # Call 2: 4-step data extraction prompt with Large
+                    # Call 2: 4-step data extraction prompt with SMALL (cheaper)
                     messages2 = self.router._build_reading_prompt_v2(question, choices_str)
-                    resp2, model2, fb2 = self._call_llm_with_fallback(messages2, "large",
-                        {"temperature": 0.3, "top_p": 0.9, "top_k": 10, "seed": 123})
+                    resp2, model2, fb2 = self._call_llm_with_fallback(messages2, "small",
+                        {"temperature": 0.6, "top_p": 0.9, "top_k": 15, "seed": 123})
                     answer2 = self._extract_answer(resp2, len(choices))
                     votes.append({"answer": answer2, "model": model2, "prompt": "v2"})
                     if fb2:
                         fallback_used = True
                     
-                    responses = [resp1, resp2]
+                    # Call 3: Debate-based analysis prompt with LARGE (for quality)
+                    messages3 = self.router._build_reading_prompt_v3(question, choices_str)
+                    resp3, model3, fb3 = self._call_llm_with_fallback(messages3, "large",
+                        {"temperature": 1.0, "top_p": 0.9, "top_k": 20, "seed": 456})
+                    answer3 = self._extract_answer(resp3, len(choices))
+                    votes.append({"answer": answer3, "model": model3, "prompt": "v3"})
+                    if fb3:
+                        fallback_used = True
+                    
+                    responses = [resp1, resp2, resp3]
                     log_entry["reading_votes"] = [v["answer"] for v in votes]
                     log_entry["reading_models"] = [v["model"] for v in votes]
                     log_entry["fallback_used"] = fallback_used
                     
-                    # Count votes
+                    # Count votes (3 votes total, need 2+ for majority)
                     vote_counts = {}
                     for v in votes:
                         ans = v["answer"]
                         vote_counts[ans] = vote_counts.get(ans, 0) + 1
                     
-                    # Find majority answer
+                    # Find majority answer (2 or 3 votes)
                     max_votes = max(vote_counts.values())
                     majority_answers = [ans for ans, count in vote_counts.items() if count == max_votes]
                     
-                    if len(majority_answers) == 1:
-                        # Clear winner
+                    if max_votes >= 2:
+                        # Clear winner with 2+ votes
                         answer = majority_answers[0]
                         log_entry["reading_consensus"] = True
+                        log_entry["consensus_votes"] = max_votes
                     else:
-                        # Tie - use tiebreak with Large (or Small if rate limited)
-                        choice_a_text = choices[ord(answer1) - 65] if answer1 and ord(answer1) - 65 < len(choices) else ""
-                        choice_b_text = choices[ord(answer2) - 65] if answer2 and ord(answer2) - 65 < len(choices) else ""
-                        
-                        tiebreak_prompt = f"""HAI CHUYÊN GIA ĐỌC HIỂU ĐƯA RA 2 ĐÁP ÁN KHÁC NHAU:
+                        # All 3 different - use tiebreak with Large
+                        tiebreak_prompt = f"""BA CHUYÊN GIA ĐỌC HIỂU ĐƯA RA 3 ĐÁP ÁN KHÁC NHAU:
 
-Chuyên gia 1 chọn: {answer1}. {choice_a_text}
-Lý do: {resp1 if resp1 else ""}
-
-Chuyên gia 2 chọn: {answer2}. {choice_b_text}  
-Lý do: {resp if resp2 else ""}
+Chuyên gia 1 (phân tích chuyên sâu) chọn: {answer1}
+Chuyên gia 2 (trích dẫn dữ liệu) chọn: {answer2}
+Chuyên gia 3 (tranh biện) chọn: {answer3}
 
 VĂN BẢN VÀ CÂU HỎI GỐC:
 {question}
@@ -473,9 +504,9 @@ CÁC ĐÁP ÁN:
 
 NHIỆM VỤ CỦA BẠN:
 1. Đọc lại văn bản gốc một cách cẩn thận
-2. Xem xét lập luận của cả 2 chuyên gia
-3. Xác định đáp án nào được HỖ TRỢ TRỰC TIẾP hơn bởi văn bản
-4. Nếu cả 2 đều sai, chọn đáp án đúng nhất
+2. Xem xét lập luận của cả 3 chuyên gia
+3. Xác định đáp án nào được HỖ TRỢ TRỰC TIẾP nhất bởi văn bản
+4. Nếu tất cả đều sai, chọn đáp án đúng nhất
 
 Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối cùng bạn chọn)"""
 
@@ -485,13 +516,13 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
                         ]
                         
                         try:
-                            resp3, model3, fb3 = self._call_llm_with_fallback(tiebreak_messages, "large",
+                            resp4, model4, fb4 = self._call_llm_with_fallback(tiebreak_messages, "large",
                                 {"temperature": 0.1, "top_p": 0.9, "top_k": 5, "seed": 999})
-                            responses.append(resp3)
-                            answer = self._extract_answer(resp3, len(choices))
+                            responses.append(resp4)
+                            answer = self._extract_answer(resp4, len(choices))
                             log_entry["tiebreak_answer"] = answer
-                            log_entry["tiebreak_model"] = model3
-                            if fb3:
+                            log_entry["tiebreak_model"] = model4
+                            if fb4:
                                 fallback_used = True
                         except:
                             # Fallback to first answer if tiebreak fails
@@ -782,15 +813,34 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
             json.dump(self.logs, f, ensure_ascii=False, indent=2)
         print(f"Logs saved to {self.log_file}")
 
-    def run(self, input_file: str = "/code/private_test.json", output_file: str = "submission.csv"):
+    def run(self, input_file: str = "/code/private_test.json", output_file: str = "/code/submission.csv"):
         print("=" * 60)
         print("VNPT AI HACKATHON - INFERENCE")
         print("=" * 60)
         
-        with open(input_file, 'r', encoding='utf-8') as f:
-            questions = json.load(f)
+        # Support both CSV and JSON input formats
+        if input_file.endswith('.csv'):
+            # CSV format: qid, question, choices (A|B|C|D separated)
+            df = pd.read_csv(input_file)
+            questions = []
+            for _, row in df.iterrows():
+                q = {"qid": str(row.get("qid", row.name))}
+                q["question"] = row.get("question", row.get("context", ""))
+                # Handle choices - could be separate columns or combined
+                if "choices" in row:
+                    # Combined format: "A|B|C|D"
+                    q["choices"] = row["choices"].split("|") if isinstance(row["choices"], str) else list(row["choices"])
+                else:
+                    # Separate columns: A, B, C, D
+                    q["choices"] = [str(row.get(c, "")) for c in ["A", "B", "C", "D"] if c in row]
+                questions.append(q)
+            print(f"Loaded {len(questions)} questions from CSV")
+        else:
+            # JSON format (default for BTC)
+            with open(input_file, 'r', encoding='utf-8') as f:
+                questions = json.load(f)
+            print(f"Loaded {len(questions)} questions from JSON")
         
-        print(f"Loaded {len(questions)} questions")
         cached_count = sum(1 for q in questions if q.get("qid", "") in self.answer_cache)
         if cached_count > 0:
             print(f"Found {cached_count} cached answers - will skip those")
@@ -838,9 +888,9 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
         def process_small_queue():
             nonlocal small_results, small_remaining
             if pending_small:
-                print(f"\n[PARALLEL] Processing {len(pending_small)} SMALL model questions (5 workers)...")
+                print(f"\n[PARALLEL] Processing {len(pending_small)} SMALL model questions ({self.small_workers} workers)...")
                 small_results, small_remaining, small_limit[0] = self._process_parallel_smart(
-                    pending_small, max_workers=5, desc="Small Model", stop_on_limit=True
+                    pending_small, max_workers=self.small_workers, desc="Small Model", stop_on_limit=True
                 )
                 # Update pending count
                 with results_lock:
@@ -849,16 +899,16 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
         def process_large_queue():
             nonlocal large_results, large_remaining
             if pending_large:
-                print(f"\n[PARALLEL] Processing {len(pending_large)} LARGE model questions (3 workers)...")
+                print(f"\n[PARALLEL] Processing {len(pending_large)} LARGE model questions ({self.large_workers} workers)...")
                 large_results, large_remaining, large_limit[0] = self._process_parallel_smart(
-                    pending_large, max_workers=3, desc="Large Model", stop_on_limit=True
+                    pending_large, max_workers=self.large_workers, desc="Large Model", stop_on_limit=True
                 )
                 # Update pending count
                 with results_lock:
                     self.pending_queues["large"] = len(large_remaining)
         
         # Run both queues concurrently
-        print(f"\n[CONCURRENT] Starting Small (5 workers) + Large (3 workers) simultaneously...")
+        print(f"\n[CONCURRENT] Starting Small ({self.small_workers} workers) + Large ({self.large_workers} workers) simultaneously...")
         print(f"[INFO] Fallback only when target queue is EMPTY")
         
         small_thread = threading.Thread(target=process_small_queue)
@@ -986,18 +1036,35 @@ Luôn kết thúc bằng: "Đáp án cuối cùng: X" (X là chữ cái cuối c
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", default="/code/private_test.json", help="Input JSON file")
-    parser.add_argument("--output", default="submission.csv", help="Output CSV file")
+    parser = argparse.ArgumentParser(description="VNPT AI Hackathon - Inference Pipeline")
+    parser.add_argument("--input", default="/code/private_test.json", help="Input JSON/CSV file")
+    parser.add_argument("--output", default="/code/submission.csv", help="Output CSV file")
     parser.add_argument("--log", default="inference_log.json", help="Log file")
     parser.add_argument("--cache-version", default="v10", help="Cache version (use new version when changing code/prompts)")
     parser.add_argument("--import-cache", help="Import answers from old cache file before running")
+    
+    # Parallel workers configuration (no hard limit - rate limiting handled automatically)
+    parser.add_argument("--small-workers", type=int, default=100, 
+                        help="Number of parallel workers for SMALL model (default: 100)")
+    parser.add_argument("--large-workers", type=int, default=50,
+                        help="Number of parallel workers for LARGE model (default: 50)")
+    
     args = parser.parse_args()
     
-    pipeline = Pipeline(log_file=args.log, cache_version=args.cache_version)
+    # Show worker configuration
+    print(f"[CONFIG] Small workers: {args.small_workers}")
+    print(f"[CONFIG] Large workers: {args.large_workers}")
+    
+    pipeline = Pipeline(
+        log_file=args.log, 
+        cache_version=args.cache_version,
+        small_workers=args.small_workers,
+        large_workers=args.large_workers
+    )
     
     # Import from old cache if specified
     if args.import_cache:
         pipeline.import_from_cache(args.import_cache)
     
     pipeline.run(input_file=args.input, output_file=args.output)
+

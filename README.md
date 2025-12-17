@@ -1,4 +1,4 @@
-# 🏆 VNPT AI Hackathon - Track 2: The Builder
+# VNPT AI Hackathon - Track 2: The Builder
 
 <div align="center">
 
@@ -14,97 +14,98 @@
 
 ---
 
-## 📋 Table of Contents
-- [Pipeline Flow](#-pipeline-flow)
-- [Data Processing](#-data-processing)
-- [Resource Initialization](#-resource-initialization)
-- [Project Structure](#-project-structure)
-- [Docker Deployment](#-docker-deployment)
-- [Team](#-team)
+## Table of Contents
+- [Quick Start](#quick-start)
+- [Pipeline Flow](#pipeline-flow)
+- [Data Processing](#data-processing)
+- [Resource Initialization](#resource-initialization)
+- [Docker Deployment](#docker-deployment)
+- [Project Structure](#project-structure)
+- [Team](#team)
 
 ---
 
-## 🔄 Pipeline Flow
+## Quick Start
 
-### High-Level Architecture
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           INFERENCE PIPELINE                                 │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│   ┌──────────────┐    ┌─────────────────┐    ┌─────────────────────────┐   │
-│   │ private_test │───►│ Question Router │───►│   Strategy Selection    │   │
-│   │    .json     │    │  (Classify &    │    │                         │   │
-│   └──────────────┘    │   Route)        │    │  ┌─────────────────┐    │   │
-│                       └─────────────────┘    │  │ READING → LARGE │    │   │
-│                                              │  │ (2-call voting) │    │   │
-│                                              │  ├─────────────────┤    │   │
-│                                              │  │ MATH → LARGE    │    │   │
-│                                              │  │ (Solve+Verify)  │    │   │
-│                                              │  ├─────────────────┤    │   │
-│                                              │  │ FACTUAL → SMALL │    │   │
-│                                              │  │ (Single call)   │    │   │
-│                                              │  ├─────────────────┤    │   │
-│                                              │  │ SAFETY → SMALL  │    │   │
-│                                              │  │ (Refusal)       │    │   │
-│                                              │  └─────────────────┘    │   │
-│                                              └─────────────────────────┘   │
-│                                                          │                  │
-│                                                          ▼                  │
-│                                              ┌─────────────────────────┐   │
-│                                              │   VNPT AI LLM API       │   │
-│                                              │   (Small / Large)       │   │
-│                                              └─────────────────────────┘   │
-│                                                          │                  │
-│                                                          ▼                  │
-│                                              ┌─────────────────────────┐   │
-│                                              │   Answer Extraction     │   │
-│                                              │   (6-Level Priority)    │   │
-│                                              └─────────────────────────┘   │
-│                                                          │                  │
-│                                                          ▼                  │
-│                                              ┌─────────────────────────┐   │
-│                                              │    submission.csv       │   │
-│                                              │    (qid, answer)        │   │
-│                                              └─────────────────────────┘   │
-│                                                                              │
-└─────────────────────────────────────────────────────────────────────────────┘
+### Docker Hub Image
+```bash
+docker pull noskaiser231000/just2try_thebuilder:latest
 ```
 
-### Detailed Flow
-
-#### Step 1: Question Classification (`question_router.py`)
+### Run Inference (BTC Format)
+```bash
+docker run --gpus all \
+  -v /path/to/api-keys.json:/code/api-keys.json \
+  -v /path/to/private_test.json:/code/private_test.json \
+  noskaiser231000/just2try_thebuilder:latest
 ```
-Input Question → Analyze Content → Classify Type → Select Model → Build Prompt
+
+### Output
 ```
-
-| Type | Detection Method | Model | Strategy |
-|------|------------------|-------|----------|
-| **READING** | Contains passage + comprehension question | LARGE | 2-call voting |
-| **MATH** | Contains numbers, equations, calculations | LARGE | Solve + Verify |
-| **FACTUAL** | General knowledge (History, Law, Science) | SMALL | Single call |
-| **SAFETY** | Harmful/sensitive content detection | SMALL | Refusal priority |
-
-#### Step 2: LLM Processing (`predict.py`)
-- **READING Questions**: 2 different prompts → 2 answers → Vote for majority
-- **MATH Questions**: Solve → Verify solution → Final answer
-- **FACTUAL Questions**: Domain-specific prompt → Single answer
-- **SAFETY Questions**: Detect refusal option → Select safe answer
-
-#### Step 3: Answer Extraction (6-Level Priority)
-1. 🔴 `Đáp án cuối cùng: X` - Highest priority
-2. 🟠 `**Đáp án: X**` - Bold pattern
-3. 🟡 `Đáp án: X` - Standard pattern
-4. 🟢 Last occurrence of answer pattern
-5. 🔵 Standalone bold letter `**X**`
-6. ⚪ Fallback to `A`
+/code/submission.csv
+```
 
 ---
 
-## 📊 Data Processing
+## Pipeline Flow
+
+```mermaid
+flowchart TB
+    subgraph Input
+        A["/code/private_test.json"]
+    end
+
+    subgraph "Question Router"
+        B[Classify Question Type]
+        B --> C{Question Type?}
+    end
+
+    subgraph "Strategy Selection"
+        C -->|READING| D["3-Prompt Voting<br/>2 Small + 1 Large"]
+        C -->|MATH| E["Solve + Verify<br/>Large Model"]
+        C -->|FACTUAL| F["Single Call<br/>Small Model"]
+        C -->|SAFETY| G["Refusal Priority<br/>Small Model"]
+    end
+
+    subgraph "Parallel Processing"
+        H["SMALL Queue<br/>100 workers"]
+        I["LARGE Queue<br/>50 workers"]
+        D --> H
+        D --> I
+        E --> I
+        F --> H
+        G --> H
+    end
+
+    subgraph "Rate Limit Handler"
+        J[Auto Pause & Resume]
+        H --> J
+        I --> J
+    end
+
+    subgraph Output
+        K["/code/submission.csv"]
+    end
+
+    A --> B
+    J --> K
+```
+
+### Question Types & Strategies
+
+| Type | Model | Strategy |
+|------|-------|----------|
+| READING | SMALL + LARGE | 3-prompt voting (2 Small + 1 Large) with tiebreaker |
+| MATH | LARGE | Solve then Verify with step-by-step validation |
+| FACTUAL | SMALL | Single call with domain-specific prompts |
+| SAFETY | SMALL | Prioritize "cannot answer" option for harmful content |
+
+---
+
+## Data Processing
 
 ### Input Format
+BTC sẽ mount file `/code/private_test.json` với format:
 ```json
 [
   {
@@ -116,6 +117,7 @@ Input Question → Analyze Content → Classify Type → Select Model → Build 
 ```
 
 ### Output Format
+Pipeline xuất `/code/submission.csv` với 2 cột:
 ```csv
 qid,answer
 test_0001,A
@@ -123,30 +125,27 @@ test_0002,B
 test_0003,C
 ```
 
-### Data Flow
-```
-/code/private_test.json → predict.py → /code/submission.csv
-```
-
-### Question Categories Handled
-| Category | Description | Strategy |
-|----------|-------------|----------|
-| Precision Critical | Safety/refusal questions | Prioritize "cannot answer" option |
-| Compulsory | Must-answer correctly | High-accuracy prompts |
-| RAG | Reading comprehension | Multi-approach voting |
-| STEM | Math/Science | Step-by-step verification |
-| Multidomain | General knowledge | Domain-specific prompts |
+### Processing Steps
+1. Load questions from JSON
+2. Classify each question type (READING/MATH/FACTUAL/SAFETY)
+3. Route to appropriate model (SMALL/LARGE)
+4. Generate answers with strategy-specific prompts
+5. Extract final answer using regex patterns
+6. Save to CSV with qid,answer format
 
 ---
 
-## ⚙️ Resource Initialization
+## Resource Initialization
 
-### Prerequisites
-- Python 3.8+ (Docker uses Python 3 from Ubuntu 20.04)
-- VNPT API credentials (`api-keys.json`)
+### No External Resources Required
+Solution sử dụng **VNPT AI LLM API only** - không cần:
+- Vector Database
+- Pre-trained model weights
+- External indexing
+- Local GPU inference
 
 ### API Keys Configuration
-File `api-keys.json` should contain:
+File `api-keys.json` (được BTC mount vào `/code/`):
 ```json
 [
   {"llmApiName": "LLM small", "authorization": "Bearer ...", "tokenId": "...", "tokenKey": "..."},
@@ -154,54 +153,17 @@ File `api-keys.json` should contain:
 ]
 ```
 
-### Dependencies Installation
-```bash
-pip install -r requirements.txt
+### Dependencies
 ```
-
-**Required packages:**
-- `requests>=2.28.0` - HTTP client for API calls
-- `tqdm>=4.65.0` - Progress bar
-- `numpy>=1.24.0` - Numerical operations
-- `pandas>=2.0.0` - Data manipulation
-
-### No External Resources Required
-This solution uses **VNPT AI LLM API only** - no additional:
-- ❌ Vector Database
-- ❌ Pre-trained model weights
-- ❌ External indexing
-- ❌ Local GPU inference
-
-All processing is done via VNPT API calls.
+requests>=2.28.0
+tqdm>=4.65.0
+numpy>=1.24.0
+pandas>=2.0.0
+```
 
 ---
 
-## 📁 Project Structure
-
-```
-Just2Try_TheBuilder/
-├── predict.py              # Main entry point - reads JSON, outputs CSV
-├── question_router.py      # Question classification & prompt building
-├── vnpt_api_client.py      # VNPT API client with rate limiting
-├── inference.sh            # Docker entry point script
-├── Dockerfile              # Container configuration (CUDA 12.2)
-├── requirements.txt        # Python dependencies
-├── README.md               # This file
-└── .dockerignore           # Exclude unnecessary files from build
-```
-
-### Core Files Description
-
-| File | Purpose |
-|------|---------|
-| `predict.py` | Main pipeline: load questions → classify → call LLM → extract answer → save CSV |
-| `question_router.py` | Classify question type, build appropriate prompts for each type |
-| `vnpt_api_client.py` | Handle API calls with retry logic and rate limit handling |
-| `inference.sh` | Entry point that runs `python predict.py` |
-
----
-
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### Docker Hub Image
 ```
@@ -213,43 +175,83 @@ noskaiser231000/just2try_thebuilder:latest
 docker build -t just2try_thebuilder .
 ```
 
-### Run Container
+### Run Container (BTC Format)
 ```bash
-# BTC will run with:
 docker run --gpus all \
   -v /path/to/api-keys.json:/code/api-keys.json \
   -v /path/to/private_test.json:/code/private_test.json \
   just2try_thebuilder
 ```
 
-### Dockerfile Spec
-- **Base Image**: `nvidia/cuda:12.2.0-devel-ubuntu20.04`
-- **Entry Point**: `inference.sh`
-- **Input**: `/code/private_test.json`
-- **Output**: `/code/submission.csv`
+### Verify Output
+```bash
+# Check submission.csv exists
+docker run --gpus all \
+  -v /path/to/api-keys.json:/code/api-keys.json \
+  -v /path/to/private_test.json:/code/private_test.json \
+  -v $(pwd):/output \
+  just2try_thebuilder bash -c "python predict.py && cp /code/submission.csv /output/"
+```
 
-### Submission Checklist
-- [x] Dockerfile với CUDA 12.2 base
-- [x] requirements.txt với tất cả dependencies
-- [x] inference.sh entry point
-- [x] Đọc `/code/private_test.json` → `/code/submission.csv`
-- [x] Docker image pushed to Docker Hub
+### Dockerfile Specs
+| Spec | Value |
+|------|-------|
+| Base Image | `nvidia/cuda:12.2.0-devel-ubuntu20.04` |
+| Entry Point | `bash inference.sh` |
+| Input | `/code/private_test.json` |
+| Output | `/code/submission.csv` |
 
 ---
 
-## 👥 Team
+## Project Structure
+
+```
+Just2Try_TheBuilder/
+├── predict.py              # Entry-point: Load → Classify → LLM → Extract → Save CSV
+├── question_router.py      # Question type detection, model routing, prompt building
+├── vnpt_api_client.py      # VNPT API client with retry logic and rate limit handling
+├── inference.sh            # Docker entry point script
+├── Dockerfile              # Container config (CUDA 12.2)
+├── requirements.txt        # Python dependencies
+├── README.md               # Documentation
+└── .dockerignore           # Build exclusions
+```
+
+### Core Components
+
+| File | Purpose |
+|------|---------|
+| `predict.py` | Main pipeline: load questions, parallel LLM calls, extract answers, save CSV |
+| `question_router.py` | Classify question type, select model, build domain-specific prompts |
+| `vnpt_api_client.py` | Handle API calls with retry, rate limit handling, response caching |
+| `inference.sh` | Entry point that runs `python predict.py` |
+
+### CLI Parameters
+
+```bash
+python predict.py [OPTIONS]
+```
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `--input` | `/code/private_test.json` | Input JSON file |
+| `--output` | `/code/submission.csv` | Output CSV file |
+| `--small-workers` | `100` | Parallel workers for SMALL model |
+| `--large-workers` | `50` | Parallel workers for LARGE model |
+
+---
+
+## Team
 
 <div align="center">
 
-### 🦄 Team Just2Try
+### Team Just2Try
 
 **Track 2: The Builder**  
 *VNPT AI Hackathon - Age of AInicorns 2024*
 
-</div>
-
 ---
 
-<div align="center">
-Made with ❤️ by Team Just2Try
+Made with dedication by Team Just2Try
+
 </div>

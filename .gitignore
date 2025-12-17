@@ -1,28 +1,61 @@
-/.venv
-/api-keys.json
-/build_vector_db.py
-/cache
-/debug_output.txt
-/debug_result.json
-/doc.md
-/env.template
-/eval_15_mixed.json
-/eval_15_mixed_logs.json
-/eval_15_new.json
-/eval_15_new_logs.json
-/eval_30.json
-/eval_30_logs.json
-/QUICKSTART.md
-/requirements_inference.txt
-/test_log.txt
-/vietnamese_wiki.jsonl
-/__pycache__
-/sub
-/eval
-/enhanced_embedding.py
-/gemini_test.py
-/experiment
-/data/crawl
-data/datasets/
-data
-rag
+# Virtual environment & IDE
+/.venv/
+__pycache__/
+*.pyc
+
+# API keys (BTC sẽ cung cấp)
+api-keys.json
+
+# Data files (BTC sẽ cung cấp private_test.json)
+data/
+*.json
+!requirements.txt
+
+# Cache & temp files
+cache/
+eval/
+experiment/
+sub/
+rec/
+docker_output/
+
+# Old submissions
+submission*.csv
+
+# Answer cache (không cần cho private test)
+answer_cache*.json
+
+# RAG (không sử dụng)
+rag/
+
+# Logs & debug output
+*.log
+*_log.json
+*_logs.json
+inference_log.json
+debug_*.txt
+debug_*.json
+
+# Reports & docs (giữ README.md)
+doc.md
+env.template
+QUICKSTART.md
+report.md
+tech_report.md
+
+# Test files
+test_*.py
+check_*.py
+
+# Misc
+*.jsonl
+comparison_report.txt
+cache_eval_report.txt
+cache_evaluation_report.json
+eval_output.txt
+eval_result.json
+reading_test_result.json
+wrong_test_safe.txt
+test_reading_result.txt
+benchmark_summary.json
+dockerignore

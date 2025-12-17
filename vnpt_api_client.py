@@ -99,7 +99,7 @@ class VNPTAPIClient:
             try:
                 headers = self._headers(model)
                 # Timeout: 5 phút (300s) cho cả 2 model - đủ cho câu hỏi phức tạp
-                timeout = 300
+                timeout = 500
                 resp = requests.post(url, headers=headers, json=payload, timeout=timeout)
                 
                 if resp.status_code in [429, 401]:
