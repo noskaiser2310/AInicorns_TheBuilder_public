@@ -50,7 +50,7 @@ docker run --gpus all \
 
 ## GitHub Repository
 
-**Public Repository:** https://github.com/noskaiser2310/AInicorns_TheBuilder_public.git
+**Repository:** https://github.com/noskaiser2310/AInicorns_TheBuilder_public.git
 
 ### Clone Repository
 ```bash
@@ -67,26 +67,19 @@ pip install -r requirements.txt
 
 ## Run Without Docker
 
-### Cách 1: Chạy với Default Workers (50 Small + 30 Large)
 ```bash
 python predict.py --input private_test.json --output submission.csv
 ```
 
-### Cách 2: Chạy với High Performance (Recommended for Production)
-```bash
-python predict.py --input private_test.json --output submission.csv \
-  --small-workers 500 --large-workers 200
-```
-
 ### CLI Parameters
 
-| Parameter | Default | Recommended | Description |
-|-----------|---------|-------------|-------------|
-| `--input` | `/code/private_test.json` | - | Input JSON file |
-| `--output` | `/code/submission.csv` | - | Output CSV file |
-| `--small-workers` | `50` | `500` | Parallel workers for SMALL model |
-| `--large-workers` | `30` | `200` | Parallel workers for LARGE model |
-| `--cache-version` | `v10` | - | Cache version for resume |
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `--input` | `/code/private_test.json` | Input JSON file |
+| `--output` | `/code/submission.csv` | Output CSV file |
+| `--small-workers` | `50` | Parallel workers for SMALL model |
+| `--large-workers` | `30` | Parallel workers for LARGE model |
+| `--cache-version` | `v10` | Cache version for resume |
 
 ### Rate Limit Handling
 - Nếu vượt quota API → Tự động dừng → Chờ reset (~1 giờ) → Tiếp tục
@@ -101,21 +94,12 @@ python predict.py --input private_test.json --output submission.csv \
 docker build -t just2try_thebuilder .
 ```
 
-### Run với Default Workers
+### Run Container
 ```bash
 docker run --gpus all \
   -v $(pwd)/api-keys.json:/code/api-keys.json \
   -v $(pwd)/private_test.json:/code/private_test.json \
   just2try_thebuilder
-```
-
-### Run với High Performance Workers
-```bash
-docker run --gpus all \
-  -v $(pwd)/api-keys.json:/code/api-keys.json \
-  -v $(pwd)/private_test.json:/code/private_test.json \
-  just2try_thebuilder \
-  python predict.py --small-workers 500 --large-workers 200
 ```
 
 ### Verify kết quả
