@@ -136,8 +136,8 @@ flowchart TB
     end
 
     subgraph "Parallel Processing"
-        H["SMALL Queue<br/>100 workers"]
-        I["LARGE Queue<br/>50 workers"]
+        H["SMALL Queue<br/>50 workers"]
+        I["LARGE Queue<br/>30 workers"]
         D --> H
         D --> I
         E --> I
